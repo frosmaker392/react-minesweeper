@@ -1,0 +1,19 @@
+.board {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.board.row {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+}
+
+.board.cell {
+    display: flex;
+    flex: 1;
+    aspect-ratio: 1;
+    justify-content: center;
+    align-items: center;
+}
