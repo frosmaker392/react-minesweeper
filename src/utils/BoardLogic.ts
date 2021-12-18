@@ -1,17 +1,17 @@
 type Coords = [number, number]
-type CellState = "hidden" | "revealed" | "flagged" | "unknown";
+type CellState = "hidden" | "revealed" | "flagged" | "unknown"
 
-interface Cell {
+interface ICell {
   state: CellState
   hasMine: boolean
   neighbouringMines: number
 }
 
-class Board {
+class BoardLogic {
   width: number
   height: number
   numMines: number
-  cells: Cell[][]
+  cells: ICell[][]
   initialized: boolean
 
   /**
@@ -29,7 +29,7 @@ class Board {
     // Initialize cells array
     this.cells = []
     for (let y = 0; y < height; y++) {
-      const row: Cell[] = []
+      const row: ICell[] = []
       for (let x = 0; x < width; x++) {
         row.push({ 
           state: "hidden",
@@ -41,8 +41,8 @@ class Board {
     }
   }
 
-  public copy(): Board {
-    const board = new Board(this.width, this.height, this.numMines)
+  public copy(): BoardLogic {
+    const board = new BoardLogic(this.width, this.height, this.numMines)
 
     board.cells = this.cells.map((row) => {
       return row.map((cell) => { return {...cell} })
@@ -55,24 +55,28 @@ class Board {
   /**
    * Marks the cell by cycling through the states
    * (hidden -> flagged -> unknown -> hidden).
+   * 
+   * Does nothing if board is not initialized
    * @param coords Coordinates of the cell to be marked
    */
-  static mark(board: Board, [x, y]: Coords): Board {
-    let newBoard = board.copy()
+  public mark([x, y]: Coords): BoardLogic {
+    if (!this.initialized || this.cells[y][x].state === "revealed") 
+      return this
+    let newBoard = this.copy()
 
     const cell = newBoard.cells[y][x]
     switch (cell.state) {
       case "hidden":
         cell.state = "flagged"
-        break;
+        break
       case "flagged":
         cell.state = "unknown"
-        break;
+        break
       case "unknown":
         cell.state = "hidden"
-        break;
+        break
       default:
-        break;
+        break
     }
 
     return newBoard
@@ -87,8 +91,8 @@ class Board {
    * of the neighbours.
    * @param coords Coordinates of the cell to be revealed
    */
-  static reveal(board: Board, [x, y]: Coords): Board {
-    let newBoard = board.copy()
+  public reveal([x, y]: Coords): BoardLogic {
+    let newBoard = this.copy()
     
     if (!newBoard.initialized) { 
       newBoard.installMines([x, y])
@@ -98,7 +102,7 @@ class Board {
     // BFS
     const queue = [[x,y]]
     while (queue.length > 0) {
-      const [xi, yi] = queue.pop() ?? [x, y];
+      const [xi, yi] = queue.pop() ?? [x, y]
       const neighbours = newBoard.getNeighbours([xi, yi])
 
       const nMines = neighbours
@@ -165,5 +169,5 @@ class Board {
   }
 }
 
-export { Board };
-export type { Cell };
+export { BoardLogic }
+export type { ICell }

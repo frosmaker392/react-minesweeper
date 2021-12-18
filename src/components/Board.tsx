@@ -1,7 +1,8 @@
-import { Cell } from "./Cell";
 import "../styles/Board.css";
+
+import { Cell } from "./Cell";
 import { useState } from "react";
-import { Board as BoardL } from "../utils/BoardLogic"
+import { BoardLogic } from "../utils/BoardLogic"
 
 interface BoardProps {
   height: number,
@@ -9,7 +10,7 @@ interface BoardProps {
 }
 
 const Board = ({ height, width }: BoardProps) => {
-  const [board, setBoard] = useState(() => new BoardL(width, height, 5))
+  const [board, setBoard] = useState(() => new BoardLogic(width, height, 5))
 
   const rows = []
   for (let y = 0; y < height; y++) {
@@ -18,8 +19,8 @@ const Board = ({ height, width }: BoardProps) => {
     for (let x = 0; x < width; x++) {
       cells.push(<Cell {...board.cells[y][x]}
         key={x}
-        onClick={() => setBoard(BoardL.reveal(board, [x, y]))}
-        onRightClick={() => setBoard(BoardL.mark(board, [x, y]))}
+        onClick={() => setBoard(board.reveal([x, y]))}
+        onRightClick={() => setBoard(board.mark([x, y]))}
         />)
     }
     rows.push(<div key={y} className="board row">{ cells }</div>);

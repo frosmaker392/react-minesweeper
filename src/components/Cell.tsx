@@ -1,19 +1,17 @@
-type CellState = "hidden" | "revealed" | "flagged" | "unknown"
+import { ICell } from '../utils/BoardLogic'
 
-interface ICellProps {
-  state: CellState
-  hasMine: boolean
-  neighbouringMines: number
+interface ICellProps extends ICell {
   onClick: () => void
   onRightClick: () => void
 }
 
 export const Cell = (props: ICellProps) => {
+  const nMines = props.neighbouringMines;
   let inner = ""
   switch (props.state) {
     case "revealed":
       if (props.hasMine) inner = "X"
-      else inner = props.neighbouringMines.toString()
+      else inner = `${nMines > 0 ? nMines : ""}`
       break;
     case "flagged":
       inner = "F"
