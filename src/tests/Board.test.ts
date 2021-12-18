@@ -1,0 +1,119 @@
+import { Board } from '../utils/BoardLogic'
+
+describe("Board", () => {
+  describe("constructor", () => {
+    it("creates a board with the right dimensions", () => {
+      const board = new Board(10, 7, 5)
+
+      expect(board.width).toBe(10)
+      expect(board.height).toBe(7)
+      expect(board.numMines).toBe(5)
+      expect(board.initialized).toBe(false)
+
+      expect(board.cells.length).toBe(7)
+      expect(board.cells[0].length).toBe(10)
+      board.cells.forEach((row) => {
+        expect(row.length).toBe(10)
+      })
+    })
+
+    it("limits numMines to half the total number of squares", () => {
+      const board = new Board(4, 5, 19)
+
+      expect(board.numMines).toBe(10)
+    })
+  })
+
+  describe("mark", () => {
+    it("cycles through all the states for an unrevealed cell", () => {
+      let board = new Board(10, 7, 5)
+
+      const toEval = ["flagged", "unknown", "hidden"]
+      for (let i = 0; i < 4; i++) {
+        const expectedState = toEval[i % 3]
+        board = Board.mark(board, [1,1])
+        expect(board.cells[1][1].state).toBe(expectedState)
+      }
+      
+      expect(board.cells[2][1].state).toBe("hidden")
+    })
+
+    it("does not change the state of revealed cells", () => {
+      let board = new Board(10, 7, 5)
+
+      board.cells[1][3].state = "revealed"
+      for (let i = 0; i < 4; i++) {
+        board = Board.mark(board, [1,3])
+        expect(board.cells[1][3].state).toBe("revealed")
+      }
+    })
+  })
+
+  describe("reveal", () => {
+    describe("init", () => {
+      it("randomly installs mines to all except the cell and its neighbours, then reveals it", () => {
+        let board = new Board(5, 5, 5)
+        
+        board = Board.reveal(board, [2,2])
+        
+        expect(board.initialized).toBe(true)
+        const coordsToEval = [
+          [1,1], [2,1], [3,1],
+          [1,2], [2,2], [3,2],
+          [1,3], [2,3], [3,3],
+        ]
+
+        // Cell neighbours must be revealed
+        coordsToEval.forEach(coords => {
+          const cell = board.cells[coords[0]][coords[1]]
+          expect(cell.hasMine).toBe(false)
+          expect(cell.state).toBe("revealed")
+        });
+      })
+
+      it("works on the edges", () => {
+        let board = new Board(5,5,5)
+
+        board = Board.reveal(board, [4,4])
+
+        expect(board.initialized).toBe(true)
+        const coordsToEval = [
+          [3,3], [3,4], [4,3], [4,4]
+        ]
+
+        coordsToEval.forEach(coords => {
+          const cell = board.cells[coords[0]][coords[1]]
+          expect(cell.hasMine).toBe(false)
+          expect(cell.state).toBe("revealed")
+        });
+      })
+    })
+
+    describe("post-init", () => {
+      it("reveals a normal cell and sets the number of neighbouring mines", () => {
+        let board = new Board(5, 5, 5)
+
+        board.initialized = true
+        board.cells[1][1].hasMine = true
+        board.cells[2][1].hasMine = true
+        board.cells[3][1].hasMine = true
+        
+        board = Board.reveal(board, [2,2])
+        expect(board.cells[2][2].state).toBe("revealed")
+        expect(board.cells[2][2].neighbouringMines).toBe(3)
+      })
+  
+      it("reveals a cell with a mine", () => {
+        let board = new Board(5, 5, 5)
+  
+        board.initialized = true
+        board.cells[2][2].hasMine = true
+  
+        board = Board.reveal(board, [2,2])
+        expect(board.cells[2][2].state).toBe("revealed")
+      })
+    })
+  })
+})
+
+export {}
