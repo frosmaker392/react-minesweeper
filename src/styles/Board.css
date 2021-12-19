@@ -1,13 +1,18 @@
+:root {
+    --cell: wheat;
+    --cell-hover: whitesmoke;
+    --cell-active: black;
+    --cell-revealed: burlywood;
+}
+
 .board {
     display: flex;
     flex-direction: column;
-    gap: 5px;
 }
 
 .board.row {
     display: flex;
     flex-direction: row;
-    gap: 5px;
 }
 
 .board.cell {
@@ -16,4 +21,22 @@
     aspect-ratio: 1;
     justify-content: center;
     align-items: center;
+
+    transition: background .1s ease-out;
+
+    background: var(--cell);
+    font-family: 'Overpass Mono', monospace;
+    font-size: 4vw;
+}
+
+.board.cell:hover {
+    background: var(--cell-hover);
+}
+
+.board.cell:active {
+    background: var(--cell-active);
+}
+
+.board.cell.revealed, .board.cell.revealed:hover {
+    background-color: var(--cell-revealed)
 }

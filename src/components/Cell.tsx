@@ -1,4 +1,6 @@
 import { ICell } from '../utils/BoardLogic'
+import { HiFlag } from 'react-icons/hi'
+import { GiAbstract016 } from 'react-icons/gi'
 
 interface ICellProps extends ICell {
   onClick: () => void
@@ -7,14 +9,14 @@ interface ICellProps extends ICell {
 
 export const Cell = (props: ICellProps) => {
   const nMines = props.neighbouringMines;
-  let inner = ""
+  let inner: string | JSX.Element = ""
   switch (props.state) {
     case "revealed":
-      if (props.hasMine) inner = "X"
+      if (props.hasMine) inner = <GiAbstract016 />
       else inner = `${nMines > 0 ? nMines : ""}`
       break;
     case "flagged":
-      inner = "F"
+      inner = <HiFlag />
       break;
     case "unknown":
       inner = "?"
@@ -23,11 +25,13 @@ export const Cell = (props: ICellProps) => {
       break;
   }
 
-  return <button 
+  return <div 
     onClick={props.onClick}
     onContextMenu={(e) => {
       e.preventDefault()
       props.onRightClick()
     }}
-    className="board cell">{inner}</button>
+    className= {"board cell" + (props.state === "revealed" ? " revealed" : "")}>
+      {inner}
+  </div>
 };
