@@ -1,23 +1,30 @@
 import "../styles/Board.css";
 
 import { Cell } from "./Cell";
-import { useState } from "react";
-import { BoardLogic } from "../utils/BoardLogic"
+import { useEffect, useState } from "react";
+import { BoardLogic, IBoard } from "../utils/BoardLogic"
 
-interface BoardProps {
-  height: number,
-  width: number
+interface IBoardProps extends IBoard {
+  onUpdate: (board: BoardLogic) => void
 }
 
-const Board = ({ height, width }: BoardProps) => {
-  const [board, setBoard] = useState(() => new BoardLogic(width, height, 5))
+const Board = (props: IBoardProps) => {
+  const {width, height, numMines} = props
+  
+  const [board, setBoard] = useState(() => 
+  new BoardLogic(width, height, numMines))
+  
+  props.onUpdate(board)
+  
+  useEffect(() => {
+    setBoard(new BoardLogic(width, height, numMines))
+  }, [width, height, numMines])
 
   const rows = []
-  for (let y = 0; y < height; y++) {
+  for (let y = 0; y < board.height; y++) {
     const cells = []
-
-    for (let x = 0; x < width; x++) {
-      cells.push(<Cell {...board.cells[y][x]}
+    for (let x = 0; x < board.width; x++) {
+      cells.push(<Cell {...board.at([x, y])}
         key={x}
         onClick={() => setBoard(board.reveal([x, y]))}
         onRightClick={() => setBoard(board.mark([x, y]))}

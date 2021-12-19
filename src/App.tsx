@@ -1,9 +1,8 @@
-import React from 'react';
-import Board from './components/Board'
 import './App.css';
+import Game from './components/Game';
 
 function App() {
-  return <Board height={10} width={10}/>;
+  return <Game />;
 }
 
 export default App;

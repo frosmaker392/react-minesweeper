@@ -7,7 +7,13 @@ interface ICell {
   neighboringMines: number
 }
 
-class BoardLogic {
+interface IBoard {
+  width: number
+  height: number
+  numMines: number
+}
+
+class BoardLogic implements IBoard {
   width: number
   height: number
   numMines: number
@@ -176,4 +182,4 @@ class BoardLogic {
 }
 
 export { BoardLogic }
-export type { ICell }
+export type { ICell, IBoard }
