@@ -28,7 +28,7 @@ describe("Board", () => {
     it("does nothing if board is uninitialized", () => {
       let board = new BoardLogic(10, 7, 5).mark([2, 3])
 
-      expect(board.cells[2][2].state).toBe("hidden")
+      expect(board.at([2,2]).state).toBe("hidden")
     })
 
     it("cycles through all the states for an unrevealed cell", () => {
@@ -40,10 +40,10 @@ describe("Board", () => {
       for (let i = 0; i < 4; i++) {
         const expectedState = toEval[i % 3]
         board = board.mark([1,1])
-        expect(board.cells[1][1].state).toBe(expectedState)
+        expect(board.at([1,1]).state).toBe(expectedState)
       }
       
-      expect(board.cells[2][1].state).toBe("hidden")
+      expect(board.at([1,2]).state).toBe("hidden")
     })
 
     it("does not change the state of revealed cells", () => {
@@ -51,10 +51,10 @@ describe("Board", () => {
 
       board.initialized = true
 
-      board.cells[1][3].state = "revealed"
+      board.at([3,1]).state = "revealed"
       for (let i = 0; i < 4; i++) {
         board = board.mark([1,3])
-        expect(board.cells[1][3].state).toBe("revealed")
+        expect(board.at([3,1]).state).toBe("revealed")
       }
     })
   })
@@ -65,7 +65,7 @@ describe("Board", () => {
         let board = new BoardLogic(5, 5, 5).reveal([2,2])
         
         expect(board.initialized).toBe(true)
-        const coordsToEval = [
+        const coordsToEval: [number, number][] = [
           [1,1], [2,1], [3,1],
           [1,2], [2,2], [3,2],
           [1,3], [2,3], [3,3],
@@ -73,7 +73,7 @@ describe("Board", () => {
 
         // Cell neighbours must be revealed
         coordsToEval.forEach(coords => {
-          const cell = board.cells[coords[0]][coords[1]]
+          const cell = board.at(coords)
           expect(cell.hasMine).toBe(false)
           expect(cell.state).toBe("revealed")
         });
@@ -83,12 +83,12 @@ describe("Board", () => {
         let board = new BoardLogic(5,5,5).reveal([4,4])
 
         expect(board.initialized).toBe(true)
-        const coordsToEval = [
+        const coordsToEval: [number, number][] = [
           [3,3], [3,4], [4,3], [4,4]
         ]
 
         coordsToEval.forEach(coords => {
-          const cell = board.cells[coords[0]][coords[1]]
+          const cell = board.at(coords)
           expect(cell.hasMine).toBe(false)
           expect(cell.state).toBe("revealed")
         });
@@ -96,24 +96,32 @@ describe("Board", () => {
     })
 
     describe("post-init", () => {
+      it("does not reveal flagged cells", () => {
+        let board = new BoardLogic(5, 5, 5)
+        board.initialized = true
+
+        board = board.mark([2, 2]).reveal([2,2])
+        expect(board.at([2,2]).state).toBe("flagged")
+      })
+
       it("reveals a normal cell and sets the number of neighbouring mines", () => {
         let board = new BoardLogic(5, 5, 5)
 
         board.initialized = true
-        board.cells[1][1].hasMine = true
-        board.cells[2][1].hasMine = true
-        board.cells[3][1].hasMine = true
+        board.at([1,1]).hasMine = true
+        board.at([1,2]).hasMine = true
+        board.at([1,3]).hasMine = true
         
         board = board.reveal([2,2])
-        expect(board.cells[2][2].state).toBe("revealed")
-        expect(board.cells[2][2].neighbouringMines).toBe(3)
+        expect(board.at([2,2]).state).toBe("revealed")
+        expect(board.at([2,2]).neighboringMines).toBe(3)
       })
   
       it("reveals a cell with a mine", () => {
         let board = new BoardLogic(5, 5, 5)
   
         board.initialized = true
-        board.cells[2][2].hasMine = true
+        board.at([2,2]).hasMine = true
   
         board = board.reveal([2,2])
         expect(board.cells[2][2].state).toBe("revealed")

@@ -4,7 +4,7 @@ type CellState = "hidden" | "revealed" | "flagged" | "unknown"
 interface ICell {
   state: CellState
   hasMine: boolean
-  neighbouringMines: number
+  neighboringMines: number
 }
 
 class BoardLogic {
@@ -34,7 +34,7 @@ class BoardLogic {
         row.push({ 
           state: "hidden",
           hasMine: false,
-          neighbouringMines: -1
+          neighboringMines: -1
         })
       }
       this.cells.push(row)
@@ -52,6 +52,10 @@ class BoardLogic {
     return board
   }
 
+  public at([x, y]: Coords): ICell {
+    return this.cells[y][x]
+  }
+
   /**
    * Marks the cell by cycling through the states
    * (hidden -> flagged -> unknown -> hidden).
@@ -59,12 +63,12 @@ class BoardLogic {
    * Does nothing if board is not initialized
    * @param coords Coordinates of the cell to be marked
    */
-  public mark([x, y]: Coords): BoardLogic {
-    if (!this.initialized || this.cells[y][x].state === "revealed") 
+  public mark(coords: Coords): BoardLogic {
+    if (!this.initialized || this.at(coords).state === "revealed") 
       return this
     let newBoard = this.copy()
 
-    const cell = newBoard.cells[y][x]
+    const cell = newBoard.at(coords)
     switch (cell.state) {
       case "hidden":
         cell.state = "flagged"
@@ -91,59 +95,61 @@ class BoardLogic {
    * of the neighbours.
    * @param coords Coordinates of the cell to be revealed
    */
-  public reveal([x, y]: Coords): BoardLogic {
+  public reveal(coords: Coords): BoardLogic {
+    if (this.at(coords).state === "flagged") return this
     let newBoard = this.copy()
     
     if (!newBoard.initialized) { 
-      newBoard.installMines([x, y])
+      newBoard.installMines(coords)
       newBoard.initialized = true
     }
 
     // BFS
-    const queue = [[x,y]]
+    const queue = [coords]
     while (queue.length > 0) {
-      const [xi, yi] = queue.pop() ?? [x, y]
-      const neighbours = newBoard.getNeighbours([xi, yi])
+      const next = queue.pop() ?? coords
+      const neighbors = newBoard.getNeighbors(next)
 
-      const nMines = neighbours
-        .filter(([xn, yn]) => newBoard.cells[yn][xn].hasMine)
+      const nMines = neighbors
+        .filter(nCoords => newBoard.at(nCoords).hasMine)
         .length
-      const nFlags = neighbours
-        .filter(([xn, yn]) => newBoard.cells[yn][xn].state === "flagged")
+      const nFlags = neighbors
+        .filter(nCoords => newBoard.at(nCoords).state === "flagged")
         .length
 
-      newBoard.cells[yi][xi].state = "revealed"
-      newBoard.cells[yi][xi].neighbouringMines = nMines
+      newBoard.at(next).state = "revealed"
+      newBoard.at(next).neighboringMines = nMines
 
       if (nFlags === nMines) {
-        neighbours
-          .filter(([xn, yn]) => newBoard.cells[yn][xn].state === "hidden")
-          .forEach(([xn, yn]) => {
-            queue.push([xn, yn])
+        neighbors
+          .filter(nCoords => newBoard.at(nCoords).state === "hidden")
+          .forEach(nCoords => {
+            queue.push(nCoords)
           })
       }
     }
-    newBoard.cells[y][x].state = "revealed"
+    newBoard.at(coords).state = "revealed"
 
     return newBoard
   }
 
   private installMines(except: Coords) {
-    const toIgnore = [except, ...this.getNeighbours(except)]
+    const toIgnore = [except, ...this.getNeighbors(except)]
+    const rndIndex = (n: number) => Math.floor(Math.random() * n)
+
     let n = 0
     while (n < this.numMines) {
-      const rndIndex = (n: number) => Math.floor(Math.random() * n)
       const [xr, yr] = [rndIndex(this.width), rndIndex(this.height)]
 
       if (toIgnore.some(([x, y]) => x === xr && y === yr)) continue
 
-      this.cells[yr][xr].hasMine = true
+      this.at([xr, yr]).hasMine = true
       toIgnore.push([xr, yr])
       n++
     }
   }
 
-  private getNeighbours([x, y]: Coords): Coords[] {
+  private getNeighbors([x, y]: Coords): Coords[] {
     if (this.outOfRange([x, y])) return []
 
     const offsets = [
@@ -162,8 +168,8 @@ class BoardLogic {
 
   public debug() {
     console.log(
-      this.cells.map((row) => 
-        row.map((cell) => `${cell.state === "revealed" ? 'X' : 'O'}`).join(" "))
+      this.cells.map(row => 
+        row.map(cell => `${cell.state === "revealed" ? 'X' : 'O'}`).join(" "))
       .join("\n")
     )
   }

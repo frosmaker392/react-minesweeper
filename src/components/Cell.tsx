@@ -8,7 +8,7 @@ interface ICellProps extends ICell {
 }
 
 export const Cell = (props: ICellProps) => {
-  const nMines = props.neighbouringMines;
+  const nMines = props.neighboringMines;
   let inner: string | JSX.Element = ""
   switch (props.state) {
     case "revealed":
