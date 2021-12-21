@@ -1,8 +1,14 @@
-import { useState } from 'react'
 import { BoardLogic, IBoard } from '../utils/BoardLogic'
+
+import { useState } from 'react'
 import Board from './Board'
 import GameParams from './GameParams'
 import Stopwatch from './Stopwatch'
+
+import { BiTimeFive } from 'react-icons/bi'
+import { GiAbstract016 } from 'react-icons/gi'
+
+import "../styles/Game.css"
 
 type GameState = "won" | "in_progress" | "lost"
 
@@ -40,32 +46,42 @@ const Game = () => {
 
     setFlagCount(flagCnt)
 
-    if (hasWon || hasLost) setPaused(true)
-    if (hasWon) setGameState("won")
-    else if (hasLost) setGameState("lost")
+    if (hasWon || hasLost) {
+      hasWon && setGameState("won")
+      hasLost && setGameState("lost")
+      setPaused(true)
+    }
   }
 
-  return <div className="game">
-    <div className="game header">
-      <Stopwatch paused={paused} />
+  return (
+  <div className="game">
+    <section className="game header">
+      <div className="game stopwatch score">
+        <BiTimeFive className="game stopwatch icon" />
+        <Stopwatch className="game stopwatch value" paused={paused} />
+      </div>
+
       {
-        gameState === "in_progress" &&
+        gameState === "in_progress" ?
         <button onClick={onPauseButton}>
           {paused ? "Unpause" : "Pause"}
         </button>
-      }
-
-      <p>Flagged: {flagCount} / {boardProps.numMines}</p>
-
-      { gameState !== "in_progress" &&
+        : 
         <p>
           You {gameState}!
         </p> 
       }
-    </div>
+
+      <div className="game flag-count score">
+        <GiAbstract016 className="game flag-count icon" />
+        <span className="game flag-count value">
+          {flagCount} / {boardProps.numMines}
+        </span>
+      </div>
+    </section>
     <Board onUpdate={onUpdate} {...boardProps}/>
     <GameParams init={initParams} setter={setBoardProps} />
-  </div>
+  </div> )
 }
 
 export default Game

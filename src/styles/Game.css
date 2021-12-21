@@ -1,0 +1,36 @@
+:root {
+  --header-height: 3em;
+}
+
+.game.header {
+  height: var(--header-height);
+  display: flex;
+  justify-content: space-between;
+
+  margin-bottom: 0.5em;
+}
+
+.game.header > .score {
+  width: 7em;
+  display: flex;
+  align-items: center;
+  padding: 0.3em;
+
+  background-color: var(--main);
+  border-radius: 0.7em;
+}
+
+.game.score > .icon {
+  flex-grow: 0;
+  width: 1.5em;
+  height: 100%;
+  padding: 0 0.5em;
+
+  background-color: var(--secondary);
+  border-radius: 0.5em;
+}
+
+.game.score > .value {
+  text-align: center;
+  flex-grow: 1;
+}

@@ -1,8 +1,6 @@
 :root {
-    --cell: wheat;
-    --cell-hover: whitesmoke;
-    --cell-active: black;
-    --cell-revealed: burlywood;
+  --cell-hover: whitesmoke;
+  --cell-active: black;
 }
 
 .board {
@@ -24,9 +22,8 @@
 
     transition: background .1s ease-out;
 
-    background: var(--cell);
+    background: var(--main);
     font-family: 'Overpass Mono', monospace;
-    font-size: 4vw;
 }
 
 .board.cell:hover {
@@ -38,5 +35,5 @@
 }
 
 .board.cell.revealed, .board.cell.revealed:hover {
-    background-color: var(--cell-revealed)
+    background-color: var(--secondary)
 }

@@ -1,7 +1,7 @@
 import "../styles/Board.css";
 
 import { Cell } from "./Cell";
-import { useEffect, useState } from "react";
+import { useRef, useEffect, useState } from "react";
 import { BoardLogic, IBoard } from "../utils/BoardLogic"
 
 interface IBoardProps extends IBoard {
@@ -9,31 +9,45 @@ interface IBoardProps extends IBoard {
 }
 
 const Board = (props: IBoardProps) => {
-  const {width, height, numMines} = props
+  const {width, height, numMines, onUpdate} = props
   
-  const [board, setBoard] = useState(() => 
-  new BoardLogic(width, height, numMines))
-  
-  props.onUpdate(board)
-  
+  const ref = useRef<HTMLDivElement>(null)
+  const [elemWidth, setElemWidth] = useState(0)
+  const [board, setBoard] = useState(() => new BoardLogic(width, height, numMines))
+
+  // Creates a routine which updates elemWidth of the ref
+  // every 100 ms
   useEffect(() => {
-    setBoard(new BoardLogic(width, height, numMines))
-  }, [width, height, numMines])
+    const resizeRoutine = setInterval(() => {
+        if (ref.current)
+          setElemWidth(ref.current.offsetWidth)
+      }, 100)
+    return () => clearInterval(resizeRoutine)
+  }, [])
+
+  // Run onUpdate on each board change
+  useEffect(() => onUpdate(board), [board, onUpdate])
+
+  // Reset board if any of the params change
+  useEffect(() => setBoard(new BoardLogic(width, height, numMines))
+    , [width, height, numMines])
 
   const rows = []
   for (let y = 0; y < board.height; y++) {
     const cells = []
     for (let x = 0; x < board.width; x++) {
-      cells.push(<Cell {...board.at([x, y])}
-        key={x}
-        onClick={() => setBoard(board.reveal([x, y]))}
-        onRightClick={() => setBoard(board.mark([x, y]))}
+      cells.push(
+        <Cell {...board.at([x, y])}
+          key={x}
+          fontSize={elemWidth / board.width * 0.5}
+          onClick={() => setBoard(board.reveal([x, y]))}
+          onRightClick={() => setBoard(board.mark([x, y]))}
         />)
     }
     rows.push(<div key={y} className="board row">{ cells }</div>);
   }
 
-  return <div className="board">{rows}</div>
+  return <div ref={ref} className="board">{rows}</div>
 }
 
 export default Board;

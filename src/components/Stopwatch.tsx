@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react"
+import { HTMLProps, useEffect, useState } from "react"
 
-interface IStopwatchProps {
+interface IStopwatchProps extends HTMLProps<HTMLTimeElement> {
   paused: boolean
 }
 
-const Stopwatch = ({ paused }: IStopwatchProps) => {
+const Stopwatch = (props: IStopwatchProps) => {
+  const { paused } = props
   const [seconds, setSeconds] = useState(0)
 
   useEffect(() => {
@@ -20,13 +21,15 @@ const Stopwatch = ({ paused }: IStopwatchProps) => {
     }
   }, [paused, seconds])
 
-  const secs = String(seconds % 60).padStart(2, "0")
-  const mins = String(Math.floor(seconds / 60)).padStart(2, "0")
+  const secs = seconds % 60
+  const mins = Math.floor(seconds / 60)
+
+  const format = (val: number) => String(val).padStart(2, "0")
 
   return (
-    <p>
-      {mins}:{secs}
-    </p>
+    <time {...{...props, dateTime: `${mins}m ${secs}s`}}>
+      {format(mins)}:{format(secs)}
+    </time>
   )
 }
 
