@@ -2,16 +2,17 @@ import "../styles/Board.css";
 
 import { Cell } from "./Cell";
 import { useRef, useEffect, useState } from "react";
-import { BoardLogic, IBoard } from "../utils/BoardLogic"
+import { BoardLogic, IBoard, BoardState } from "../utils/BoardLogic"
 
 interface IBoardProps extends IBoard {
-  onUpdate: (board: BoardLogic) => void
+  onUpdate: (state: BoardState, flagCount: number) => void
 }
 
 const Board = (props: IBoardProps) => {
   const {width, height, numMines, onUpdate} = props
   
   const ref = useRef<HTMLDivElement>(null)
+
   const [elemWidth, setElemWidth] = useState(0)
   const [board, setBoard] = useState(() => new BoardLogic(width, height, numMines))
 
@@ -25,8 +26,9 @@ const Board = (props: IBoardProps) => {
     return () => clearInterval(resizeRoutine)
   }, [])
 
-  // Run onUpdate on each board change
-  useEffect(() => onUpdate(board), [board, onUpdate])
+  // Run onUpdate on each board change, passing board state
+  useEffect(() => onUpdate(board.state(), board.flagCount()), 
+    [board, onUpdate])
 
   // Reset board if any of the params change
   useEffect(() => setBoard(new BoardLogic(width, height, numMines))

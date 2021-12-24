@@ -1,6 +1,6 @@
-import { BoardLogic, IBoard } from '../utils/BoardLogic'
+import { IBoard, BoardState } from '../utils/BoardLogic'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Board from './Board'
 import Stopwatch from './Stopwatch'
 
@@ -10,8 +10,6 @@ import { GiAbstract016 as MineIcon } from 'react-icons/gi'
 import "../styles/Game.css"
 import GameMenu from './GameMenu'
 
-type GameState = "won" | "in_progress" | "lost"
-
 const initParams: IBoard = {
   width: 10,
   height: 10,
@@ -19,40 +17,24 @@ const initParams: IBoard = {
 }
 
 const Game = () => {
-  const [boardProps, setBoardProps] = useState(initParams)
+  const [boardParams, setBoardParams] = useState(initParams)
 
   const [seconds, setSeconds] = useState(0)
   const [paused, setPaused] = useState(false)
   const [flagCount, setFlagCount] = useState(0)
-  const [gameState, setGameState] = useState("in_progress" as GameState)
+  const [gameState, setGameState] = useState("in-progress" as BoardState)
+
+  useEffect(() => {
+    if (gameState !== "in-progress") setPaused(true)
+  }, [gameState])
 
   const onPauseButton = () => {
     setPaused(!paused)
   }
 
-  const onUpdate = (board: BoardLogic) => {
-    let flagCnt = 0
-    let hasWon = true
-    let hasLost = false
-
-    for (let y = 0; y < board.height; y++) {
-      for (let x = 0; x < board.width; x++) {
-        const cell = board.at([x, y])
-
-        hasWon = hasWon && ((cell.state === "flagged" && cell.hasMine) || (cell.state === "revealed" && !cell.hasMine))
-        hasLost = hasLost || (cell.state === "revealed" && cell.hasMine)
-        if (cell.state === "flagged")
-          flagCnt++
-      }
-    }
-
+  const onBoardUpdate = (state: BoardState, flagCnt: number) => {
+    setGameState(state)
     setFlagCount(flagCnt)
-
-    if (hasWon || hasLost) {
-      hasWon && setGameState("won")
-      hasLost && setGameState("lost")
-      setPaused(true)
-    }
   }
 
   return (
@@ -69,7 +51,7 @@ const Game = () => {
       </div>
 
       {
-        gameState === "in_progress" ?
+        gameState === "in-progress" ?
         <button onClick={onPauseButton}>
           {paused ? "Unpause" : "Pause"}
         </button>
@@ -82,19 +64,19 @@ const Game = () => {
       <div className="game flag-count score">
         <MineIcon className="game flag-count icon" />
         <span className="game flag-count value">
-          {flagCount} / {boardProps.numMines}
+          {flagCount} / {boardParams.numMines}
         </span>
       </div>
     </section>
     <section className="game board">
-      <Board onUpdate={onUpdate} {...boardProps}/>
+      <Board onUpdate={onBoardUpdate} {...boardParams}/>
       { 
-        paused && gameState === "in_progress" && 
+        paused && gameState === "in-progress" && 
         <GameMenu 
-          boardParams={boardProps}
+          boardParams={boardParams}
           onResume={() => setPaused(false)}
           onNewGame={(boardParams) => {
-            setBoardProps(boardParams)
+            setBoardParams(boardParams)
             setSeconds(0)
             setPaused(false)
           }}

@@ -1,5 +1,6 @@
 type Coords = [number, number]
 type CellState = "hidden" | "revealed" | "flagged" | "unknown"
+type BoardState = "won" | "lost" | "in-progress"
 
 interface ICell {
   state: CellState
@@ -139,6 +140,39 @@ class BoardLogic implements IBoard {
     return newBoard
   }
 
+  /**
+   * Checks whether the win or lose condition is met
+   * @returns board state enumerated as BoardState
+   */
+  public state(): BoardState {
+    let hasWon = true
+    let hasLost = false
+
+    for (const row of this.cells) {
+      for (const cell of row) {
+        hasWon = hasWon && (cell.hasMine ? 
+                  cell.state === "flagged" : cell.state === "revealed")
+        hasLost = hasLost || (cell.hasMine && cell.state === "revealed")
+      }
+    }
+
+    if (hasWon) return "won"
+    if (hasLost) return "lost"
+    return "in-progress"
+  }
+
+  /**
+   * Counts the number of cells marked as flagged
+   * @returns number of flagged cells, not limited by number of mines
+   */
+  public flagCount(): number {
+    return this.cells.reduce((cnt, row) => (
+      cnt + row.reduce((rowCnt, cell) => (
+        rowCnt + (+(cell.state === "flagged"))
+      ), 0)
+    ), 0)
+  }
+
   private installMines(except: Coords) {
     const toIgnore = [except, ...this.getNeighbors(except)]
     const rndIndex = (n: number) => Math.floor(Math.random() * n)
@@ -182,4 +216,4 @@ class BoardLogic implements IBoard {
 }
 
 export { BoardLogic }
-export type { ICell, IBoard }
+export type { ICell, IBoard, BoardState }
