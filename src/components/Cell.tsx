@@ -29,14 +29,18 @@ export const Cell = (props: ICellProps) => {
       break;
   }
 
-  return <div 
-    onClick={onClick}
-    onContextMenu={(e) => {
-      e.preventDefault()
-      onRightClick()
-    }}
-    style={{fontSize}}
-    className= {"board cell" + (state === "revealed" ? " revealed" : "")}>
-      {inner}
-  </div>
+  const className = state !== "hidden" ? state : ""
+
+  return (
+    <div 
+      onClick={onClick}
+      onContextMenu={(e) => {
+        e.preventDefault()
+        onRightClick()
+      }}
+      style={{fontSize}}
+      className= {"board cell " + className}>
+        {inner}
+    </div>
+  )
 };

@@ -1,6 +1,8 @@
 import { ChangeEvent, useState } from "react"
 import { IBoard } from "../utils/BoardLogic"
 
+import "../styles/GameMenu.css"
+
 interface IPauseProps {
   onResume: () => void
   onRestart: () => void
@@ -21,7 +23,7 @@ interface IGameMenuProps {
 
 const PauseView = ({ onResume, onRestart, onNewGame }: IPauseProps) => {
   return (
-    <div className="pause-view">
+    <div className="view pause">
       <button onClick={onResume}>Resume</button>
       <button onClick={onRestart}>Restart</button>
       <button onClick={onNewGame}>New Game</button>
@@ -40,29 +42,28 @@ const NewGameView = (props: INewGameProps) => {
   }
 
   return (
-    <form className="new-game-view" onSubmit={e => {
+    <form className="view new-game" onSubmit={e => {
       e.preventDefault()
       props.onSubmit(boardParams)
     }}>
-      <label>
-        Width: 
-        <input type="number" step="1" min="3" 
+      <label htmlFor="width">Width</label>
+      <input id="width" name="width" type="number" 
+          step="1" min="5" max="30"
           value={boardParams.width}
           onChange={(e) => setParam(e, "width")} />
-      </label>
-      <label>
-        Height: 
-        <input type="number" step="1" min="3" 
+
+      <label htmlFor="height">Height</label>
+      <input id="height" name="height" type="number" 
+          step="1" min="5" max="30"
           value={boardParams.height}
           onChange={(e) => setParam(e, "height")} />
-      </label>
-      <label>
-        Mines: 
-        <input type="number" step="1" min="3" 
+
+      <label htmlFor="mines">Mines</label>
+      <input id="mines" name="mines" type="number" 
+          step="1" min="5" max="99"
           value={boardParams.numMines}
           onChange={(e) => setParam(e, "numMines")} />
-      </label>
-
+          
       <input type="submit" name="submit" value="New game" />
       <input type="button" name="cancel" value="Cancel"
         onClick={props.onCancel}/>

@@ -5,11 +5,13 @@ import { useRef, useEffect, useState } from "react";
 import { BoardLogic, IBoard, BoardState } from "../utils/BoardLogic"
 
 interface IBoardProps extends IBoard {
+  resetCounter: number
   onUpdate: (state: BoardState, flagCount: number) => void
 }
 
 const Board = (props: IBoardProps) => {
-  const {width, height, numMines, onUpdate} = props
+  const {width, height, numMines} = props
+  const {resetCounter, onUpdate} = props
   
   const ref = useRef<HTMLDivElement>(null)
 
@@ -32,7 +34,7 @@ const Board = (props: IBoardProps) => {
 
   // Reset board if any of the params change
   useEffect(() => setBoard(new BoardLogic(width, height, numMines))
-    , [width, height, numMines])
+    , [resetCounter, width, height, numMines])
 
   const rows = []
   for (let y = 0; y < board.height; y++) {
@@ -49,7 +51,7 @@ const Board = (props: IBoardProps) => {
     rows.push(<div key={y} className="board row">{ cells }</div>);
   }
 
-  return <div ref={ref} className="board">{rows}</div>
+  return <div ref={ref} className="board container">{ rows }</div>
 }
 
 export default Board;

@@ -2,6 +2,31 @@
   --header-height: 3em;
 }
 
+.game button, 
+.game input[type="submit"], 
+.game input[type="button"] 
+{
+  transition: background 0.1s ease-out;
+
+	background: var(--primary);
+	border: none;
+  border-radius: var(--border-radius);
+  box-shadow: 0 0.2em 0 var(--accent-1);
+}
+
+.game button:hover, 
+.game input[type="submit"]:hover, 
+.game input[type="button"]:hover 
+{
+  top: 5px;
+  transition: background 0.1s ease-in;
+  background: white;
+}
+
+.game.container {
+  margin: 1em;
+}
+
 .game.header {
   height: var(--header-height);
   display: flex;
@@ -16,35 +41,27 @@
   align-items: center;
   padding: 0.3em;
 
-  background-color: var(--main);
-  border-radius: 0.7em;
+  background-color: var(--primary);
+  border-radius: var(--border-radius);
 }
 
 .game.score > .icon {
   flex-grow: 0;
-  width: 1.5em;
+  width: 2.5em;
   height: 100%;
-  padding: 0 0.5em;
+  padding: 0 0.4em;
 
   background-color: var(--secondary);
-  border-radius: 0.5em;
+  color: var(--accent-3);
+  border-radius: calc(var(--border-radius) - 0.2em);
 }
 
 .game.score > .value {
   text-align: center;
   flex-grow: 1;
+  font-size: 1.1em;
 }
 
 .game.board {
   position: relative;
-}
-
-.game.menu {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  position: absolute;
-  height: 100%;
-  width: 100%;
 }

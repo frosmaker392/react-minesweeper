@@ -19,26 +19,35 @@ const initParams: IBoard = {
 const Game = () => {
   const [boardParams, setBoardParams] = useState(initParams)
 
-  const [seconds, setSeconds] = useState(0)
-  const [paused, setPaused] = useState(false)
-  const [flagCount, setFlagCount] = useState(0)
   const [gameState, setGameState] = useState("in-progress" as BoardState)
+  const [flagCount, setFlagCount] = useState(0)
+  const [seconds, setSeconds] = useState(0)
+  
+  const [paused, setPaused] = useState(false)
+  const [resetCounter, setResetCounter] = useState(0)
 
   useEffect(() => {
     if (gameState !== "in-progress") setPaused(true)
   }, [gameState])
 
-  const onPauseButton = () => {
-    setPaused(!paused)
-  }
+  const onPauseButton = () => setPaused(!paused)
 
-  const onBoardUpdate = (state: BoardState, flagCnt: number) => {
+  // Updates gameState and flagCnt
+  const updateGameState = (state: BoardState, flagCnt: number) => {
     setGameState(state)
     setFlagCount(flagCnt)
   }
 
+  // Resets board according to boardParams
+  const resetBoard = (boardParams: IBoard) => {
+    setResetCounter(resetCounter + 1)
+    setBoardParams(boardParams)
+    setSeconds(0)
+    setPaused(false)
+  }
+
   return (
-  <div className="game">
+  <div className="game container">
     <section className="game header">
       <div className="game stopwatch score">
         <TimeIcon className="game stopwatch icon" />
@@ -51,11 +60,9 @@ const Game = () => {
       </div>
 
       {
-        gameState === "in-progress" ?
-        <button onClick={onPauseButton}>
-          {paused ? "Unpause" : "Pause"}
-        </button>
-        : 
+        gameState === "in-progress" ? 
+        !paused && <button onClick={onPauseButton}>Pause</button>
+        :
         <p>
           You {gameState}!
         </p> 
@@ -69,17 +76,16 @@ const Game = () => {
       </div>
     </section>
     <section className="game board">
-      <Board onUpdate={onBoardUpdate} {...boardParams}/>
+      <Board 
+        resetCounter={resetCounter}
+        onUpdate={updateGameState} 
+        {...boardParams}/>
       { 
         paused && gameState === "in-progress" && 
         <GameMenu 
           boardParams={boardParams}
           onResume={() => setPaused(false)}
-          onNewGame={(boardParams) => {
-            setBoardParams(boardParams)
-            setSeconds(0)
-            setPaused(false)
-          }}
+          onNewGame={resetBoard}
         /> 
       }
     </section>
