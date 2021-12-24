@@ -1,35 +1,35 @@
-import { HTMLProps, useEffect, useState } from "react"
+import { HTMLProps, useEffect } from "react"
 
-interface IStopwatchProps extends HTMLProps<HTMLTimeElement> {
+interface IStopwatchProps extends HTMLProps<HTMLParagraphElement> {
   paused: boolean
+  seconds: number
+  onUpdateSeconds: (secsSinceLastPause: number) => void
 }
 
 const Stopwatch = (props: IStopwatchProps) => {
-  const { paused } = props
-  const [seconds, setSeconds] = useState(0)
+  const { paused, seconds, onUpdateSeconds, ...rest } = props
 
   useEffect(() => {
     if (!paused) {
       const start = Date.now()
-      const initSeconds = seconds
+      const interval = setInterval(
+        () => {
+          const delta = Date.now() - start
+          onUpdateSeconds(Math.floor(delta / 1000))
+        }, 100)
 
-      const interval = setInterval(() => {
-        const delta = Date.now() - start
-        setSeconds(initSeconds + Math.floor(delta / 1000))
-      }, 100)
       return () => { clearInterval(interval) }
     }
-  }, [paused, seconds])
+  }, [paused, onUpdateSeconds])
 
   const secs = seconds % 60
   const mins = Math.floor(seconds / 60)
-
   const format = (val: number) => String(val).padStart(2, "0")
 
   return (
-    <time {...{...props, dateTime: `${mins}m ${secs}s`}}>
+    <p {...rest}>
       {format(mins)}:{format(secs)}
-    </time>
+    </p>
   )
 }
 

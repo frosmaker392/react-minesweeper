@@ -1,7 +1,7 @@
 import { ICell } from '../utils/BoardLogic'
 
-import { HiFlag } from 'react-icons/hi'
-import { GiAbstract016 } from 'react-icons/gi'
+import { HiFlag as FlagIcon } from 'react-icons/hi'
+import { GiAbstract016 as MineIcon } from 'react-icons/gi'
 
 interface ICellProps extends ICell {
   fontSize: number
@@ -16,11 +16,11 @@ export const Cell = (props: ICellProps) => {
   let inner: string | JSX.Element = ""
   switch (state) {
     case "revealed":
-      inner = hasMine ? <GiAbstract016 /> 
+      inner = hasMine ? <MineIcon /> 
         : `${nMines > 0 ? nMines : ""}`
       break;
     case "flagged":
-      inner = <HiFlag />
+      inner = <FlagIcon />
       break;
     case "unknown":
       inner = "?"

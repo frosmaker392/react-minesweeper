@@ -34,3 +34,17 @@
   text-align: center;
   flex-grow: 1;
 }
+
+.game.board {
+  position: relative;
+}
+
+.game.menu {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  position: absolute;
+  height: 100%;
+  width: 100%;
+}

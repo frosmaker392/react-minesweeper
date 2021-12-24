@@ -2,13 +2,13 @@ import { BoardLogic, IBoard } from '../utils/BoardLogic'
 
 import { useState } from 'react'
 import Board from './Board'
-import GameParams from './GameParams'
 import Stopwatch from './Stopwatch'
 
-import { BiTimeFive } from 'react-icons/bi'
-import { GiAbstract016 } from 'react-icons/gi'
+import { BiTimeFive as TimeIcon } from 'react-icons/bi'
+import { GiAbstract016 as MineIcon } from 'react-icons/gi'
 
 import "../styles/Game.css"
+import GameMenu from './GameMenu'
 
 type GameState = "won" | "in_progress" | "lost"
 
@@ -20,6 +20,8 @@ const initParams: IBoard = {
 
 const Game = () => {
   const [boardProps, setBoardProps] = useState(initParams)
+
+  const [seconds, setSeconds] = useState(0)
   const [paused, setPaused] = useState(false)
   const [flagCount, setFlagCount] = useState(0)
   const [gameState, setGameState] = useState("in_progress" as GameState)
@@ -57,8 +59,13 @@ const Game = () => {
   <div className="game">
     <section className="game header">
       <div className="game stopwatch score">
-        <BiTimeFive className="game stopwatch icon" />
-        <Stopwatch className="game stopwatch value" paused={paused} />
+        <TimeIcon className="game stopwatch icon" />
+        <Stopwatch 
+          className="game stopwatch value"
+          paused={paused}
+          seconds={seconds}
+          onUpdateSeconds={(delta) => setSeconds(seconds + delta)}
+          />
       </div>
 
       {
@@ -73,14 +80,27 @@ const Game = () => {
       }
 
       <div className="game flag-count score">
-        <GiAbstract016 className="game flag-count icon" />
+        <MineIcon className="game flag-count icon" />
         <span className="game flag-count value">
           {flagCount} / {boardProps.numMines}
         </span>
       </div>
     </section>
-    <Board onUpdate={onUpdate} {...boardProps}/>
-    <GameParams init={initParams} setter={setBoardProps} />
+    <section className="game board">
+      <Board onUpdate={onUpdate} {...boardProps}/>
+      { 
+        paused && gameState === "in_progress" && 
+        <GameMenu 
+          boardParams={boardProps}
+          onResume={() => setPaused(false)}
+          onNewGame={(boardParams) => {
+            setBoardProps(boardParams)
+            setSeconds(0)
+            setPaused(false)
+          }}
+        /> 
+      }
+    </section>
   </div> )
 }
 
