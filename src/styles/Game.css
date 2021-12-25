@@ -2,10 +2,11 @@
   --header-height: 3em;
 }
 
-.game button, 
-.game input[type="submit"], 
-.game input[type="button"] 
-{
+.game.container {
+  margin: 1em;
+}
+
+.game .btn {
   transition: background 0.1s ease-out;
 
 	background: var(--primary);
@@ -14,17 +15,10 @@
   box-shadow: 0 0.2em 0 var(--accent-1);
 }
 
-.game button:hover, 
-.game input[type="submit"]:hover, 
-.game input[type="button"]:hover 
-{
+.game .btn:hover {
   top: 5px;
   transition: background 0.1s ease-in;
   background: white;
-}
-
-.game.container {
-  margin: 1em;
 }
 
 .game.header {

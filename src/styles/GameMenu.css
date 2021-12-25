@@ -18,7 +18,7 @@
   width: 30%;
 }
 
-.view > button, .view > input {
+.view > button, .view > .field {
   height: 2.5em;
 }
 
@@ -27,29 +27,24 @@
   flex-direction: column;
 }
 
-.view.pause > button, 
-.view.new-game > input[type="button"], 
-.view.new-game > input[type="submit"] 
-{
-  padding: 0.7em;
-}
-
 .view.new-game {
   display: grid;
   grid-template-columns: 1fr 1.5fr;
   align-items: center;
 }
 
-.view.new-game > input[type="button"], 
-.view.new-game > input[type="submit"] 
-{
+.view.new-game > button {
   grid-column: 1 / 3;
 }
 
-.view.new-game > input[type="number"] {
+.view.new-game > .field {
   background-color: var(--primary);
   border-radius: var(--border-radius);
   border: none;
 
   text-align: center;
+}
+
+.view.new-game > .field:focus-within {
+  outline: var(--accent-2) solid 3px;
 }

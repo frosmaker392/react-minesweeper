@@ -1,0 +1,42 @@
+.num-input {
+  position: relative;
+}
+
+.num-input > input::-webkit-outer-spin-button,
+.num-input > input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.num-input > input {
+  width: 100%;
+  height: 100%;
+  
+  text-align: center;
+  background: transparent;
+  border: none;
+
+  -moz-appearance: textfield;
+}
+
+.num-input > input:focus {
+  outline: none;
+}
+
+.num-input > button {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 1.4em;
+
+  background: transparent;
+  border: none;
+}
+
+.num-input > .sub {
+  left: 0;
+}
+
+.num-input > .add {
+  right: 0;
+}

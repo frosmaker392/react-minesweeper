@@ -1,5 +1,7 @@
-import { ChangeEvent, useState } from "react"
+import { useState } from "react"
 import { IBoard } from "../utils/BoardLogic"
+
+import IntegerInput from "./utils/IntegerInput"
 
 import "../styles/GameMenu.css"
 
@@ -24,49 +26,41 @@ interface IGameMenuProps {
 const PauseView = ({ onResume, onRestart, onNewGame }: IPauseProps) => {
   return (
     <div className="view pause">
-      <button onClick={onResume}>Resume</button>
-      <button onClick={onRestart}>Restart</button>
-      <button onClick={onNewGame}>New Game</button>
+      <button className="btn" onClick={onResume}>Resume</button>
+      <button className="btn" onClick={onRestart}>Restart</button>
+      <button className="btn" onClick={onNewGame}>New Game</button>
     </div>
   )
 }
 
 const NewGameView = (props: INewGameProps) => {
-  const [boardParams, setBoardParams] = useState(props.boardParams)
-
-  const setParam = (e: ChangeEvent<HTMLInputElement>, key: keyof IBoard) => {
-    const value = parseInt(e.currentTarget.value)
-    if (value !== undefined) {
-      setBoardParams({...boardParams, [key]:value})
-    }
-  }
+  const [width, setWidth] = useState(props.boardParams.width)
+  const [height, setHeight] = useState(props.boardParams.height)
+  const [numMines, setNumMines] = useState(props.boardParams.numMines)
 
   return (
     <form className="view new-game" onSubmit={e => {
       e.preventDefault()
-      props.onSubmit(boardParams)
+      props.onSubmit({width, height, numMines})
     }}>
       <label htmlFor="width">Width</label>
-      <input id="width" name="width" type="number" 
-          step="1" min="5" max="30"
-          value={boardParams.width}
-          onChange={(e) => setParam(e, "width")} />
+      <IntegerInput className="field" id="width" range={[5, 30]} value={width} 
+        onChange={(val) => setWidth(val)} />
 
       <label htmlFor="height">Height</label>
-      <input id="height" name="height" type="number" 
-          step="1" min="5" max="30"
-          value={boardParams.height}
-          onChange={(e) => setParam(e, "height")} />
+      <IntegerInput className="field" id="height" range={[5, 30]} value={height} 
+        onChange={(val) => setHeight(val)} />
 
       <label htmlFor="mines">Mines</label>
-      <input id="mines" name="mines" type="number" 
-          step="1" min="5" max="99"
-          value={boardParams.numMines}
-          onChange={(e) => setParam(e, "numMines")} />
-          
-      <input type="submit" name="submit" value="New game" />
-      <input type="button" name="cancel" value="Cancel"
-        onClick={props.onCancel}/>
+      <IntegerInput className="field" id="mines" range={[0, width * height / 2]} value={numMines} 
+        onChange={(val) => setNumMines(val)} />
+      
+      <button type="submit" className="btn" name="submit">
+        Generate
+      </button>
+      <button className="btn" name="cancel" onClick={props.onCancel}>
+        Cancel
+      </button>
     </form>
   )
 }

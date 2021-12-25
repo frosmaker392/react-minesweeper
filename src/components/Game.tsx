@@ -2,13 +2,13 @@ import { IBoard, BoardState } from '../utils/BoardLogic'
 
 import { useEffect, useState } from 'react'
 import Board from './Board'
-import Stopwatch from './Stopwatch'
+import GameMenu from './GameMenu'
+import Stopwatch from './utils/Stopwatch'
 
 import { BiTimeFive as TimeIcon } from 'react-icons/bi'
 import { GiAbstract016 as MineIcon } from 'react-icons/gi'
 
 import "../styles/Game.css"
-import GameMenu from './GameMenu'
 
 const initParams: IBoard = {
   width: 10,
@@ -60,12 +60,18 @@ const Game = () => {
       </div>
 
       {
-        gameState === "in-progress" ? 
-        !paused && <button onClick={onPauseButton}>Pause</button>
+        (gameState === "in-progress" && !paused) ?
+        <button className="btn" onClick={onPauseButton}>
+          Pause
+        </button>
         :
-        <p>
-          You {gameState}!
-        </p> 
+        <p className="game status">
+        {
+          gameState === "in-progress" ?
+          paused && "Paused" :
+          `You ${gameState === "won" ? "won" : "lost"}`
+        }
+        </p>
       }
 
       <div className="game flag-count score">
