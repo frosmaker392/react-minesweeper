@@ -17,6 +17,7 @@ const Board = (props: IBoardProps) => {
 
   const [elemWidth, setElemWidth] = useState(0)
   const [board, setBoard] = useState(() => new BoardLogic(width, height, numMines))
+  const [isLost, setIsLost] = useState(false)
 
   // Creates a routine which updates elemWidth of the ref
   // every 100 ms
@@ -29,8 +30,11 @@ const Board = (props: IBoardProps) => {
   }, [])
 
   // Run onUpdate on each board change, passing board state
-  useEffect(() => onUpdate(board.state(), board.flagCount()), 
-    [board, onUpdate])
+  useEffect(() => {
+    const state = board.state()
+    setIsLost(state === "lost")
+    onUpdate(state, board.flagCount())
+  }, [board, onUpdate])
 
   // Reset board if any of the params change
   useEffect(() => setBoard(new BoardLogic(width, height, numMines))
@@ -41,17 +45,20 @@ const Board = (props: IBoardProps) => {
     const cells = []
     for (let x = 0; x < board.width; x++) {
       cells.push(
-        <Cell {...board.at([x, y])}
-          key={x}
+        <Cell
+          cellParams={{...board.at([x, y])}}
+          revealMine={isLost}
           fontSize={elemWidth / board.width * 0.5}
+          key={x}
+
           onClick={() => setBoard(board.reveal([x, y]))}
           onRightClick={() => setBoard(board.mark([x, y]))}
         />)
     }
-    rows.push(<div key={y} className="board row">{ cells }</div>);
+    rows.push(<div key={y} className="board__row">{ cells }</div>);
   }
 
-  return <div ref={ref} className="board container">{ rows }</div>
+  return <div ref={ref} className="board">{ rows }</div>
 }
 
 export default Board;

@@ -2,26 +2,45 @@
   --header-height: 3em;
 }
 
-.game.container {
+*:focus {
+  outline: var(--accent-2) solid 3px;
+}
+
+.game {
   margin: 1em;
 }
 
-.game .btn {
-  transition: background 0.1s ease-out;
+.game .button {
+  position: relative;
+  transition: all 0.1s ease-out;
 
 	background: var(--primary);
 	border: none;
   border-radius: var(--border-radius);
-  box-shadow: 0 0.2em 0 var(--accent-1);
+  box-shadow: var(--accent-3);
 }
 
-.game .btn:hover {
-  top: 5px;
-  transition: background 0.1s ease-in;
-  background: white;
+.game .button::after {
+  position: absolute;
+  content: "";
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+
+  border-radius: var(--border-radius);
+  background: radial-gradient(ellipse farthest-corner at top right, var(--on-hover), transparent);
+
+  z-index: 1;
+  transition: opacity 0.1s linear;
+  opacity: 0;
 }
 
-.game.header {
+.game .button:hover::after {
+  opacity: 0.8;
+}
+
+.game__header {
   height: var(--header-height);
   display: flex;
   justify-content: space-between;
@@ -29,7 +48,7 @@
   margin-bottom: 0.5em;
 }
 
-.game.header > .score {
+.game__score {
   width: 7em;
   display: flex;
   align-items: center;
@@ -39,7 +58,7 @@
   border-radius: var(--border-radius);
 }
 
-.game.score > .icon {
+.game__score > .icon {
   flex-grow: 0;
   width: 2.5em;
   height: 100%;
@@ -50,12 +69,14 @@
   border-radius: calc(var(--border-radius) - 0.2em);
 }
 
-.game.score > .value {
+.game__score > .value {
   text-align: center;
   flex-grow: 1;
   font-size: 1.1em;
 }
 
-.game.board {
+.game__board {
   position: relative;
+  border-radius: var(--border-radius);
+  overflow: hidden;
 }

@@ -1,44 +1,38 @@
-:root {
-  --cell-hover: whitesmoke;
-  --cell-active: black;
-}
-
-.board.container{
+.board{
   display: flex;
   flex-direction: column;
-  border-radius: var(--border-radius);
 }
 
-.board.row {
+.board__row {
   display: flex;
   flex-direction: row;
 }
 
-.board.cell {
+.board__cell {
   display: flex;
   flex: 1;
   aspect-ratio: 1;
   justify-content: center;
   align-items: center;
 
-  transition: background .1s ease-out;
+  transition: background-color .1s ease-out;
 
-  background: var(--primary);
+  background-color: var(--primary);
   font-family: 'Overpass Mono', monospace;
 }
 
-.board.cell:hover {
-  background: var(--cell-hover);
+.board__cell:hover {
+  background-color: var(--on-hover);
 }
 
-.board.cell:active {
-  background: var(--cell-active);
+.board__cell:active {
+  background-color: var(--on-active);
 }
 
-.board.cell.revealed, .board.cell.revealed:hover {
+.board__cell.revealed, .board__cell.revealed:hover {
   background-color: var(--secondary)
 }
 
-.board.cell.flagged {
+.board__cell.flagged {
   color: var(--accent-3)
 }

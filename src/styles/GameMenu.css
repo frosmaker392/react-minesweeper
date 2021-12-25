@@ -1,4 +1,4 @@
-.game.menu {
+.menu {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -11,33 +11,33 @@
   width: 100%;
 }
 
-.game.menu > .view {
+.menu__view {
   gap: 0.6em;
   font-size: 1.3em;
   line-height: 1;
   width: 30%;
 }
 
-.view > button, .view > .field {
+.menu__view > .button, .menu__input {
   height: 2.5em;
 }
 
-.view.pause {
+.view-pause {
   display: flex;
   flex-direction: column;
 }
 
-.view.new-game {
+.view-new-game {
   display: grid;
   grid-template-columns: 1fr 1.5fr;
   align-items: center;
 }
 
-.view.new-game > button {
+.view-new-game > .button {
   grid-column: 1 / 3;
 }
 
-.view.new-game > .field {
+.menu__input {
   background-color: var(--primary);
   border-radius: var(--border-radius);
   border: none;
@@ -45,6 +45,6 @@
   text-align: center;
 }
 
-.view.new-game > .field:focus-within {
+.menu__input:focus-within {
   outline: var(--accent-2) solid 3px;
 }

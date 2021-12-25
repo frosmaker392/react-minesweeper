@@ -1,14 +1,15 @@
 import { IBoard, BoardState } from '../utils/BoardLogic'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import Board from './Board'
-import GameMenu from './GameMenu'
+import GameMenu from './menu/GameMenu'
 import Stopwatch from './utils/Stopwatch'
 
 import { BiTimeFive as TimeIcon } from 'react-icons/bi'
 import { GiAbstract016 as MineIcon } from 'react-icons/gi'
 
 import "../styles/Game.css"
+import "../styles/GameMenu.css"
 
 const initParams: IBoard = {
   width: 10,
@@ -33,26 +34,29 @@ const Game = () => {
   const onPauseButton = () => setPaused(!paused)
 
   // Updates gameState and flagCnt
-  const updateGameState = (state: BoardState, flagCnt: number) => {
-    setGameState(state)
-    setFlagCount(flagCnt)
-  }
+  const updateGameState = useCallback(
+    (state: BoardState, flagCnt: number) => {
+      setGameState(state)
+      setFlagCount(flagCnt)
+    }, [])
+  
 
   // Resets board according to boardParams
-  const resetBoard = (boardParams: IBoard) => {
-    setResetCounter(resetCounter + 1)
-    setBoardParams(boardParams)
-    setSeconds(0)
-    setPaused(false)
-  }
+  const resetBoard = useCallback(
+    (boardParams: IBoard) => {
+      setResetCounter(resetCounter + 1)
+      setBoardParams(boardParams)
+      setSeconds(0)
+      setPaused(false)
+    }, [resetCounter])
 
   return (
-  <div className="game container">
-    <section className="game header">
-      <div className="game stopwatch score">
-        <TimeIcon className="game stopwatch icon" />
+  <div className="game">
+    <section className="game__header">
+      <div className="game__score">
+        <TimeIcon className="icon" />
         <Stopwatch 
-          className="game stopwatch value"
+          className="value"
           paused={paused}
           seconds={seconds}
           onUpdateSeconds={(delta) => setSeconds(seconds + delta)}
@@ -61,11 +65,11 @@ const Game = () => {
 
       {
         (gameState === "in-progress" && !paused) ?
-        <button className="btn" onClick={onPauseButton}>
+        <button className="button header__button" onClick={onPauseButton}>
           Pause
         </button>
         :
-        <p className="game status">
+        <p className="game__status">
         {
           gameState === "in-progress" ?
           paused && "Paused" :
@@ -74,14 +78,14 @@ const Game = () => {
         </p>
       }
 
-      <div className="game flag-count score">
-        <MineIcon className="game flag-count icon" />
-        <span className="game flag-count value">
+      <div className="game__score">
+        <MineIcon className="icon" />
+        <span className="value">
           {flagCount} / {boardParams.numMines}
         </span>
       </div>
     </section>
-    <section className="game board">
+    <section className="game__board">
       <Board 
         resetCounter={resetCounter}
         onUpdate={updateGameState} 

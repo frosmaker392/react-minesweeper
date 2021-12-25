@@ -3,15 +3,17 @@ import { ICell } from '../utils/BoardLogic'
 import { HiFlag as FlagIcon } from 'react-icons/hi'
 import { GiAbstract016 as MineIcon } from 'react-icons/gi'
 
-interface ICellProps extends ICell {
+interface ICellProps {
+  cellParams: ICell
+  revealMine: boolean
   fontSize: number
   onClick: () => void
   onRightClick: () => void
 }
 
 export const Cell = (props: ICellProps) => {
-  const {state, hasMine, neighboringMines: nMines} = props
-  const {fontSize, onClick, onRightClick} = props
+  const {state, hasMine, neighboringMines: nMines} = props.cellParams
+  const {revealMine, fontSize, onClick, onRightClick} = props
 
   let inner: string | JSX.Element = ""
   switch (state) {
@@ -26,6 +28,7 @@ export const Cell = (props: ICellProps) => {
       inner = "?"
       break;
     default:
+      revealMine && hasMine && (inner = <MineIcon />)
       break;
   }
 
@@ -39,7 +42,7 @@ export const Cell = (props: ICellProps) => {
         onRightClick()
       }}
       style={{fontSize}}
-      className= {"board cell " + className}>
+      className= {"board__cell " + className}>
         {inner}
     </div>
   )

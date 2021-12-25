@@ -70,9 +70,12 @@ select {
 :root {
   --primary: #ccdad1;
   --secondary: #9caea9;
-  --accent-1: #788585;
+  --tertiary: #788585;
   --accent-2: #6f6866;
   --accent-3: #38302e;
+
+  --on-hover: #eaf0ec;
+  --on-active: #788585;
 
   --border-radius: 0.7em
 }
