@@ -53,7 +53,7 @@ const Game = () => {
   return (
   <div className="game">
     <section className="game__header">
-      <div className="game__score">
+      <div className="header__elem">
         <TimeIcon className="icon" />
         <Stopwatch 
           className="value"
@@ -65,11 +65,11 @@ const Game = () => {
 
       {
         (gameState === "in-progress" && !paused) ?
-        <button className="button header__button" onClick={onPauseButton}>
+        <button className="header__elem button focusable" onClick={onPauseButton}>
           Pause
         </button>
         :
-        <p className="game__status">
+        <p className="header__elem status">
         {
           gameState === "in-progress" ?
           paused && "Paused" :
@@ -78,7 +78,7 @@ const Game = () => {
         </p>
       }
 
-      <div className="game__score">
+      <div className="header__elem">
         <MineIcon className="icon" />
         <span className="value">
           {flagCount} / {boardParams.numMines}

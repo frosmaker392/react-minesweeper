@@ -16,23 +16,28 @@ export const Cell = (props: ICellProps) => {
   const {revealMine, fontSize, onClick, onRightClick} = props
 
   let inner: string | JSX.Element = ""
+  let className: string = state
   switch (state) {
     case "revealed":
-      inner = hasMine ? <MineIcon /> 
-        : `${nMines > 0 ? nMines : ""}`
-      break;
+      if (hasMine) {
+        inner = <MineIcon />
+        className += " with-mine"
+      }
+      else inner = `${nMines > 0 ? nMines : ""}`
+      break
     case "flagged":
       inner = <FlagIcon />
-      break;
+      break
     case "unknown":
       inner = "?"
-      break;
+      break
     default:
-      revealMine && hasMine && (inner = <MineIcon />)
-      break;
+      if (revealMine && hasMine) {
+        inner = <MineIcon />
+        className = "with-mine"
+      }
+      break
   }
-
-  const className = state !== "hidden" ? state : ""
 
   return (
     <div 
@@ -42,7 +47,7 @@ export const Cell = (props: ICellProps) => {
         onRightClick()
       }}
       style={{fontSize}}
-      className= {"board__cell " + className}>
+      className= {"board__cell unselectable " + className}>
         {inner}
     </div>
   )

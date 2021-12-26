@@ -44,7 +44,3 @@
 
   text-align: center;
 }
-
-.menu__input:focus-within {
-  outline: var(--accent-2) solid 3px;
-}

@@ -71,16 +71,30 @@ select {
   --primary: #ccdad1;
   --secondary: #9caea9;
   --tertiary: #788585;
-  --accent-2: #6f6866;
-  --accent-3: #38302e;
+  --accent-1: #1C3144;
+  --accent-2: #70161e;
 
   --on-hover: #eaf0ec;
-  --on-active: #788585;
+  --on-active: #9caea9;
 
   --border-radius: 0.7em
 }
 
+/* https://stackoverflow.com/questions/2310734/how-to-make-html-text-unfocusable */
+.unselectable {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+body, button {
+  color: var(--accent-1);
+}
+
 ::selection {
   color: white;
-  background: var(--accent-2);
+  background: var(--accent-1);
 }

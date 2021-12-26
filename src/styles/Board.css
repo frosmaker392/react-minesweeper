@@ -30,9 +30,9 @@
 }
 
 .board__cell.revealed, .board__cell.revealed:hover {
-  background-color: var(--secondary)
+  background-color: var(--secondary);
 }
 
-.board__cell.flagged {
-  color: var(--accent-3)
+.board__cell.with-mine {
+  color: var(--accent-2);
 }

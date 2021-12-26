@@ -20,21 +20,21 @@ const NewGameView = (props: INewGameProps) => {
       props.onSubmit({width, height, numMines})
     }}>
       <label className="menu__label" htmlFor="width">Width</label>
-      <IntegerInput className="menu__input" id="width" range={[5, 30]} 
+      <IntegerInput className="menu__input focusable-inner" id="width" range={[5, 30]} 
         value={width} onChange={(val) => setWidth(val)} />
 
       <label htmlFor="height">Height</label>
-      <IntegerInput className="menu__input" id="height" range={[5, 30]} 
+      <IntegerInput className="menu__input focusable-inner" id="height" range={[5, 30]} 
         value={height} onChange={(val) => setHeight(val)} />
 
       <label htmlFor="mines">Mines</label>
-      <IntegerInput className="menu__input" id="mines" range={[0, width * height / 2]} 
+      <IntegerInput className="menu__input focusable-inner" id="mines" range={[0, width * height / 2]} 
         value={numMines} onChange={(val) => setNumMines(val)} />
       
-      <button type="submit" className="button" name="submit">
+      <button type="submit" className="button focusable" name="submit">
         Generate
       </button>
-      <button className="button" name="cancel" onClick={props.onCancel}>
+      <button className="button focusable" name="cancel" onClick={props.onCancel}>
         Cancel
       </button>
     </form>
