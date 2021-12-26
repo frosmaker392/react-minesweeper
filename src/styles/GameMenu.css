@@ -15,11 +15,11 @@
   gap: 0.6em;
   font-size: 1.3em;
   line-height: 1;
-  width: 30%;
+  width: 15em;
 }
 
 .menu__view > .button, .menu__input {
-  height: 2.5em;
+  height: 2.3em;
 }
 
 .view-pause {

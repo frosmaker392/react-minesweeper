@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { ChangeEvent } from "react"
 import "../../styles/utils/IntegerInput.css"
 
 interface IIntegerInputProps {
@@ -6,43 +6,38 @@ interface IIntegerInputProps {
   className?: string
   range: [min: number, max: number]
   value: number
-  onChange: (val: number) => void
+  setter: (val: number) => void
 }
 
-const IntegerInput = ({ id, className, range, value, onChange }: IIntegerInputProps) => {
+const IntegerInput = ({ id, className, range, value, setter }: IIntegerInputProps) => {
   const [min, max] = [range[0], Math.max(range[0], range[1])]
 
-  const [val, setVal] = useState(value)
-
-  useEffect(() => {
-    onChange(val)
-  }, [val, onChange])
+  const inputChange = 
+    (e: ChangeEvent<HTMLInputElement>) => {
+      const v = e.target.valueAsNumber
+      if (v) setter(v)
+    }
 
   return (
     <div className={"num-input " + className}>
       <input
         type="number" id={id}
-        value={val} step="1" min={min} max={max}
-        onChange={(e) => {
-          console.log(e.target.value)
-          const value = parseInt(e.target.value)
-          if (value)
-            setVal(value)
-        }}
+        value={value} step="1" min={min} max={max}
+        onChange={inputChange}
       />
 
       <button className="sub" 
         tabIndex={-1}
         onClick={(e) => {
           e.preventDefault()
-          setVal(Math.max(min, val - 1))
+          setter(Math.max(min, value - 1))
         }}> - </button>
 
       <button className="add" 
         tabIndex={-1}
         onClick={(e) => {
           e.preventDefault()
-          setVal(Math.min(max, val + 1))
+          setter(Math.min(max, value + 1))
         }}> + </button>
     </div>
   )
