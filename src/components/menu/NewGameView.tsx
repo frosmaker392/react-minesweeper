@@ -1,10 +1,11 @@
 import { ChangeEvent, useCallback, useEffect, useState } from "react"
 import { IBoard } from "../../utils/BoardLogic"
-import boardPresets from "../../utils/BoardPresets"
+import { boardPresets, DiffLevels } from "../../utils/BoardPresets"
+import capitalizeFirstChar from "../../utils/Capitalize"
 
 import IntegerInput from "../utils/IntegerInput"
 
-type Difficulty = "custom" | keyof (typeof boardPresets)
+type Difficulty = "custom" | DiffLevels
 
 interface INewGameProps {
   boardParams: IBoard
@@ -42,8 +43,8 @@ const NewGameView = ({boardParams, onSubmit, onCancel}: INewGameProps) => {
     }
 
   const presetOptions = 
-    Object.keys(boardPresets).map((key, i) => 
-      <option key={i} value={key}>{key.charAt(0).toUpperCase() + key.slice(1)}</option>)
+    Object.keys(boardPresets).map((diff, i) => 
+      <option key={i} value={diff}>{capitalizeFirstChar(diff)}</option>)
 
   return (
     <form className="menu__view view-new-game" onSubmit={e => {

@@ -1,18 +1,17 @@
-:root {
-  --header-height: 3em;
-}
-
 *:focus {
   outline: none;
 }
 
 .game {
-  margin: 1em;
   padding: 0.7em;
-  background: var(--tertiary);
+  background-color: var(--tertiary);
 }
 
 .focusable, .focusable-inner {
+  transition-property: background-color, box-shadow;
+  transition-duration: 0.1s;
+  transition-timing-function: ease;
+
   box-shadow: 0 2px 3px rgba(0, 0, 0, .2);
 }
 
@@ -26,10 +25,10 @@
 }
 
 .button {
-  position: relative;
-  transition: all 0.1s ease-in-out;
+  transition-property: background-color, box-shadow, transform;
 
-	background: var(--primary);
+  position: relative;
+	background-color: var(--primary);
 	border: none;
   border-radius: var(--border-radius);
 }
@@ -44,7 +43,7 @@
 }
 
 .game__header {
-  height: var(--header-height);
+  height: 2.5em;
   display: flex;
   justify-content: space-between;
 
@@ -52,8 +51,6 @@
 }
 
 .header__elem {
-  width: 7.5em;
-
   display: flex;
   align-items: center;
   justify-content: center;
@@ -61,13 +58,14 @@
 
   background-color: var(--primary);
   border-radius: var(--border-radius);
+  width: 7em;
 }
 
 .header__elem > .icon {
   flex-grow: 0;
-  width: 2.5em;
+  width: 2em;
   height: 100%;
-  padding: 0 0.4em;
+  padding: 0 0.2em;
 
   background-color: var(--secondary);
   border-radius: calc(var(--border-radius) - 0.2em);
@@ -76,11 +74,50 @@
 .header__elem > .value {
   text-align: center;
   flex-grow: 1;
-  font-size: 1.1em;
 }
 
 .game__board {
   position: relative;
   border-radius: var(--border-radius);
   overflow: hidden;
+}
+
+.game__footer {
+  position: relative;
+  height: 1.7em;
+  margin-top: 0.5em;
+}
+
+.game__footer > * {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.footer__board-desc {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  font-style: italic;
+  font-size: 0.8em;
+}
+
+.footer__theme-btn {
+  right: 0;
+  top: 0;
+  bottom: 0;
+  aspect-ratio: 1;
+
+  background-color: transparent;
+  border-radius: 50%;
+  border: none;
+  padding: 0;
+  box-shadow: none;
+}
+
+.footer__theme-btn:hover {
+  background-color: var(--secondary);
 }

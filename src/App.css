@@ -67,12 +67,12 @@ select {
   }
 }
 
-:root {
+.game {
   --primary: #ccdad1;
   --secondary: #9caea9;
   --tertiary: #788585;
-  --accent-1: #1C3144;
-  --accent-2: #70161e;
+  --text: #1C3144;
+  --accent: #70161e;
 
   --on-hover: #eaf0ec;
   --on-active: #9caea9;
@@ -90,11 +90,15 @@ select {
   user-select: none;
 }
 
-body, button {
-  color: var(--accent-1);
+body, div, button, label, input, select{
+  color: var(--text);
+}
+
+body {
+  overflow-x: hidden;
 }
 
 ::selection {
   color: white;
-  background: var(--accent-1);
+  background: var(--text);
 }

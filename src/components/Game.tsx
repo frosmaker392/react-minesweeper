@@ -1,15 +1,17 @@
 import { IBoard, BoardState } from '../utils/BoardLogic'
+import { getDifficulty } from '../utils/BoardPresets'
 
 import { useCallback, useEffect, useState } from 'react'
 import Board from './Board'
 import GameMenu from './menu/GameMenu'
 import Stopwatch from './utils/Stopwatch'
 
-import { BiTimeFive as TimeIcon } from 'react-icons/bi'
+import { BiPaint, BiTimeFive as TimeIcon } from 'react-icons/bi'
 import { GiAbstract016 as MineIcon } from 'react-icons/gi'
 
 import "../styles/Game.css"
 import "../styles/GameMenu.css"
+import capitalizeFirstChar from '../utils/Capitalize'
 
 const initParams: IBoard = {
   width: 10,
@@ -50,56 +52,70 @@ const Game = () => {
       setPaused(false)
     }, [resetCounter])
 
-  return (
-  <div className="game">
-    <section className="game__header">
-      <div className="header__elem">
-        <TimeIcon className="icon" />
-        <Stopwatch 
-          className="value"
-          paused={paused}
-          seconds={seconds}
-          onUpdateSeconds={(delta) => setSeconds(seconds + delta)}
-          />
-      </div>
-
+  const header_mid = (
+    (gameState === "in-progress" && !paused) ?
+      <button className="header__elem button focusable" onClick={onPauseButton}>
+        Pause
+      </button>
+    :
+      <p className="header__elem status">
       {
-        (gameState === "in-progress" && !paused) ?
-        <button className="header__elem button focusable" onClick={onPauseButton}>
-          Pause
-        </button>
-        :
-        <p className="header__elem status">
-        {
-          gameState === "in-progress" ?
-          paused && "Paused" :
-          `You ${gameState === "won" ? "won" : "lost"}`
-        }
-        </p>
+        gameState === "in-progress" ?
+        paused && "Paused" :
+        `You ${gameState === "won" ? "won" : "lost"}`
       }
+      </p>
+  )
 
-      <div className="header__elem">
-        <MineIcon className="icon" />
-        <span className="value">
-          {flagCount} / {boardParams.numMines}
-        </span>
-      </div>
-    </section>
-    <section className="game__board">
-      <Board 
-        resetCounter={resetCounter}
-        onUpdate={updateGameState} 
-        {...boardParams}/>
-      { 
-        paused && gameState === "in-progress" && 
-        <GameMenu 
-          boardParams={boardParams}
-          onResume={() => setPaused(false)}
-          onNewGame={resetBoard}
-        /> 
-      }
-    </section>
-  </div> )
+  const { width, height, numMines } = boardParams
+
+  return (
+    <div className="game">
+      <header className="game__header">
+        <div className="header__elem">
+          <TimeIcon className="icon" />
+          <Stopwatch 
+            className="value"
+            paused={paused}
+            seconds={seconds}
+            onUpdateSeconds={(delta) => setSeconds(seconds + delta)}
+            />
+        </div>
+
+        { header_mid }
+
+        <div className="header__elem">
+          <MineIcon className="icon" />
+          <p className="value">
+            {flagCount} / {numMines}
+          </p>
+        </div>
+      </header>
+      <section className="game__board">
+        <Board 
+          resetCounter={resetCounter}
+          onUpdate={updateGameState} 
+          {...boardParams}/>
+        { 
+          paused && gameState === "in-progress" && 
+          <GameMenu 
+            boardParams={boardParams}
+            onResume={() => setPaused(false)}
+            onNewGame={resetBoard}
+          /> 
+        }
+      </section>
+      <footer className="game__footer">
+        <p className="footer__board-desc">
+          { capitalizeFirstChar(getDifficulty(boardParams)) }
+          : ({width}x{height} cells, {numMines} mines)
+        </p>
+        <button className="footer__theme-btn focusable" value="theme">
+          <BiPaint />
+        </button>
+      </footer>
+    </div> 
+  )
 }
 
 export default Game

@@ -1,6 +1,6 @@
 .menu {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
 
   background-color: var(--secondary);
@@ -11,20 +11,31 @@
   width: 100%;
 }
 
-.menu__view {
-  gap: 0.6em;
-  font-size: 1.3em;
+.menu__view-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  
+  width: 14em;
+  height: 100%;
+  max-height: 20em;
+  font-size: 1.1em;
   line-height: 1;
-  width: 15em;
+}
+
+.menu__view {
+  width: 100%;
+  gap: 0.6em;
 }
 
 .menu__view > .button, .menu__input {
-  height: 2.3em;
+  height: 2em;
 }
 
 .view-pause {
   display: flex;
   flex-direction: column;
+  justify-content: center;
 }
 
 .view-new-game {
@@ -34,7 +45,7 @@
 }
 
 .view-new-game > .button {
-  grid-column: 1 / 3;
+  grid-column: span 2;
 }
 
 .menu__input {

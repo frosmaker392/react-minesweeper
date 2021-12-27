@@ -1,6 +1,8 @@
 import { IBoard } from "./BoardLogic"
 
-type DiffLevels = "beginner" | "intermediate" | "advanced"
+const DIFF_LEVELS = ["beginner", "intermediate", "advanced"] as const
+
+type DiffLevels = (typeof DIFF_LEVELS)[number]
 type BoardPreset = {
   [key in DiffLevels]: IBoard
 }
@@ -23,4 +25,19 @@ const boardPresets: BoardPreset = {
   }
 }
 
-export default boardPresets
+function getDifficulty(boardParams: IBoard) {
+  const { width, height, numMines } = boardParams
+
+  for (const difficulty of DIFF_LEVELS) {
+    const preset = boardPresets[difficulty]
+    if (width === preset.width && 
+      height === preset.height && 
+      numMines === preset.numMines)
+      return difficulty
+  }
+
+  return "custom"
+}
+
+export type { DiffLevels }
+export { boardPresets, getDifficulty }

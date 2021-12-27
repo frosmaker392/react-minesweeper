@@ -15,20 +15,22 @@ const GameMenu = ({boardParams, onResume, onNewGame}: IGameMenuProps) => {
 
   return (
     <div className="menu">
-      {
-        isPauseView ?
-        <PauseView 
-          onResume={onResume}
-          onRestart={() => onNewGame(boardParams)}
-          onNewGame={() => setIsPauseView(false)}
-          />
-        :
-        <NewGameView 
-          boardParams={boardParams}
-          onSubmit={onNewGame}
-          onCancel={() => setIsPauseView(true)}
-          />
-      }
+      <div className="menu__view-container">
+        {
+          isPauseView ?
+          <PauseView 
+            onResume={onResume}
+            onRestart={() => onNewGame(boardParams)}
+            onNewGame={() => setIsPauseView(false)}
+            />
+          :
+          <NewGameView 
+            boardParams={boardParams}
+            onSubmit={onNewGame}
+            onCancel={() => setIsPauseView(true)}
+            />
+        }
+      </div>
     </div>
   )
 }
