@@ -96,6 +96,8 @@ body, div, button, label, input, select{
 
 body {
   overflow-x: hidden;
+  font-family: 'Cabin', sans-serif;
+  font-kerning: 1em;
 }
 
 ::selection {

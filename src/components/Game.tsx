@@ -4,14 +4,20 @@ import { getDifficulty } from '../utils/BoardPresets'
 import { useCallback, useEffect, useState } from 'react'
 import Board from './Board'
 import GameMenu from './menu/GameMenu'
-import Stopwatch from './utils/Stopwatch'
+import Duration from './utils/Duration'
 
-import { BiPaint, BiTimeFive as TimeIcon } from 'react-icons/bi'
+import { 
+  BiPalette as ThemeIcon, 
+  BiTimeFive as TimeIcon 
+} from 'react-icons/bi'
 import { GiAbstract016 as MineIcon } from 'react-icons/gi'
 
 import "../styles/Game.css"
 import "../styles/GameMenu.css"
 import capitalizeFirstChar from '../utils/Capitalize'
+import useClock from '../hooks/useClock'
+
+type GameState = BoardState | "pause-menu"
 
 const initParams: IBoard = {
   width: 10,
@@ -22,18 +28,42 @@ const initParams: IBoard = {
 const Game = () => {
   const [boardParams, setBoardParams] = useState(initParams)
 
-  const [gameState, setGameState] = useState("in-progress" as BoardState)
+  const [gameState, setGameState] = useState("in-progress" as GameState)
+  const [isInit, setIsInit] = useState(false)
+  const [isPaused, setIsPaused] = useState(true)
+  const [gameOver, setGameOver] = useState(false)
+
+  const [elapsedMs, setElapsedMs] = useState(0)
   const [flagCount, setFlagCount] = useState(0)
-  const [seconds, setSeconds] = useState(0)
-  
-  const [paused, setPaused] = useState(false)
   const [resetCounter, setResetCounter] = useState(0)
 
+  const { startClock, stopClock } = useClock(100)
+
+  // Pause when window goes out of focus
   useEffect(() => {
-    if (gameState !== "in-progress") setPaused(true)
+    const onBlur = () => {
+      if (!gameOver) setGameState("pause-menu")
+    }
+    window.addEventListener("blur", onBlur)
+    
+    return () => window.removeEventListener("blur", onBlur)
+  }, [gameOver])
+
+  // Set corresponding flags
+  useEffect(() => {
+    setIsInit(gameState !== "uninitialized")
+    setIsPaused(gameState !== "in-progress")
+    setGameOver(gameState === "won" || gameState === "lost")
   }, [gameState])
 
-  const onPauseButton = () => setPaused(!paused)
+  useEffect(() => {
+    startClock(tickMs => {
+      if (isInit && !isPaused && !gameOver)
+        setElapsedMs(ms => ms + tickMs)
+    })
+
+    return () => stopClock()
+  }, [startClock, stopClock, isInit, isPaused, gameOver])
 
   // Updates gameState and flagCnt
   const updateGameState = useCallback(
@@ -41,27 +71,26 @@ const Game = () => {
       setGameState(state)
       setFlagCount(flagCnt)
     }, [])
-  
 
   // Resets board according to boardParams
   const resetBoard = useCallback(
     (boardParams: IBoard) => {
       setResetCounter(resetCounter + 1)
       setBoardParams(boardParams)
-      setSeconds(0)
-      setPaused(false)
+      setElapsedMs(0)
+      setGameState("uninitialized")
     }, [resetCounter])
 
   const header_mid = (
-    (gameState === "in-progress" && !paused) ?
-      <button className="header__elem button focusable" onClick={onPauseButton}>
+    (gameState === "in-progress" || gameState === "uninitialized") ?
+      <button className="header__elem button focusable" 
+        onClick={() => setGameState("pause-menu")}>
         Pause
       </button>
     :
       <p className="header__elem status">
       {
-        gameState === "in-progress" ?
-        paused && "Paused" :
+        gameState === "pause-menu" ? "Paused" :
         `You ${gameState === "won" ? "won" : "lost"}`
       }
       </p>
@@ -72,22 +101,20 @@ const Game = () => {
   return (
     <div className="game">
       <header className="game__header">
-        <div className="header__elem">
+        <div className="header__elem score">
           <TimeIcon className="icon" />
-          <Stopwatch 
+          <Duration 
             className="value"
-            paused={paused}
-            seconds={seconds}
-            onUpdateSeconds={(delta) => setSeconds(seconds + delta)}
+            seconds={Math.floor(elapsedMs / 1000)}
             />
         </div>
 
         { header_mid }
 
-        <div className="header__elem">
+        <div className="header__elem score">
           <MineIcon className="icon" />
           <p className="value">
-            {flagCount} / {numMines}
+            {flagCount}/{numMines}
           </p>
         </div>
       </header>
@@ -97,10 +124,10 @@ const Game = () => {
           onUpdate={updateGameState} 
           {...boardParams}/>
         { 
-          paused && gameState === "in-progress" && 
+          gameState === "pause-menu" && 
           <GameMenu 
             boardParams={boardParams}
-            onResume={() => setPaused(false)}
+            onResume={() => isInit ? setGameState("in-progress") : setGameState("uninitialized")}
             onNewGame={resetBoard}
           /> 
         }
@@ -111,7 +138,7 @@ const Game = () => {
           : ({width}x{height} cells, {numMines} mines)
         </p>
         <button className="footer__theme-btn focusable" value="theme">
-          <BiPaint />
+          <ThemeIcon />
         </button>
       </footer>
     </div> 

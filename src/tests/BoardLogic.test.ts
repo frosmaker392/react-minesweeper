@@ -153,6 +153,11 @@ describe("Board", () => {
         board.at([x,2]).hasMine = true
     })
 
+    it("starts 'uninitialized'", () => {
+      let board = new BoardLogic(5,5,5)
+      expect(board.state()).toEqual("uninitialized")
+    })
+
     it("is 'won' when all mines are flagged and other cells are revealed", () => {
       // Flag all cells with mines and reveal those without
       for (let x = 0; x < 5; x++)

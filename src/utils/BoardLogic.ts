@@ -1,6 +1,6 @@
 type Coords = [number, number]
 type CellState = "hidden" | "revealed" | "flagged" | "unknown"
-type BoardState = "won" | "lost" | "in-progress"
+type BoardState = "uninitialized" | "in-progress" | "won" | "lost"
 
 interface ICell {
   state: CellState
@@ -145,6 +145,8 @@ class BoardLogic implements IBoard {
    * @returns board state enumerated as BoardState
    */
   public state(): BoardState {
+    if (!this.initialized) return "uninitialized"
+      
     let hasWon = true
     let hasLost = false
 

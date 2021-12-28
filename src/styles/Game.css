@@ -61,6 +61,10 @@
   width: 7em;
 }
 
+.header__elem.score {
+  font-family: 'Fira Mono', monospace;
+}
+
 .header__elem > .icon {
   flex-grow: 0;
   width: 2em;
