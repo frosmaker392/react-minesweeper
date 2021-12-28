@@ -1,7 +1,9 @@
 import { IBoard, BoardState } from '../utils/BoardLogic'
-import { getDifficulty } from '../utils/BoardPresets'
+import { getDifficulty } from '../utils/boardPresets'
+import capitalizeFirstChar from '../utils/capitalize'
 
 import { useCallback, useEffect, useState } from 'react'
+import { useStopwatch } from 'react-use-precision-timer'
 import Board from './Board'
 import GameMenu from './menu/GameMenu'
 import Duration from './utils/Duration'
@@ -14,10 +16,6 @@ import { GiAbstract016 as MineIcon } from 'react-icons/gi'
 
 import "../styles/Game.css"
 import "../styles/GameMenu.css"
-import capitalizeFirstChar from '../utils/Capitalize'
-import useClock from '../hooks/useClock'
-
-type GameState = BoardState | "pause-menu"
 
 const initParams: IBoard = {
   width: 10,
@@ -28,21 +26,27 @@ const initParams: IBoard = {
 const Game = () => {
   const [boardParams, setBoardParams] = useState(initParams)
 
-  const [gameState, setGameState] = useState("in-progress" as GameState)
-  const [isInit, setIsInit] = useState(false)
-  const [isPaused, setIsPaused] = useState(true)
+  const [gameState, setGameState] = useState("in-progress" as BoardState)
+  const [isPaused, setIsPaused] = useState(false)
   const [gameOver, setGameOver] = useState(false)
 
-  const [elapsedMs, setElapsedMs] = useState(0)
+  const [seconds, setSeconds] = useState(0)
   const [flagCount, setFlagCount] = useState(0)
   const [resetCounter, setResetCounter] = useState(0)
 
-  const { startClock, stopClock } = useClock(100)
+  const stopwatch = useStopwatch()
+
+  useEffect(() => {
+    const updateRoutine = setInterval(() => {
+      setSeconds( Math.floor( stopwatch.getElapsedRunningTime() / 1000 ) )
+    }, 250)
+    return () => clearInterval(updateRoutine)
+  }, [stopwatch])
 
   // Pause when window goes out of focus
   useEffect(() => {
     const onBlur = () => {
-      if (!gameOver) setGameState("pause-menu")
+      if (!gameOver) setIsPaused(true)
     }
     window.addEventListener("blur", onBlur)
     
@@ -51,19 +55,13 @@ const Game = () => {
 
   // Set corresponding flags
   useEffect(() => {
-    setIsInit(gameState !== "uninitialized")
-    setIsPaused(gameState !== "in-progress")
+    if (gameState === "in-progress" && !isPaused)
+      stopwatch.isStarted() ? stopwatch.resume() : stopwatch.start()
+    else
+      stopwatch.pause()
+
     setGameOver(gameState === "won" || gameState === "lost")
-  }, [gameState])
-
-  useEffect(() => {
-    startClock(tickMs => {
-      if (isInit && !isPaused && !gameOver)
-        setElapsedMs(ms => ms + tickMs)
-    })
-
-    return () => stopClock()
-  }, [startClock, stopClock, isInit, isPaused, gameOver])
+  }, [gameState, isPaused, stopwatch])
 
   // Updates gameState and flagCnt
   const updateGameState = useCallback(
@@ -77,20 +75,21 @@ const Game = () => {
     (boardParams: IBoard) => {
       setResetCounter(resetCounter + 1)
       setBoardParams(boardParams)
-      setElapsedMs(0)
+      setIsPaused(false)
       setGameState("uninitialized")
-    }, [resetCounter])
+      stopwatch.stop()
+    }, [resetCounter, stopwatch])
 
   const header_mid = (
-    (gameState === "in-progress" || gameState === "uninitialized") ?
+    !gameOver ?
       <button className="header__elem button focusable" 
-        onClick={() => setGameState("pause-menu")}>
+        onClick={() => setIsPaused(true)}>
         Pause
       </button>
     :
       <p className="header__elem status">
       {
-        gameState === "pause-menu" ? "Paused" :
+        isPaused ? "Paused" :
         `You ${gameState === "won" ? "won" : "lost"}`
       }
       </p>
@@ -105,7 +104,7 @@ const Game = () => {
           <TimeIcon className="icon" />
           <Duration 
             className="value"
-            seconds={Math.floor(elapsedMs / 1000)}
+            seconds={seconds}
             />
         </div>
 
@@ -124,10 +123,10 @@ const Game = () => {
           onUpdate={updateGameState} 
           {...boardParams}/>
         { 
-          gameState === "pause-menu" && 
+          !gameOver && isPaused && 
           <GameMenu 
             boardParams={boardParams}
-            onResume={() => isInit ? setGameState("in-progress") : setGameState("uninitialized")}
+            onResume={() => setIsPaused(false)}
             onNewGame={resetBoard}
           /> 
         }

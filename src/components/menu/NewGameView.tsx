@@ -1,7 +1,7 @@
 import { ChangeEvent, useCallback, useEffect, useState } from "react"
 import { IBoard } from "../../utils/BoardLogic"
-import { boardPresets, DiffLevels } from "../../utils/BoardPresets"
-import capitalizeFirstChar from "../../utils/Capitalize"
+import { boardPresets, DiffLevels } from "../../utils/boardPresets"
+import capitalizeFirstChar from "../../utils/capitalize"
 
 import IntegerInput from "../utils/IntegerInput"
 
