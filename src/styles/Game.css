@@ -4,7 +4,6 @@
 
 .game {
   padding: 0.7em;
-  background-color: var(--tertiary);
 }
 
 .focusable, .focusable-inner {

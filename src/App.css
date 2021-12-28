@@ -67,7 +67,7 @@ select {
   }
 }
 
-.game {
+:root {
   --primary: #ccdad1;
   --secondary: #9caea9;
   --tertiary: #788585;
@@ -98,6 +98,25 @@ body {
   overflow-x: hidden;
   font-family: 'Cabin', sans-serif;
   font-kerning: 1em;
+  text-align: center;
+
+  background-color: var(--tertiary);
+}
+
+.footer {
+  font-size: 0.8em;
+  font-style: italic;
+  padding: 1em;
+
+  line-height: 100%;
+}
+
+h1 {
+  margin: 0.2em;
+}
+
+a:link, a:visited {
+  color: var(--accent);
 }
 
 ::selection {
