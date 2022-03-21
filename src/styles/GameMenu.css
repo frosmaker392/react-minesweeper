@@ -11,7 +11,7 @@
   width: 100%;
 }
 
-.menu__view-container {
+.menuView-container {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -23,32 +23,32 @@
   line-height: 1;
 }
 
-.menu__view {
+.menuView {
   width: 100%;
   gap: 0.6em;
 }
 
-.menu__view > .button, .menu__input {
+.menuView > button, .input {
   height: 2em;
 }
 
-.view-pause {
+.menuView.pause {
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
-.view-new-game {
+.menuView.newGame {
   display: grid;
   grid-template-columns: 1fr 1.5fr;
   align-items: center;
 }
 
-.view-new-game > .button {
+.menuView.newGame > button {
   grid-column: span 2;
 }
 
-.menu__input {
+.menuView > .input {
   background-color: var(--primary);
   border-radius: var(--border-radius);
   border: none;

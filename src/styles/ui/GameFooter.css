@@ -1,0 +1,39 @@
+.gameFooter {
+  position: relative;
+  height: 1.7em;
+  margin-top: 0.5em;
+}
+
+.gameFooter > * {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.gameFooter > .description {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  font-style: italic;
+  font-size: 0.8em;
+}
+
+.gameFooter > .theme {
+  right: 0;
+  top: 0;
+  bottom: 0;
+  aspect-ratio: 1;
+
+  background-color: transparent;
+  border-radius: 50%;
+  border: none;
+  padding: 0;
+  box-shadow: none;
+}
+
+.gameFooter > .theme:hover {
+  background-color: var(--secondary);
+}

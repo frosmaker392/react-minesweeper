@@ -1,7 +1,7 @@
 import { ChangeEvent, useCallback, useEffect, useState } from "react"
 import { IBoard } from "../../utils/BoardLogic"
 import { boardPresets, DiffLevels } from "../../utils/boardPresets"
-import capitalizeFirstChar from "../../utils/capitalize"
+import capitalizeFirstChar from "../../utils/capitalizeFirstChar"
 
 import IntegerInput from "../utils/IntegerInput"
 
@@ -47,34 +47,34 @@ const NewGameView = ({boardParams, onSubmit, onCancel}: INewGameProps) => {
       <option key={i} value={diff}>{capitalizeFirstChar(diff)}</option>)
 
   return (
-    <form className="menu__view view-new-game" onSubmit={e => {
+    <form className="menuView newGame" onSubmit={e => {
       e.preventDefault()
       onSubmit({width, height, numMines})
     }}>
-      <label className="menu__label" htmlFor="diff-select" >Difficulty</label>
-      <select className="menu__input focusable" id="diff-select"
+      <label htmlFor="diff-select">Difficulty</label>
+      <select className="input focusable" id="diff-select"
         value={curDifficulty}
         onChange={onDifficultyChange}>
         <option value="custom">Custom</option>
         {presetOptions}
       </select>
 
-      <label className="menu__label" htmlFor="width">Width</label>
-      <IntegerInput className="menu__input focusable-inner" id="width" 
+      <label htmlFor="width">Width</label>
+      <IntegerInput className="input focusable-inner" id="width" 
         range={[5, 30]} value={width} setter={onInputChange(setWidth)} />
 
       <label htmlFor="height">Height</label>
-      <IntegerInput className="menu__input focusable-inner" id="height" 
+      <IntegerInput className="input focusable-inner" id="height" 
         range={[5, 30]} value={height} setter={onInputChange(setHeight)} />
 
       <label htmlFor="mines">Mines</label>
-      <IntegerInput className="menu__input focusable-inner" id="mines" 
+      <IntegerInput className="input focusable-inner" id="mines" 
         range={[0, width * height / 2]} value={numMines} setter={onInputChange(setNumMines)} />
       
-      <button type="submit" className="button focusable" name="submit">
+      <button type="submit" className="focusable" name="submit">
         Generate
       </button>
-      <button className="button focusable" name="cancel" onClick={onCancel}>
+      <button className="focusable" name="cancel" onClick={onCancel}>
         Cancel
       </button>
     </form>

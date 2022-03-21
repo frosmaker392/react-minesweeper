@@ -1,0 +1,28 @@
+.boardCell {
+  display: flex;
+  flex: 1;
+  aspect-ratio: 1;
+  justify-content: center;
+  align-items: center;
+
+  transition: background-color .1s ease-out;
+
+  background-color: var(--primary);
+  font-family: 'Overpass Mono', monospace;
+}
+
+.boardCell:hover {
+  background-color: var(--on-hover);
+}
+
+.boardCell:active {
+  background-color: var(--on-active);
+}
+
+.boardCell.revealed, .boardCell.revealed:hover {
+  background-color: var(--secondary);
+}
+
+.boardCell.with-mine {
+  color: var(--accent);
+}

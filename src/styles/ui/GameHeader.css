@@ -1,0 +1,37 @@
+.gameHeader {
+  height: 2.5em;
+  display: flex;
+  justify-content: space-between;
+
+  margin-bottom: 0.5em;
+}
+
+.gameHeader > * {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.3em;
+
+  background-color: var(--primary);
+  border-radius: var(--border-radius);
+  width: 7em;
+}
+
+.gameHeader > .score {
+  font-family: 'Fira Mono', monospace;
+}
+
+.gameHeader > .score > .icon {
+  flex-grow: 0;
+  width: 2em;
+  height: 100%;
+  padding: 0 0.2em;
+
+  background-color: var(--secondary);
+  border-radius: calc(var(--border-radius) - 0.2em);
+}
+
+.gameHeader > .score > .value {
+  text-align: center;
+  flex-grow: 1;
+}

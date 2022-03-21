@@ -15,7 +15,7 @@ const GameMenu = ({boardParams, onResume, onNewGame}: IGameMenuProps) => {
 
   return (
     <div className="menu">
-      <div className="menu__view-container">
+      <div className="menuView-container">
         {
           isPauseView ?
           <PauseView 

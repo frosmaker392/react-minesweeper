@@ -3,6 +3,8 @@ import { ICell } from '../utils/BoardLogic'
 import { HiFlag as FlagIcon } from 'react-icons/hi'
 import { GiAbstract016 as MineIcon } from 'react-icons/gi'
 
+import "../styles/Cell.css"
+
 interface ICellProps {
   cellParams: ICell
   revealMine: boolean
@@ -47,7 +49,7 @@ export const Cell = (props: ICellProps) => {
         onRightClick()
       }}
       style={{fontSize}}
-      className= {"board__cell unselectable " + className}>
+      className= {"boardCell unselectable " + className}>
         {inner}
     </div>
   )

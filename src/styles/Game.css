@@ -1,18 +1,8 @@
-*:focus {
-  outline: none;
-}
-
-.game {
-  margin: 0 auto;
-  padding: 0.7em;
-  max-width: 90vh;
-}
-
 .focusable, .focusable-inner {
   transition-property: background-color, box-shadow;
   transition-duration: 0.1s;
   transition-timing-function: ease;
-
+  
   box-shadow: 0 2px 3px rgba(0, 0, 0, .2);
 }
 
@@ -25,104 +15,26 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, .6);
 }
 
-.button {
+button {
   transition-property: background-color, box-shadow, transform;
-
+  
   position: relative;
 	background-color: var(--primary);
-	border: none;
+  border: none;
   border-radius: var(--border-radius);
 }
 
-.button:hover {
+button:hover {
   transform: translateY(-2px);
 }
 
-.button:active {
+button:active {
   transform: translateY(1px);
   background-color: var(--on-active);
 }
 
-.game__header {
-  height: 2.5em;
-  display: flex;
-  justify-content: space-between;
-
-  margin-bottom: 0.5em;
-}
-
-.header__elem {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.3em;
-
-  background-color: var(--primary);
-  border-radius: var(--border-radius);
-  width: 7em;
-}
-
-.header__elem.score {
-  font-family: 'Fira Mono', monospace;
-}
-
-.header__elem > .icon {
-  flex-grow: 0;
-  width: 2em;
-  height: 100%;
-  padding: 0 0.2em;
-
-  background-color: var(--secondary);
-  border-radius: calc(var(--border-radius) - 0.2em);
-}
-
-.header__elem > .value {
-  text-align: center;
-  flex-grow: 1;
-}
-
-.game__board {
-  position: relative;
-  border-radius: var(--border-radius);
-  overflow: hidden;
-}
-
-.game__footer {
-  position: relative;
-  height: 1.7em;
-  margin-top: 0.5em;
-}
-
-.game__footer > * {
-  position: absolute;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.footer__board-desc {
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-
-  font-style: italic;
-  font-size: 0.8em;
-}
-
-.footer__theme-btn {
-  right: 0;
-  top: 0;
-  bottom: 0;
-  aspect-ratio: 1;
-
-  background-color: transparent;
-  border-radius: 50%;
-  border: none;
-  padding: 0;
-  box-shadow: none;
-}
-
-.footer__theme-btn:hover {
-  background-color: var(--secondary);
+.game {
+  margin: 0 auto;
+  padding: 0.7em;
+  max-width: 90vh;
 }

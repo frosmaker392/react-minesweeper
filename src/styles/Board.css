@@ -1,38 +1,15 @@
-.board{
+.boardContainer {
+  position: relative;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+
+.board {
   display: flex;
   flex-direction: column;
 }
 
-.board__row {
+.boardRow {
   display: flex;
   flex-direction: row;
-}
-
-.board__cell {
-  display: flex;
-  flex: 1;
-  aspect-ratio: 1;
-  justify-content: center;
-  align-items: center;
-
-  transition: background-color .1s ease-out;
-
-  background-color: var(--primary);
-  font-family: 'Overpass Mono', monospace;
-}
-
-.board__cell:hover {
-  background-color: var(--on-hover);
-}
-
-.board__cell:active {
-  background-color: var(--on-active);
-}
-
-.board__cell.revealed, .board__cell.revealed:hover {
-  background-color: var(--secondary);
-}
-
-.board__cell.with-mine {
-  color: var(--accent);
 }

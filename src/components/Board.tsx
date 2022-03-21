@@ -1,8 +1,9 @@
-import "../styles/Board.css";
-
-import { Cell } from "./Cell";
 import { useRef, useEffect, useState } from "react";
 import { BoardLogic, IBoard, BoardState } from "../utils/BoardLogic"
+
+import { Cell } from "./Cell";
+
+import "../styles/Board.css";
 
 interface IBoardProps extends IBoard {
   resetCounter: number
@@ -31,9 +32,8 @@ const Board = (props: IBoardProps) => {
 
   // Run onUpdate on each board change, passing board state
   useEffect(() => {
-    const state = board.state()
-    setIsLost(state === "lost")
-    onUpdate(state, board.flagCount())
+    setIsLost(board.state() === "lost")
+    onUpdate(board.state(), board.flagCount())
   }, [board, onUpdate])
 
   // Reset board if any of the params change
@@ -55,7 +55,7 @@ const Board = (props: IBoardProps) => {
           onRightClick={() => setBoard(board.mark([x, y]))}
         />)
     }
-    rows.push(<div key={y} className="board__row">{ cells }</div>);
+    rows.push(<div key={y} className="boardRow">{ cells }</div>);
   }
 
   return <div ref={ref} className="board">{ rows }</div>
