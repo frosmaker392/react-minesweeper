@@ -1,11 +1,11 @@
 import { BoardState } from "../../utils/BoardLogic"
 
-interface IMenuButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface IHeaderButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   gameState: BoardState
   showMenu: boolean
 }
 
-const MenuButton = ({ gameState, showMenu, ...btnProps }: IMenuButtonProps) => {
+const HeaderButton = ({ gameState, showMenu, ...btnProps }: IHeaderButtonProps) => {
   let label = "Back";
 
   switch (gameState) {
@@ -29,4 +29,4 @@ const MenuButton = ({ gameState, showMenu, ...btnProps }: IMenuButtonProps) => {
   return <button {...btnProps}> {label} </button>
 }
 
-export default MenuButton
+export default HeaderButton

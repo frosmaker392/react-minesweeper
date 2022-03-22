@@ -21,7 +21,7 @@
   
   width: 14em;
   height: 100%;
-  max-height: 20em;
+  max-height: 23em;
   font-size: 1.1em;
   line-height: 1;
 }
@@ -35,7 +35,7 @@
   height: 2em;
 }
 
-.menuView.pause {
+.menuView.pause, .menuView.howToPlay {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -57,4 +57,27 @@
   border: none;
 
   text-align: center;
+}
+
+.menuView.howToPlay > ul {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+
+  list-style-type: none;
+  padding: 0;
+}
+
+.menuView.howToPlay > ul > li { 
+  padding: 0.7em;
+  background-color: var(--primary);
+  border-radius: var(--border-radius);
+
+  font-size: 0.9em;
+  text-align: left;
+}
+
+.menuView.howToPlay em {
+  font-style: normal;
+  font-weight: 600;
 }

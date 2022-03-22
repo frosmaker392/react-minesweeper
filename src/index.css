@@ -74,8 +74,9 @@ select {
   --primary: #ccdad1;
   --secondary: #9caea9;
   --tertiary: #788585;
-  --text: #1C3144;
   --accent: #70161e;
+  --text: #1C3144;
+  --text-invert: #fff;
 
   --on-hover: #eaf0ec;
   --on-active: #9caea9;
@@ -123,7 +124,7 @@ a:link, a:visited {
 }
 
 ::selection {
-  color: white;
+  color: var(--text-invert);
   background: var(--text);
 }
 

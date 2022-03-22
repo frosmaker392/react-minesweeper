@@ -3,7 +3,7 @@ import { GiAbstract016 as MineIcon } from 'react-icons/gi'
 
 import "../../styles/ui/GameHeader.css"
 import { BoardState } from '../../utils/BoardLogic'
-import MenuButton from './MenuButton'
+import HeaderButton from './HeaderButton'
 
 interface IGameHeaderProps {
   gameState: BoardState
@@ -30,7 +30,7 @@ const GameHeader = (props: IGameHeaderProps) => {
         <time className='value'> {formattedDuration} </time>
       </article>
 
-      <MenuButton 
+      <HeaderButton 
         gameState={gameState}
         showMenu={showMenu}
         onClick={() => onMenuBtn(!showMenu)} />

@@ -4,16 +4,17 @@ import { boardPresets, DiffLevels } from "../../utils/boardPresets"
 import capitalizeFirstChar from "../../utils/capitalizeFirstChar"
 
 import IntegerInput from "../utils/IntegerInput"
+import MenuButton from "./MenuButton"
 
 type Difficulty = "custom" | DiffLevels
 
 interface INewGameProps {
   boardParams: IBoard
   onSubmit: (boardParams: IBoard) => void
-  onCancel: () => void
+  onReturn: () => void
 }
 
-const NewGameView = ({boardParams, onSubmit, onCancel}: INewGameProps) => {
+const NewGameView = ({boardParams, onSubmit, onReturn}: INewGameProps) => {
   const [width, setWidth] = useState(boardParams.width)
   const [height, setHeight] = useState(boardParams.height)
   const [numMines, setNumMines] = useState(boardParams.numMines)
@@ -71,12 +72,12 @@ const NewGameView = ({boardParams, onSubmit, onCancel}: INewGameProps) => {
       <IntegerInput className="input focusable-inner" id="mines" 
         range={[0, width * height / 2]} value={numMines} setter={onInputChange(setNumMines)} />
       
-      <button type="submit" className="focusable" name="submit">
+      <MenuButton type="submit" name="submit">
         Generate
-      </button>
-      <button className="focusable" name="cancel" onClick={onCancel}>
-        Cancel
-      </button>
+      </MenuButton>
+      <MenuButton name="cancel" onClick={onReturn}>
+        Back
+      </MenuButton>
     </form>
   )
 }
