@@ -2,8 +2,6 @@ import { IBoard } from "../../utils/BoardLogic"
 import { getDifficulty } from "../../utils/boardPresets"
 import capitalizeFirstChar from  "../../utils/capitalizeFirstChar";
 
-import { BiPalette as ThemeIcon } from 'react-icons/bi'
-
 import "../../styles/ui/GameFooter.css"
 
 interface IGameFooterProps {
@@ -19,9 +17,6 @@ const GameFooter = ({ boardParams }: IGameFooterProps) => {
         { capitalizeFirstChar(getDifficulty(boardParams)) }
         : ({width}x{height} cells, {numMines} mines)
       </p>
-      <button className="theme" value="theme">
-        <ThemeIcon />
-      </button>
     </footer>
   )
 }

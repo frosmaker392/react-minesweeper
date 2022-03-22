@@ -20,8 +20,8 @@ const Game = () => {
   const [boardParams, setBoardParams] = useState(initParams)
 
   const [gameState, setGameState] = useState("uninitialized" as BoardState)
-  const [isPaused, setIsPaused]   = useState(false)
-  const [gameOver, setGameOver]   = useState(false)
+  const [isPaused, setIsPaused]         = useState(true)
+  const [showMenu, setShowMenu]         = useState(false)
 
   const [seconds, setSeconds]           = useState(0)
   const [flagCount, setFlagCount]       = useState(0)
@@ -29,36 +29,38 @@ const Game = () => {
 
   const [stopwatch] = useState(new Stopwatch());
 
-  // Routine to update the seconds variable
+  const isGameOver = (useCallback(() => {
+    return gameState === "won" || gameState === "lost"
+  }, [gameState]))
+
   useEffect(() => {
+    // Routine to update the seconds variable
     const updateRoutine = setInterval(() => {
       setSeconds( Math.floor( stopwatch.elapsedMs / 1000 ) )
-    }, 250)
-    
-    return () => clearInterval(updateRoutine)
-  }, [stopwatch])
+    }, 150)
 
-  // Pause when window goes out of focus
-  useEffect(() => {
-    const onBlur = () => {
-      if (!gameOver) setIsPaused(true)
-    }
+    // Pause when window goes out of focus
+    const onBlur = () => { if (!isGameOver()) setShowMenu(true) }
     window.addEventListener("blur", onBlur)
     
-    return () => window.removeEventListener("blur", onBlur)
-  }, [gameOver])
+    return () => {
+      clearInterval(updateRoutine)
+      window.removeEventListener("blur", onBlur)
+    }
+  }, [stopwatch, isGameOver])
 
-  // Set corresponding flags
+  // Set when exactly to pause the stopwatch
   useEffect(() => {
-    if (gameState === "in-progress") {
-      if (!isPaused) stopwatch.startOrResume()
-      else stopwatch.pause()
-    }
-    else if (gameState === "won" || gameState === "lost") {
-      stopwatch.pause()
-      setGameOver(true)
-    }
-  }, [gameState, isPaused, stopwatch])
+    if (gameState !== "in-progress" || showMenu) setIsPaused(true)
+    else setIsPaused(false)
+    
+  }, [gameState, showMenu])
+
+  // Pause stopwatch effect
+  useEffect(() => {
+    if (isPaused) stopwatch.pause()
+    else stopwatch.startOrResume()
+  }, [isPaused, stopwatch])
 
   // Updates gameState and flagCnt
   const updateGameState = useCallback(
@@ -83,8 +85,8 @@ const Game = () => {
         elapsedSeconds={seconds}
         flaggedMines={flagCount}
         numMines={boardParams.numMines}
-        isPaused={isPaused}
-        onPauseBtn={p => setIsPaused(p)}
+        showMenu={showMenu}
+        onMenuBtn={setShowMenu}
       />
 
       <section className="boardContainer">
@@ -93,10 +95,9 @@ const Game = () => {
           onUpdate={updateGameState} 
           {...boardParams}/>
         { 
-          !gameOver && isPaused && 
+          showMenu && 
           <GameMenu 
             boardParams={boardParams}
-            onResume={() => setIsPaused(false)}
             onNewGame={resetBoard}
           /> 
         }

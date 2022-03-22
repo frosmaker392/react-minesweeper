@@ -67,6 +67,9 @@ select {
   }
 }
 
+/* #endregion */
+
+/* Variables */
 :root {
   --primary: #ccdad1;
   --secondary: #9caea9;
@@ -79,10 +82,6 @@ select {
 
   --border-radius: 0.7em
 }
-
-/* #endregion */
-
-/* #region General */
 
 /* https://stackoverflow.com/questions/2310734/how-to-make-html-text-unfocusable */
 .unselectable {

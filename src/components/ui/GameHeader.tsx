@@ -7,13 +7,13 @@ interface IGameHeaderProps {
   elapsedSeconds: number,
   flaggedMines: number,
   numMines: number,
-  isPaused: boolean,
-  onPauseBtn: (isPaused: boolean) => void
+  showMenu: boolean,
+  onMenuBtn: (isPaused: boolean) => void
 }
 
 const GameHeader = (props: IGameHeaderProps) => {
   const { elapsedSeconds, flaggedMines, numMines } = props
-  const { isPaused, onPauseBtn } = props
+  const { showMenu, onMenuBtn } = props
 
   const format = (val: number) => String(val).padStart(2, '0')
   const seconds = format(elapsedSeconds % 60)
@@ -27,8 +27,8 @@ const GameHeader = (props: IGameHeaderProps) => {
         <time className='value'> {formattedDuration} </time>
       </article>
 
-      <button onClick={() => onPauseBtn(!isPaused)}>
-        { isPaused ? 'Resume' : 'Pause'}
+      <button onClick={() => onMenuBtn(!showMenu)}>
+        { showMenu ? 'Resume' : 'Pause'}
       </button>
 
       <article className='score'>

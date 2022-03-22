@@ -6,11 +6,10 @@ import NewGameView from "./NewGameView"
 
 interface IGameMenuProps {
   boardParams: IBoard
-  onResume: () => void
   onNewGame: (boardParams: IBoard) => void
 }
 
-const GameMenu = ({boardParams, onResume, onNewGame}: IGameMenuProps) => {
+const GameMenu = ({boardParams, onNewGame}: IGameMenuProps) => {
   const [isPauseView, setIsPauseView] = useState(true)
 
   return (
@@ -18,8 +17,7 @@ const GameMenu = ({boardParams, onResume, onNewGame}: IGameMenuProps) => {
       <div className="menuView-container">
         {
           isPauseView ?
-          <PauseView 
-            onResume={onResume}
+          <PauseView
             onRestart={() => onNewGame(boardParams)}
             onNewGame={() => setIsPauseView(false)}
             />
