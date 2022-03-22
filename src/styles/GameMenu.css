@@ -1,14 +1,17 @@
-.menu {
+.boardOverlay {
   display: flex;
   align-items: flex-start;
   justify-content: center;
 
-  background-color: var(--secondary);
   position: absolute;
   top: 0;
   left: 0;
   height: 100%;
   width: 100%;
+}
+
+.menu {
+  background-color: var(--secondary);
 }
 
 .menuView-container {

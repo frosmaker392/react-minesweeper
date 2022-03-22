@@ -13,7 +13,7 @@ const GameMenu = ({boardParams, onNewGame}: IGameMenuProps) => {
   const [isPauseView, setIsPauseView] = useState(true)
 
   return (
-    <div className="menu">
+    <div className="boardOverlay menu">
       <div className="menuView-container">
         {
           isPauseView ?

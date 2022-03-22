@@ -2,8 +2,11 @@ import { BiTimeFive as TimeIcon } from 'react-icons/bi'
 import { GiAbstract016 as MineIcon } from 'react-icons/gi'
 
 import "../../styles/ui/GameHeader.css"
+import { BoardState } from '../../utils/BoardLogic'
+import MenuButton from './MenuButton'
 
 interface IGameHeaderProps {
+  gameState: BoardState
   elapsedSeconds: number,
   flaggedMines: number,
   numMines: number,
@@ -12,8 +15,8 @@ interface IGameHeaderProps {
 }
 
 const GameHeader = (props: IGameHeaderProps) => {
-  const { elapsedSeconds, flaggedMines, numMines } = props
-  const { showMenu, onMenuBtn } = props
+  const { gameState, elapsedSeconds, flaggedMines, numMines,
+     showMenu, onMenuBtn } = props
 
   const format = (val: number) => String(val).padStart(2, '0')
   const seconds = format(elapsedSeconds % 60)
@@ -27,9 +30,10 @@ const GameHeader = (props: IGameHeaderProps) => {
         <time className='value'> {formattedDuration} </time>
       </article>
 
-      <button onClick={() => onMenuBtn(!showMenu)}>
-        { showMenu ? 'Resume' : 'Pause'}
-      </button>
+      <MenuButton 
+        gameState={gameState}
+        showMenu={showMenu}
+        onClick={() => onMenuBtn(!showMenu)} />
 
       <article className='score'>
         <MineIcon className='icon' />

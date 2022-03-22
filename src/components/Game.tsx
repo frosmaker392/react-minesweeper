@@ -74,7 +74,7 @@ const Game = () => {
     (boardParams: IBoard) => {
       setResetCounter(resetCounter + 1)
       setBoardParams(boardParams)
-      setIsPaused(false)
+      setShowMenu(false)
       setGameState("uninitialized")
       stopwatch.reset()
     }, [resetCounter, stopwatch])
@@ -82,6 +82,7 @@ const Game = () => {
   return (
     <div className="game">
       <GameHeader 
+        gameState={gameState}
         elapsedSeconds={seconds}
         flaggedMines={flagCount}
         numMines={boardParams.numMines}
@@ -95,11 +96,11 @@ const Game = () => {
           onUpdate={updateGameState} 
           {...boardParams}/>
         { 
-          showMenu && 
+          showMenu ? 
           <GameMenu 
             boardParams={boardParams}
             onNewGame={resetBoard}
-          /> 
+          /> : (isGameOver() && <div className='boardOverlay' />)
         }
       </section>
       
