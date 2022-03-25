@@ -1,9 +1,20 @@
-import { ICell } from '../utils/BoardLogic'
+import { CellState, ICell } from '../utils/BoardLogic'
 
-import { HiFlag as FlagIcon } from 'react-icons/hi'
-import { GiAbstract016 as MineIcon } from 'react-icons/gi'
+import { ReactComponent as FlagIcon } from '../icons/Flag.svg'
+import { ReactComponent as MineIcon } from '../icons/Mine.svg'
 
 import "../styles/Cell.css"
+
+interface ILowerProps {
+  cellParams: Pick<ICell, 'state' | 'hasMine' | 'neighboringMines'>
+  className: string
+}
+
+interface IUpperProps {
+  cellParams: Pick<ICell, 'state' | 'hasMine'>
+  revealMine: boolean
+  className: string
+}
 
 interface ICellProps {
   cellParams: ICell
@@ -13,33 +24,35 @@ interface ICellProps {
   onRightClick: () => void
 }
 
-export const Cell = (props: ICellProps) => {
-  const {state, hasMine, neighboringMines: nMines} = props.cellParams
-  const {revealMine, fontSize, onClick, onRightClick} = props
+const Lower = ({ cellParams, className }: ILowerProps) => {
+  const { state, hasMine, neighboringMines: nMines } 
+    = cellParams;
 
-  let inner: string | JSX.Element = ""
-  let className: string = state
-  switch (state) {
-    case "revealed":
-      if (hasMine) {
-        inner = <MineIcon />
-        className += " with-mine"
-      }
-      else inner = `${nMines > 0 ? nMines : ""}`
-      break
-    case "flagged":
-      inner = <FlagIcon />
-      break
-    case "unknown":
-      inner = "?"
-      break
-    default:
-      if (revealMine && hasMine) {
-        inner = <MineIcon />
-        className = "with-mine"
-      }
-      break
+  return state === 'revealed' ?
+    (hasMine ? 
+      <MineIcon className={className + ' with-mine'} /> 
+      : <div className={className}>{nMines > 0 ? nMines : ""}</div>)
+    : <div className={className} />
+}
+  
+const Upper = ({ cellParams, revealMine, className }: IUpperProps) => {
+  const { state, hasMine } = cellParams
+
+  const upperElements: Record<CellState, JSX.Element> = {
+    hidden    : (revealMine && hasMine ? 
+                <MineIcon className={className + ' with-mine'} /> 
+                : <div className={className} />),
+    revealed  : <></>,
+    flagged   : <FlagIcon className={className} />,
+    unknown   : <div className={className} >?</div>
   }
+
+  return upperElements[state]
+}
+
+const Cell = (props: ICellProps) => {
+  const { state } = props.cellParams
+  const { revealMine, fontSize, onClick, onRightClick } = props
 
   return (
     <div 
@@ -49,8 +62,13 @@ export const Cell = (props: ICellProps) => {
         onRightClick()
       }}
       style={{fontSize}}
-      className= {"boardCell unselectable " + className}>
-        {inner}
+      className={"boardCell unselectable " + state}>
+        <Lower cellParams={props.cellParams} className='lower'  />
+        {state !== "revealed" && <div className='shadow' />}
+        <Upper cellParams={props.cellParams} revealMine={revealMine} 
+          className='upper' />
     </div>
   )
 };
+
+export default Cell

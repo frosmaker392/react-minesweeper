@@ -1,28 +1,49 @@
 .boardCell {
+  position: relative;
   display: flex;
   flex: 1;
   aspect-ratio: 1;
-  justify-content: center;
-  align-items: center;
 
-  transition: background-color .1s ease-out;
-
-  background-color: var(--primary);
   font-family: 'Overpass Mono', monospace;
 }
 
-.boardCell:hover {
+.boardCell > * {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.boardCell > .upper {
+  background-color: var(--primary);
+  transition: background-color .1s ease-out;
+  z-index: 1;
+}
+
+.boardCell > .upper:hover {
   background-color: var(--on-hover);
 }
 
-.boardCell:active {
+.boardCell > .upper:active {
   background-color: var(--on-active);
 }
 
-.boardCell.revealed, .boardCell.revealed:hover {
-  background-color: var(--secondary);
+.boardCell > .shadow {
+  box-shadow:  5px 5px 10px #808f8b,
+              -5px -5px 10px #b8cdc7;
 }
 
-.boardCell.with-mine {
+.boardCell > .lower {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.boardCell > svg {
+  padding: 0.45em;
+}
+
+.boardCell > svg.with-mine {
   color: var(--accent);
 }

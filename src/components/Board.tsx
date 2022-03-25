@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState } from "react";
 import { BoardLogic, IBoard, BoardState } from "../utils/BoardLogic"
 
-import { Cell } from "./Cell";
+import Cell from "./Cell";
 
 import "../styles/Board.css";
 

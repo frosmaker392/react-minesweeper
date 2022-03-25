@@ -218,4 +218,4 @@ class BoardLogic implements IBoard {
 }
 
 export { BoardLogic }
-export type { ICell, IBoard, BoardState }
+export type { ICell, IBoard, BoardState, CellState }

@@ -1,9 +1,11 @@
-import { BiTimeFive as TimeIcon } from 'react-icons/bi'
-import { GiAbstract016 as MineIcon } from 'react-icons/gi'
+import { BoardState } from '../../utils/BoardLogic'
+
+import HeaderButton from './HeaderButton'
+
+import { ReactComponent as ClockIcon } from '../../icons/Clock.svg'
+import { ReactComponent as MineIcon } from '../../icons/Mine.svg'
 
 import "../../styles/ui/GameHeader.css"
-import { BoardState } from '../../utils/BoardLogic'
-import HeaderButton from './HeaderButton'
 
 interface IGameHeaderProps {
   gameState: BoardState
@@ -26,7 +28,9 @@ const GameHeader = (props: IGameHeaderProps) => {
   return (
     <header className='gameHeader'>
       <article className='score'>
-        <TimeIcon className='icon' />
+        <div className='icon'>
+          <ClockIcon />
+        </div>
         <time className='value'> {formattedDuration} </time>
       </article>
 
