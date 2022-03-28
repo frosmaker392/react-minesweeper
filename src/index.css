@@ -78,10 +78,26 @@ select {
   --text: #1C3144;
   --text-invert: #fff;
 
-  --on-hover: #eaf0ec;
-  --on-active: #9caea9;
+  --on-hover: yellow;
+  --on-active: hotpink;
 
-  --border-radius: 0.7em
+  /* neumorphism.io - size: 40px, intensity: 0.2 */
+  --bg-primary-convex: linear-gradient(170deg, #dae9e0, #b8c4bc);
+  --bg-primary-concave: linear-gradient(135deg, #b8c4bc, #dae9e0);
+
+  --shadow-primary:         0.25rem 0.25rem 0.375rem #a3aea7,
+                            -0.25rem -0.25rem 0.375rem #f5fffb;
+  --shadow-primary-large:   0.25rem 0.25rem 0.5rem #a3aea7,
+                            -0.25rem -0.25rem 0.5rem #f5fffb;
+  --shadow-primary-inset:   inset 0.25rem 0.25rem 0.375rem #a3aea7,
+                            inset -0.25rem -0.25rem 0.375rem #f5fffb;
+
+  --shadow-secondary:       0.25rem 0.25rem 0.375rem #7d8b87,
+                            -0.25rem -0.25rem 0.375rem #bbd1cb;
+  --shadow-secondary-inset: inset 0.25rem 0.25rem 0.375rem #7d8b87,
+                            inset -0.25rem -0.25rem 0.375rem #bbd1cb;
+
+  --border-radius: 0.7rem;
 }
 
 /* https://stackoverflow.com/questions/2310734/how-to-make-html-text-unfocusable */
@@ -101,22 +117,21 @@ body, div, button, label, input, select{
 body {
   overflow-x: hidden;
   font-family: 'Cabin', sans-serif;
-  font-kerning: 1em;
   text-align: center;
 
   background-color: var(--primary);
 }
 
 .footer {
-  font-size: 0.8em;
+  font-size: 0.8rem;
   font-style: italic;
-  padding: 1em;
+  padding: 1rem;
 
   line-height: 100%;
 }
 
 h1 {
-  margin: 0.2em;
+  margin: 0.4rem;
 }
 
 a:link, a:visited {
@@ -126,8 +141,4 @@ a:link, a:visited {
 ::selection {
   color: var(--text-invert);
   background: var(--text);
-}
-
-*:focus {
-  outline: none;
 }

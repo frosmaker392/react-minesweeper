@@ -30,11 +30,10 @@
 }
 
 .boardCell > .shadow {
-  box-shadow:  5px 5px 10px #808f8b,
-              -5px -5px 10px #b8cdc7;
+  box-shadow: var(--shadow-secondary);
 }
 
-.boardCell > .lower {
+.boardCell > .lower, .upper {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -46,4 +45,20 @@
 
 .boardCell > svg.with-mine {
   color: var(--accent);
+}
+
+.boardCell > .top-left {
+  border-top-left-radius: var(--border-radius);
+}
+
+.boardCell > .top-right {
+  border-top-right-radius: var(--border-radius);
+}
+
+.boardCell > .bottom-left {
+  border-bottom-left-radius: var(--border-radius);
+}
+
+.boardCell > .bottom-right {
+  border-bottom-right-radius: var(--border-radius);
 }

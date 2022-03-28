@@ -1,22 +1,21 @@
 .gameHeader {
-  height: 2.5em;
+  height: 2.5rem;
   display: flex;
   justify-content: space-between;
 
-  margin-bottom: 1em;
+  margin-bottom: 1rem;
 }
 
 .gameHeader > * {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0.3em;
+  padding: 0.3rem;
 
   background-color: var(--primary);
   border-radius: var(--border-radius);
-  box-shadow:  5px 5px 10px #a7b3ab,
-             -5px -5px 10px #f1fff7;
-  width: 7em;
+  box-shadow: var(--shadow-primary);
+  width: 7rem;
 }
 
 .gameHeader > .score {
@@ -25,12 +24,12 @@
 
 .gameHeader > .score > .icon {
   flex-grow: 0;
-  width: 2em;
+  width: 2rem;
   height: 100%;
   padding: 0.25em 0.2em;
 
   background-color: var(--secondary);
-  border-radius: calc(var(--border-radius) - 0.2em);
+  border-radius: calc(var(--border-radius) - 0.2rem);
 }
 
 .gameHeader > .score > .value {

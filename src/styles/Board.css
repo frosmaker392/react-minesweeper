@@ -9,8 +9,7 @@
   flex-direction: column;
 
   background-color: var(--secondary);
-  box-shadow: inset 5px 5px 10px #808f8b,
-            inset -5px -5px 10px #b8cdc7;
+  box-shadow: var(--shadow-secondary-inset);
 }
 
 .boardRow {

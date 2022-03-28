@@ -37,6 +37,7 @@ const GameHeader = (props: IGameHeaderProps) => {
       <HeaderButton 
         gameState={gameState}
         showMenu={showMenu}
+        className='clickable'
         onClick={() => onMenuBtn(!showMenu)} />
 
       <article className='score'>

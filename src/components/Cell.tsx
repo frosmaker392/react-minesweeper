@@ -4,6 +4,21 @@ import { ReactComponent as FlagIcon } from '../icons/Flag.svg'
 import { ReactComponent as MineIcon } from '../icons/Mine.svg'
 
 import "../styles/Cell.css"
+import enumKeys from '../utils/enumKeys'
+
+enum Corner {
+  TopLeft     = 1 << 0,
+  TopRight    = 1 << 1,
+  BottomLeft  = 1 << 2,
+  BottomRight = 1 << 3
+}
+
+const cornerNames: Record<Corner, string> = {
+  [Corner.TopLeft]: 'top-left',
+  [Corner.TopRight]: 'top-right',
+  [Corner.BottomLeft]: 'bottom-left',
+  [Corner.BottomRight]: 'bottom-right'
+}
 
 interface ILowerProps {
   cellParams: Pick<ICell, 'state' | 'hasMine' | 'neighboringMines'>
@@ -20,6 +35,7 @@ interface ICellProps {
   cellParams: ICell
   revealMine: boolean
   fontSize: number
+  roundCorners: Corner
   onClick: () => void
   onRightClick: () => void
 }
@@ -52,7 +68,15 @@ const Upper = ({ cellParams, revealMine, className }: IUpperProps) => {
 
 const Cell = (props: ICellProps) => {
   const { state } = props.cellParams
-  const { revealMine, fontSize, onClick, onRightClick } = props
+  const { revealMine, fontSize, roundCorners, onClick, onRightClick } 
+    = props
+
+  const cornerClasses = 
+    enumKeys(Corner)
+      .map(k => Corner[k])
+      .filter(dir => (roundCorners & dir) === dir)
+      .map(dir => cornerNames[dir])
+      .join(' ')
 
   return (
     <div 
@@ -64,11 +88,12 @@ const Cell = (props: ICellProps) => {
       style={{fontSize}}
       className={"boardCell unselectable " + state}>
         <Lower cellParams={props.cellParams} className='lower'  />
-        {state !== "revealed" && <div className='shadow' />}
+        {state !== "revealed" && 
+          <div className={'shadow ' + cornerClasses} />}
         <Upper cellParams={props.cellParams} revealMine={revealMine} 
-          className='upper' />
+          className={'upper ' + cornerClasses} />
     </div>
   )
 };
 
-export default Cell
+export { Cell, Corner }

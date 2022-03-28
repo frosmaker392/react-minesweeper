@@ -24,13 +24,12 @@
 }
 
 .num-input > button {
+  all: unset;
+
   position: absolute;
   top: 0;
   height: 100%;
   width: 1.4em;
-
-  background: transparent;
-  border: none;
 }
 
 .num-input > .sub {

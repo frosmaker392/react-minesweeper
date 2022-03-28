@@ -53,7 +53,7 @@ const NewGameView = ({boardParams, onSubmit, onReturn}: INewGameProps) => {
       onSubmit({width, height, numMines})
     }}>
       <label htmlFor="diff-select">Difficulty</label>
-      <select className="input focusable" id="diff-select"
+      <select className="input clickable" id="diff-select"
         value={curDifficulty}
         onChange={onDifficultyChange}>
         <option value="custom">Custom</option>
@@ -61,15 +61,15 @@ const NewGameView = ({boardParams, onSubmit, onReturn}: INewGameProps) => {
       </select>
 
       <label htmlFor="width">Width</label>
-      <IntegerInput className="input focusable-inner" id="width" 
+      <IntegerInput className="input clickable" id="width" 
         range={[5, 30]} value={width} setter={onInputChange(setWidth)} />
 
       <label htmlFor="height">Height</label>
-      <IntegerInput className="input focusable-inner" id="height" 
+      <IntegerInput className="input clickable" id="height" 
         range={[5, 30]} value={height} setter={onInputChange(setHeight)} />
 
       <label htmlFor="mines">Mines</label>
-      <IntegerInput className="input focusable-inner" id="mines" 
+      <IntegerInput className="input clickable" id="mines" 
         range={[0, width * height / 2]} value={numMines} setter={onInputChange(setNumMines)} />
       
       <MenuButton type="submit" name="submit">
