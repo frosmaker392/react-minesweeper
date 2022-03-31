@@ -4,6 +4,7 @@ import { boardPresets, DiffLevels } from "../../utils/boardPresets"
 import capitalizeFirstChar from "../../utils/capitalizeFirstChar"
 
 import IntegerInput from "../utils/IntegerInput"
+import StyledSelect from "../utils/StyledSelect"
 import MenuButton from "./MenuButton"
 
 type Difficulty = "custom" | DiffLevels
@@ -53,12 +54,13 @@ const NewGameView = ({boardParams, onSubmit, onReturn}: INewGameProps) => {
       onSubmit({width, height, numMines})
     }}>
       <label htmlFor="diff-select">Difficulty</label>
-      <select className="input clickable" id="diff-select"
-        value={curDifficulty}
+      <StyledSelect className="clickable input" id="diff-select"
+        value={curDifficulty} 
         onChange={onDifficultyChange}>
+
         <option value="custom">Custom</option>
-        {presetOptions}
-      </select>
+          {presetOptions}
+      </StyledSelect>
 
       <label htmlFor="width">Width</label>
       <IntegerInput className="input clickable" id="width" 
@@ -70,11 +72,13 @@ const NewGameView = ({boardParams, onSubmit, onReturn}: INewGameProps) => {
 
       <label htmlFor="mines">Mines</label>
       <IntegerInput className="input clickable" id="mines" 
-        range={[0, width * height / 2]} value={numMines} setter={onInputChange(setNumMines)} />
+        range={[0, Math.floor(width * height / 2)]} value={numMines} 
+        setter={onInputChange(setNumMines)} />
       
-      <MenuButton type="submit" name="submit">
+      <MenuButton className="highlight" type="submit" name="submit">
         Generate
       </MenuButton>
+
       <MenuButton name="cancel" onClick={onReturn}>
         Back
       </MenuButton>

@@ -4,7 +4,8 @@
   flex: 1;
   aspect-ratio: 1;
 
-  font-family: 'Overpass Mono', monospace;
+  font-family: 'Barlow', monospace;
+  font-weight: 700;
 }
 
 .boardCell > * {
@@ -30,7 +31,7 @@
 }
 
 .boardCell > .shadow {
-  box-shadow: var(--shadow-secondary);
+  box-shadow: var(--shadow);
 }
 
 .boardCell > .lower, .upper {
@@ -44,21 +45,21 @@
 }
 
 .boardCell > svg.with-mine {
-  color: var(--accent);
+  color: var(--accent-2);
 }
 
 .boardCell > .top-left {
-  border-top-left-radius: var(--border-radius);
+  border-top-left-radius: 0.2em;
 }
 
 .boardCell > .top-right {
-  border-top-right-radius: var(--border-radius);
+  border-top-right-radius: 0.2em;
 }
 
 .boardCell > .bottom-left {
-  border-bottom-left-radius: var(--border-radius);
+  border-bottom-left-radius: 0.2em;
 }
 
 .boardCell > .bottom-right {
-  border-bottom-right-radius: var(--border-radius);
+  border-bottom-right-radius: 0.2em;
 }

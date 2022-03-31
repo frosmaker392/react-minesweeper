@@ -23,7 +23,6 @@ const GameHeader = (props: IGameHeaderProps) => {
   const format = (val: number) => String(val).padStart(2, '0')
   const seconds = format(elapsedSeconds % 60)
   const minutes = format(Math.floor(elapsedSeconds / 60))
-  const formattedDuration = `${minutes}:${seconds}`
 
   return (
     <header className='gameHeader'>
@@ -31,7 +30,7 @@ const GameHeader = (props: IGameHeaderProps) => {
         <div className='icon'>
           <ClockIcon />
         </div>
-        <time className='value'> {formattedDuration} </time>
+        <time className='value'> <span>{minutes}</span>:{seconds} </time>
       </article>
 
       <HeaderButton 
@@ -42,7 +41,7 @@ const GameHeader = (props: IGameHeaderProps) => {
 
       <article className='score'>
         <MineIcon className='icon' />
-        <p className='value'> {flaggedMines}/{numMines} </p>
+        <p className='value'> {flaggedMines}<span>/{numMines}</span> </p>
       </article>
     </header>
   )

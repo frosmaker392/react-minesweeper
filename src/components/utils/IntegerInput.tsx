@@ -1,4 +1,8 @@
 import { ChangeEvent } from "react"
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons"
+
 import "../../styles/utils/IntegerInput.css"
 
 interface IIntegerInputProps {
@@ -18,6 +22,12 @@ const IntegerInput = ({ id, className, range, value, setter }: IIntegerInputProp
       if (v) setter(v)
     }
 
+  const btnAction = (action: () => void) => 
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault()
+      action()
+    }
+
   return (
     <div className={"num-input " + className}>
       <input
@@ -28,17 +38,15 @@ const IntegerInput = ({ id, className, range, value, setter }: IIntegerInputProp
 
       <button className="sub" 
         tabIndex={-1}
-        onClick={(e) => {
-          e.preventDefault()
-          setter(Math.max(min, value - 1))
-        }}> - </button>
+        onClick={btnAction(() => setter(Math.max(min, value - 1)))}> 
+        <FontAwesomeIcon icon={faMinus} />
+      </button>
 
       <button className="add" 
         tabIndex={-1}
-        onClick={(e) => {
-          e.preventDefault()
-          setter(Math.min(max, value + 1))
-        }}> + </button>
+        onClick={btnAction(() => setter(Math.min(max, value + 1)))}>
+          <FontAwesomeIcon icon={faPlus} />
+        </button>
     </div>
   )
 }

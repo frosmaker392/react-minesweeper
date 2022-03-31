@@ -1,5 +1,6 @@
 .num-input {
   position: relative;
+  overflow: hidden;
 }
 
 .num-input > input::-webkit-outer-spin-button,
@@ -27,15 +28,18 @@
   all: unset;
 
   position: absolute;
-  top: 0;
-  height: 100%;
-  width: 1.4em;
+  top: -0.3em;
+  bottom: -0.3em;
+  aspect-ratio: 1;
+  font-size: 0.7em;
+
+  border-radius: 50%;
 }
 
 .num-input > .sub {
-  left: 0;
+  left: -0.4em;
 }
 
 .num-input > .add {
-  right: 0;
+  right: -0.4em;
 }

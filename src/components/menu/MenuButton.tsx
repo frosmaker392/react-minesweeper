@@ -1,8 +1,8 @@
 import { ButtonHTMLAttributes } from "react"
 
-const MenuButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
-  return <button className="clickable" {...props}> 
-    {props.children} 
+const MenuButton = ({ className, ...restOfProps}: ButtonHTMLAttributes<HTMLButtonElement>) => {
+  return <button className={'clickable ' + className ?? ''} {...restOfProps}> 
+    {restOfProps.children} 
   </button>
 }
 
