@@ -1,9 +1,10 @@
+import React from 'react'
 import { CellState, ICell } from '../utils/BoardLogic'
 
 import { ReactComponent as FlagIcon } from '../icons/Flag.svg'
 import { ReactComponent as MineIcon } from '../icons/Mine.svg'
 
-import "../styles/Cell.css"
+import '../styles/Cell.css'
 import enumKeys from '../utils/enumKeys'
 
 enum Corner {
@@ -13,7 +14,7 @@ enum Corner {
   BottomRight = 1 << 3
 }
 
-const cornerNames: Record<Corner, string> = {
+const cornerClassNames: Record<Corner, string> = {
   [Corner.TopLeft]: 'top-left',
   [Corner.TopRight]: 'top-right',
   [Corner.BottomLeft]: 'bottom-left',
@@ -42,12 +43,12 @@ interface ICellProps {
 
 const Lower = ({ cellParams, className }: ILowerProps) => {
   const { state, hasMine, neighboringMines: nMines } 
-    = cellParams;
+    = cellParams
 
   return state === 'revealed' ?
     (hasMine ? 
       <MineIcon className={className + ' with-mine'} /> 
-      : <div className={className}>{nMines > 0 ? nMines : ""}</div>)
+      : <div className={className}>{nMines > 0 ? nMines : ''}</div>)
     : <div className={className} />
 }
   
@@ -66,7 +67,8 @@ const Upper = ({ cellParams, revealMine, className }: IUpperProps) => {
   return upperElements[state]
 }
 
-const Cell = (props: ICellProps) => {
+const Cell: React.FC<ICellProps> = 
+props => {
   const { state } = props.cellParams
   const { revealMine, fontSize, roundCorners, onClick, onRightClick } 
     = props
@@ -75,7 +77,7 @@ const Cell = (props: ICellProps) => {
     enumKeys(Corner)
       .map(k => Corner[k])
       .filter(dir => (roundCorners & dir) === dir)
-      .map(dir => cornerNames[dir])
+      .map(dir => cornerClassNames[dir])
       .join(' ')
 
   return (
@@ -86,14 +88,14 @@ const Cell = (props: ICellProps) => {
         onRightClick()
       }}
       style={{fontSize}}
-      className={"boardCell unselectable " + state}>
+      className={'board-cell unselectable ' + state}>
         <Lower cellParams={props.cellParams} className='lower'  />
-        {state !== "revealed" && 
+        {state !== 'revealed' && 
           <div className={'shadow ' + cornerClasses} />}
         <Upper cellParams={props.cellParams} revealMine={revealMine} 
           className={'upper ' + cornerClasses} />
     </div>
   )
-};
+}
 
 export { Cell, Corner }

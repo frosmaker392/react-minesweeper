@@ -1,17 +1,17 @@
-.gameFooter {
+.game-footer {
   position: relative;
   height: 1.7rem;
   margin-top: 0.5rem;
 }
 
-.gameFooter > * {
+.game-footer > * {
   position: absolute;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.gameFooter > .description {
+.game-footer > .description {
   top: 0;
   left: 0;
   right: 0;

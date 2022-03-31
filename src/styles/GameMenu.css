@@ -1,4 +1,4 @@
-.boardOverlay {
+.board-overlay {
   display: flex;
   align-items: flex-start;
   justify-content: center;
@@ -15,7 +15,7 @@
   background-color: var(--primary);
 }
 
-.menuView-container {
+.menu-view-container {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -27,37 +27,37 @@
   line-height: 1;
 }
 
-.menuView {
+.menu-view {
   width: 100%;
   gap: 0.8rem;
 }
 
-.menuView .highlight {
+.menu-view .highlight {
   background-color: var(--accent);
   color: var(--text-invert);
 }
 
-.menuView > button, .input {
+.menu-view > button, .input {
   height: 2em;
 }
 
-.menuView.pause, .menuView.howToPlay {
+.menu-view.pause, .menu-view.how-to-play {
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
-.menuView.newGame {
+.menu-view.new-game {
   display: grid;
   grid-template-columns: 1fr 1.5fr;
   align-items: center;
 }
 
-.menuView.newGame > button {
+.menu-view.new-game > button {
   grid-column: span 2;
 }
 
-.menuView .input {
+.menu-view .input {
   background-color: var(--primary);
   border-radius: var(--border-radius);
   border: none;
@@ -65,7 +65,7 @@
   text-align: center;
 }
 
-.menuView.howToPlay > ul {
+.menu-view.how-to-play > ul {
   display: flex;
   flex-direction: column;
   gap: 0.5em;
@@ -74,8 +74,9 @@
   padding: 0;
 }
 
-.menuView.howToPlay > ul > li { 
-  padding: 0.6rem;
+.menu-view.how-to-play > ul > li { 
+  padding: 0.3rem;
+  line-height: 1.1em;
   border-radius: var(--border-radius);
 
   font-size: 1rem;
@@ -83,7 +84,11 @@
   text-align: left;
 }
 
-.menuView.howToPlay em {
+.menu-view.how-to-play b {
   font-weight: 700;
   color: var(--accent);
+}
+
+.menu-view.how-to-play b.accent-2 {
+  color: var(--accent-2);
 }

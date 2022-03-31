@@ -1,10 +1,10 @@
-import { useRef, useEffect, useState } from "react";
-import { BoardLogic, IBoard, BoardState } from "../utils/BoardLogic"
-import enumKeys from "../utils/enumKeys"
+import React, { useRef, useEffect, useState } from 'react'
+import { BoardLogic, IBoard, BoardState } from '../utils/BoardLogic'
+import enumKeys from '../utils/enumKeys'
 
-import { Cell, Corner } from "./Cell"
+import { Cell, Corner } from './Cell'
 
-import "../styles/Board.css"
+import '../styles/Board.css'
 
 type Coord = [number, number]
 
@@ -28,7 +28,8 @@ const cornerOffsetMap: Record<Corner, Coord> = {
   [Corner.BottomRight]: [1, 1]
 }
 
-const Board = (props: IBoardProps) => {
+const Board: React.FC<IBoardProps> = 
+props => {
   const {width, height, numMines} = props
   const {resetCounter, onUpdate} = props
   
@@ -50,7 +51,7 @@ const Board = (props: IBoardProps) => {
 
   // Run onUpdate on each board change, passing board state
   useEffect(() => {
-    setIsLost(board.state() === "lost")
+    setIsLost(board.state() === 'lost')
     onUpdate(board.state(), board.flagCount())
   }, [board, onUpdate])
 
@@ -63,7 +64,7 @@ const Board = (props: IBoardProps) => {
       const row = rowCells.map((cell, x) => {
         const cornersToRound = enumKeys(Corner)
           .filter(c => {
-            if (c === undefined) return false;
+            if (c === undefined) return false
             const [xOff, yOff] = cornerOffsetMap[Corner[c]]
 
             return isRevealedAt(board, [x+xOff, y]) 
@@ -83,10 +84,10 @@ const Board = (props: IBoardProps) => {
         />
       })
 
-      return <div key={y} className="boardRow">{ row }</div>
+      return <div key={y} className='board-row'>{ row }</div>
     })
 
-  return <div ref={ref} className="board">{ rows }</div>
+  return <div ref={ref} className='board'>{ rows }</div>
 }
 
-export default Board;
+export default Board

@@ -1,40 +1,41 @@
-import { useState } from "react"
-import { IBoard } from "../../utils/BoardLogic"
+import React, { useState } from 'react'
+import { IBoard } from '../../utils/BoardLogic'
 
-import PauseView from "./PauseView"
-import NewGameView from "./NewGameView"
-import HowToPlayView from "./HowToPlayView"
+import PauseView from './PauseView'
+import NewGameView from './NewGameView'
+import HowToPlayView from './HowToPlayView'
 
-type MenuView = "pause" | "newGame" | "howToPlay"
+type MenuView = 'pause' | 'newGame' | 'howToPlay'
 
 interface IGameMenuProps {
   boardParams: IBoard
   onNewGame: (boardParams: IBoard) => void
 }
 
-const GameMenu = ({boardParams, onNewGame}: IGameMenuProps) => {
-  const [currentView, setCurrentView] = useState("pause" as MenuView)
+const GameMenu: React.FC<IGameMenuProps> = 
+({ boardParams, onNewGame }) => {
+  const [currentView, setCurrentView] = useState('pause' as MenuView)
 
   const views: Record<MenuView, JSX.Element> = {
     pause     : <PauseView
                   onRestart={() => onNewGame(boardParams)}
-                  onNewGame={() => setCurrentView("newGame")}
-                  onHowToPlay={() => setCurrentView("howToPlay")}
+                  onNewGame={() => setCurrentView('newGame')}
+                  onHowToPlay={() => setCurrentView('howToPlay')}
                   />,
     newGame   : <NewGameView 
                   boardParams={boardParams}
                   onSubmit={onNewGame}
-                  onReturn={() => setCurrentView("pause")}
+                  onReturn={() => setCurrentView('pause')}
                   />,
     howToPlay : <HowToPlayView 
-                  onReturn={() => setCurrentView("pause")}/>
+                  onReturn={() => setCurrentView('pause')} />
   }
 
   const currentViewElement = views[currentView]
 
   return (
-    <div className="boardOverlay menu">
-      <div className="menuView-container">
+    <div className='board-overlay menu'>
+      <div className='menu-view-container'>
         { currentViewElement }
       </div>
     </div>

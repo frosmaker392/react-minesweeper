@@ -1,4 +1,4 @@
-.boardContainer {
+.board-container {
   position: relative;
   border-radius: var(--border-radius);
   overflow: hidden;
@@ -12,7 +12,7 @@
   box-shadow: var(--shadow-inset);
 }
 
-.boardRow {
+.board-row {
   display: flex;
   flex-direction: row;
 }
