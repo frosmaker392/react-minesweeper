@@ -1,4 +1,4 @@
-import { ChangeEvent } from 'react'
+import React, { ChangeEvent } from 'react'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons'
@@ -13,7 +13,8 @@ interface IIntegerInputProps {
   setter: (val: number) => void
 }
 
-const IntegerInput = ({ id, className, range, value, setter }: IIntegerInputProps) => {
+const IntegerInput: React.FC<IIntegerInputProps> = 
+({ id, className, range, value, setter }) => {
   const [min, max] = [range[0], Math.max(range[0], range[1])]
 
   const inputChange = 
