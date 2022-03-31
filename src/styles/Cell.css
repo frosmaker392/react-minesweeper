@@ -1,4 +1,4 @@
-.boardCell {
+.board-cell {
   position: relative;
   display: flex;
   flex: 1;
@@ -8,7 +8,7 @@
   font-weight: 700;
 }
 
-.boardCell > * {
+.board-cell > * {
   position: absolute;
   top: 0;
   left: 0;
@@ -16,50 +16,50 @@
   bottom: 0;
 }
 
-.boardCell > .upper {
+.board-cell > .upper {
   background-color: var(--primary);
   transition: background-color .1s ease-out;
   z-index: 1;
 }
 
-.boardCell > .upper:hover {
+.board-cell > .upper:hover {
   background-color: var(--on-hover);
 }
 
-.boardCell > .upper:active {
+.board-cell > .upper:active {
   background-color: var(--on-active);
 }
 
-.boardCell > .shadow {
+.board-cell > .shadow {
   box-shadow: var(--shadow);
 }
 
-.boardCell > .lower, .upper {
+.board-cell > .lower, .upper {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.boardCell > svg {
+.board-cell > svg {
   padding: 0.45em;
 }
 
-.boardCell > svg.with-mine {
+.board-cell > svg.with-mine {
   color: var(--accent-2);
 }
 
-.boardCell > .top-left {
+.board-cell > .top-left {
   border-top-left-radius: 0.2em;
 }
 
-.boardCell > .top-right {
+.board-cell > .top-right {
   border-top-right-radius: 0.2em;
 }
 
-.boardCell > .bottom-left {
+.board-cell > .bottom-left {
   border-bottom-left-radius: 0.2em;
 }
 
-.boardCell > .bottom-right {
+.board-cell > .bottom-right {
   border-bottom-right-radius: 0.2em;
 }

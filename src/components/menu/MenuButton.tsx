@@ -1,9 +1,9 @@
-import { ButtonHTMLAttributes } from "react"
+import React, { ButtonHTMLAttributes } from 'react'
 
-const MenuButton = ({ className, ...restOfProps}: ButtonHTMLAttributes<HTMLButtonElement>) => {
-  return <button className={'clickable ' + className ?? ''} {...restOfProps}> 
+const MenuButton: React.FC<ButtonHTMLAttributes<HTMLButtonElement>> = 
+({ className, ...restOfProps }) => 
+  <button className={'clickable ' + className ?? ''} {...restOfProps}> 
     {restOfProps.children} 
   </button>
-}
 
 export default MenuButton

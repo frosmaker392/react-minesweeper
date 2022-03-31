@@ -1,4 +1,5 @@
-import MenuButton from "./MenuButton"
+import React from 'react'
+import MenuButton from './MenuButton'
 
 interface IPauseProps {
   onRestart: () => void
@@ -6,14 +7,12 @@ interface IPauseProps {
   onHowToPlay: () => void
 }
 
-const PauseView = ({ onRestart, onNewGame, onHowToPlay }: IPauseProps) => {
-  return (
-    <div className="menuView pause">
-      <MenuButton onClick={onRestart}>Restart</MenuButton>
-      <MenuButton onClick={onNewGame}>New Game</MenuButton>
-      <MenuButton onClick={onHowToPlay}>How to Play</MenuButton>
-    </div>
-  )
-}
+const PauseView: React.FC<IPauseProps> = 
+({ onRestart, onNewGame, onHowToPlay }) => 
+  <div className='menu-view pause'>
+    <MenuButton onClick={onRestart}>Restart</MenuButton>
+    <MenuButton onClick={onNewGame}>New Game</MenuButton>
+    <MenuButton onClick={onHowToPlay}>How to Play</MenuButton>
+  </div>
 
 export default PauseView

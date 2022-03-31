@@ -3,13 +3,13 @@ class Stopwatch {
   private runningMs = 0
   private isPaused = true
 
-  public get elapsedMs() : number {
+  public get elapsedMs(): number {
     if (!this.isPaused) {
       this.runningMs += Date.now() - this.lastRefTime
       this.lastRefTime = Date.now()
     }
 
-    return this.runningMs;
+    return this.runningMs
   }
   
   public pause(): void {

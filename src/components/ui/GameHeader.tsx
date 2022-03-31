@@ -1,3 +1,4 @@
+import React from 'react'
 import { BoardState } from '../../utils/BoardLogic'
 
 import HeaderButton from './HeaderButton'
@@ -5,7 +6,7 @@ import HeaderButton from './HeaderButton'
 import { ReactComponent as ClockIcon } from '../../icons/Clock.svg'
 import { ReactComponent as MineIcon } from '../../icons/Mine.svg'
 
-import "../../styles/ui/GameHeader.css"
+import '../../styles/ui/GameHeader.css'
 
 interface IGameHeaderProps {
   gameState: BoardState
@@ -16,7 +17,8 @@ interface IGameHeaderProps {
   onMenuBtn: (isPaused: boolean) => void
 }
 
-const GameHeader = (props: IGameHeaderProps) => {
+const GameHeader: React.FC<IGameHeaderProps> = 
+props => {
   const { gameState, elapsedSeconds, flaggedMines, numMines,
      showMenu, onMenuBtn } = props
 
@@ -25,7 +27,7 @@ const GameHeader = (props: IGameHeaderProps) => {
   const minutes = format(Math.floor(elapsedSeconds / 60))
 
   return (
-    <header className='gameHeader'>
+    <header className='game-header'>
       <article className='score'>
         <div className='icon'>
           <ClockIcon />

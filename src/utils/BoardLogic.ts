@@ -1,6 +1,8 @@
 type Coords = [number, number]
-type CellState = "hidden" | "revealed" | "flagged" | "unknown"
-type BoardState = "uninitialized" | "in-progress" | "won" | "lost"
+type CellState = 'hidden' | 'revealed' | 'flagged' | 'unknown'
+type BoardState = 'uninitialized' | 'in-progress' | 'won' | 'lost'
+
+type MarkState = Exclude<CellState, 'revealed'>
 
 interface ICell {
   state: CellState
@@ -21,6 +23,12 @@ class BoardLogic implements IBoard {
   cells: ICell[][]
   initialized: boolean
 
+  private readonly nextState: Record<MarkState, MarkState> = {
+    hidden: 'flagged',
+    flagged: 'unknown',
+    unknown: 'hidden'
+  }
+
   /**
    * Creates a new Minesweeper board with the specified sizes.
    * @param width Width of the board
@@ -39,7 +47,7 @@ class BoardLogic implements IBoard {
       const row: ICell[] = []
       for (let x = 0; x < width; x++) {
         row.push({ 
-          state: "hidden",
+          state: 'hidden',
           hasMine: false,
           neighboringMines: -1
         })
@@ -71,24 +79,12 @@ class BoardLogic implements IBoard {
    * @param coords Coordinates of the cell to be marked
    */
   public mark(coords: Coords): BoardLogic {
-    if (!this.initialized || this.at(coords).state === "revealed") 
+    if (!this.initialized || this.at(coords).state === 'revealed') 
       return this
-    let newBoard = this.copy()
+    const newBoard = this.copy()
 
     const cell = newBoard.at(coords)
-    switch (cell.state) {
-      case "hidden":
-        cell.state = "flagged"
-        break
-      case "flagged":
-        cell.state = "unknown"
-        break
-      case "unknown":
-        cell.state = "hidden"
-        break
-      default:
-        break
-    }
+    cell.state = this.nextState[cell.state as MarkState]
 
     return newBoard
   }
@@ -103,8 +99,8 @@ class BoardLogic implements IBoard {
    * @param coords Coordinates of the cell to be revealed
    */
   public reveal(coords: Coords): BoardLogic {
-    if (this.at(coords).state === "flagged") return this
-    let newBoard = this.copy()
+    if (this.at(coords).state === 'flagged') return this
+    const newBoard = this.copy()
     
     if (!newBoard.initialized) { 
       newBoard.installMines(coords)
@@ -121,21 +117,21 @@ class BoardLogic implements IBoard {
         .filter(nCoords => newBoard.at(nCoords).hasMine)
         .length
       const nFlags = neighbors
-        .filter(nCoords => newBoard.at(nCoords).state === "flagged")
+        .filter(nCoords => newBoard.at(nCoords).state === 'flagged')
         .length
 
-      newBoard.at(next).state = "revealed"
+      newBoard.at(next).state = 'revealed'
       newBoard.at(next).neighboringMines = nMines
 
       if (nFlags === nMines) {
         neighbors
-          .filter(nCoords => newBoard.at(nCoords).state === "hidden")
+          .filter(nCoords => newBoard.at(nCoords).state === 'hidden')
           .forEach(nCoords => {
             queue.push(nCoords)
           })
       }
     }
-    newBoard.at(coords).state = "revealed"
+    newBoard.at(coords).state = 'revealed'
 
     return newBoard
   }
@@ -145,7 +141,7 @@ class BoardLogic implements IBoard {
    * @returns board state enumerated as BoardState
    */
   public state(): BoardState {
-    if (!this.initialized) return "uninitialized"
+    if (!this.initialized) return 'uninitialized'
       
     let hasWon = true
     let hasLost = false
@@ -153,14 +149,14 @@ class BoardLogic implements IBoard {
     for (const row of this.cells) {
       for (const cell of row) {
         hasWon = hasWon && (cell.hasMine ? 
-                  cell.state === "flagged" : cell.state === "revealed")
-        hasLost = hasLost || (cell.hasMine && cell.state === "revealed")
+                  cell.state === 'flagged' : cell.state === 'revealed')
+        hasLost = hasLost || (cell.hasMine && cell.state === 'revealed')
       }
     }
 
-    if (hasWon) return "won"
-    if (hasLost) return "lost"
-    return "in-progress"
+    if (hasWon) return 'won'
+    if (hasLost) return 'lost'
+    return 'in-progress'
   }
 
   /**
@@ -170,7 +166,7 @@ class BoardLogic implements IBoard {
   public flagCount(): number {
     return this.cells.reduce((cnt, row) => (
       cnt + row.reduce((rowCnt, cell) => (
-        rowCnt + (+(cell.state === "flagged"))
+        rowCnt + (+(cell.state === 'flagged'))
       ), 0)
     ), 0)
   }
@@ -208,11 +204,11 @@ class BoardLogic implements IBoard {
     return x < 0 || x > this.width - 1 || y < 0 || y > this.height - 1
   }
 
-  public debug() {
+  public debug(): void {
     console.log(
       this.cells.map(row => 
-        row.map(cell => `${cell.state === "revealed" ? 'X' : 'O'}`).join(" "))
-      .join("\n")
+        row.map(cell => `${cell.state === 'revealed' ? 'X' : 'O'}`).join(' '))
+      .join('\n')
     )
   }
 }

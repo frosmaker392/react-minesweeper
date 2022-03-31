@@ -1,32 +1,22 @@
-import { BoardState } from "../../utils/BoardLogic"
+import React, { ButtonHTMLAttributes } from 'react'
+import { BoardState } from '../../utils/BoardLogic'
 
-interface IHeaderButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface IHeaderButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   gameState: BoardState
   showMenu: boolean
 }
 
-const HeaderButton = ({ gameState, showMenu, ...btnProps }: IHeaderButtonProps) => {
-  let label = "Back";
-
-  switch (gameState) {
-    case "in-progress":
-      label = showMenu ? "Resume" : "Pause"
-      break
-
-    case "won":
-      !showMenu && (label = "You won!")
-      break
-
-    case "lost":
-      !showMenu && (label = "You lost!")
-      break
-  
-    default:
-      !showMenu && (label = "Menu")
-      break
-  }
-
-  return <button {...btnProps}> {label} </button>
+const labels: Record<BoardState, [string, string]> = {
+  uninitialized : ['Menu', 'Resume'],
+  'in-progress' : ['Pause', 'Resume'],
+  won           : ['You won!', 'Back'],
+  lost          : ['You lost!', 'Back']
 }
+
+const HeaderButton: React.FC<IHeaderButtonProps> = 
+({ gameState, showMenu, ...btnProps }) => 
+  <button {...btnProps}>
+   { labels[gameState][showMenu ? 1 : 0] }
+  </button>
 
 export default HeaderButton
