@@ -1,12 +1,12 @@
 import React from 'react'
-import { IBoard } from '../../utils/BoardLogic'
+import { type IBoard } from '../../utils/BoardLogic'
 import { getDifficulty } from '../../utils/boardPresets'
-import capitalizeFirstChar from  '../../utils/capitalizeFirstChar'
+import capitalizeFirstChar from '../../utils/capitalizeFirstChar'
 
 import '../../styles/ui/GameFooter.css'
 
-const GameFooter: React.FC<{ boardParams: IBoard }> = 
-({ boardParams: bp }) => 
+const GameFooter: React.FC<{ boardParams: IBoard }> =
+({ boardParams: bp }) =>
   <footer className='game-footer'>
     <p className='description'>
       { capitalizeFirstChar(getDifficulty(bp)) }

@@ -1,6 +1,6 @@
-import React, { ChangeEvent, useCallback, useEffect, useState } from 'react'
-import { IBoard } from '../../utils/BoardLogic'
-import { boardPresets, DiffLevels } from '../../utils/boardPresets'
+import React, { type ChangeEvent, useCallback, useEffect, useState } from 'react'
+import { type IBoard } from '../../utils/BoardLogic'
+import { boardPresets, type DiffLevels } from '../../utils/boardPresets'
 import capitalizeFirstChar from '../../utils/capitalizeFirstChar'
 
 import IntegerInput from '../utils/IntegerInput'
@@ -15,7 +15,7 @@ interface INewGameProps {
   onReturn: () => void
 }
 
-const NewGameView: React.FC<INewGameProps> = 
+const NewGameView: React.FC<INewGameProps> =
 ({ boardParams, onSubmit, onReturn }) => {
   const [width, setWidth] = useState(boardParams.width)
   const [height, setHeight] = useState(boardParams.height)
@@ -37,7 +37,7 @@ const NewGameView: React.FC<INewGameProps> =
       setCurDifficulty(difficulty)
     }, [])
 
-  const onInputChange = 
+  const onInputChange =
     (setter: (v: number) => void) => {
       return (val: number) => {
         setCurDifficulty('custom')
@@ -45,18 +45,18 @@ const NewGameView: React.FC<INewGameProps> =
       }
     }
 
-  const presetOptions = 
-    Object.keys(boardPresets).map((diff, i) => 
+  const presetOptions =
+    Object.keys(boardPresets).map((diff, i) =>
       <option key={i} value={diff}>{capitalizeFirstChar(diff)}</option>)
 
   return (
     <form className='menu-view new-game' onSubmit={e => {
       e.preventDefault()
-      onSubmit({width, height, numMines})
+      onSubmit({ width, height, numMines })
     }}>
       <label htmlFor='diff-select'>Difficulty</label>
       <StyledSelect className='clickable input' id='diff-select'
-        value={curDifficulty} 
+        value={curDifficulty}
         onChange={onDifficultyChange}>
 
         <option value='custom'>Custom</option>
@@ -64,18 +64,18 @@ const NewGameView: React.FC<INewGameProps> =
       </StyledSelect>
 
       <label htmlFor='width'>Width</label>
-      <IntegerInput className='input clickable' id='width' 
+      <IntegerInput className='input clickable' id='width'
         range={[5, 30]} value={width} setter={onInputChange(setWidth)} />
 
       <label htmlFor='height'>Height</label>
-      <IntegerInput className='input clickable' id='height' 
+      <IntegerInput className='input clickable' id='height'
         range={[5, 30]} value={height} setter={onInputChange(setHeight)} />
 
       <label htmlFor='mines'>Mines</label>
-      <IntegerInput className='input clickable' id='mines' 
-        range={[0, Math.floor(width * height / 2)]} value={numMines} 
+      <IntegerInput className='input clickable' id='mines'
+        range={[0, Math.floor(width * height / 2)]} value={numMines}
         setter={onInputChange(setNumMines)} />
-      
+
       <MenuButton className='highlight' type='submit' name='submit'>
         Generate
       </MenuButton>

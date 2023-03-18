@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { IBoard, BoardState } from '../utils/BoardLogic'
+import { type IBoard, type BoardState } from '../utils/BoardLogic'
 import Stopwatch from '../utils/Stopwatch'
 
 import Board from './Board'
@@ -20,11 +20,11 @@ const Game: React.FC = () => {
   const [boardParams, setBoardParams] = useState(initParams)
 
   const [gameState, setGameState] = useState('uninitialized' as BoardState)
-  const [isPaused, setIsPaused]         = useState(true)
-  const [showMenu, setShowMenu]         = useState(false)
+  const [isPaused, setIsPaused] = useState(true)
+  const [showMenu, setShowMenu] = useState(false)
 
-  const [seconds, setSeconds]           = useState(0)
-  const [flagCount, setFlagCount]       = useState(0)
+  const [seconds, setSeconds] = useState(0)
+  const [flagCount, setFlagCount] = useState(0)
   const [resetCounter, setResetCounter] = useState(0)
 
   const [stopwatch] = useState(new Stopwatch())
@@ -36,13 +36,13 @@ const Game: React.FC = () => {
   useEffect(() => {
     // Routine to update the seconds variable
     const updateRoutine = setInterval(() => {
-      setSeconds( Math.floor( stopwatch.elapsedMs / 1000 ) )
+      setSeconds(Math.floor(stopwatch.elapsedMs / 1000))
     }, 150)
 
     // Pause when window goes out of focus
-    const onBlur = () => { if (!isGameOver()) setShowMenu(true) }
+    const onBlur = (): void => { if (!isGameOver()) setShowMenu(true) }
     window.addEventListener('blur', onBlur)
-    
+
     return () => {
       clearInterval(updateRoutine)
       window.removeEventListener('blur', onBlur)
@@ -53,7 +53,6 @@ const Game: React.FC = () => {
   useEffect(() => {
     if (gameState !== 'in-progress' || showMenu) setIsPaused(true)
     else setIsPaused(false)
-    
   }, [gameState, showMenu])
 
   // Pause stopwatch effect
@@ -81,7 +80,7 @@ const Game: React.FC = () => {
 
   return (
     <div className='game'>
-      <GameHeader 
+      <GameHeader
         gameState={gameState}
         elapsedSeconds={seconds}
         flaggedMines={flagCount}
@@ -91,21 +90,22 @@ const Game: React.FC = () => {
       />
 
       <section className='board-container'>
-        <Board 
+        <Board
           resetCounter={resetCounter}
-          onUpdate={updateGameState} 
+          onUpdate={updateGameState}
           {...boardParams}/>
-        { 
-          showMenu ? 
-          <GameMenu 
+        {
+          showMenu
+            ? <GameMenu
             boardParams={boardParams}
             onNewGame={resetBoard}
-          /> : (isGameOver() && <div className='board-overlay' />)
+          />
+            : (isGameOver() && <div className='board-overlay' />)
         }
       </section>
-      
+
       <GameFooter boardParams={boardParams} />
-    </div> 
+    </div>
   )
 }
 

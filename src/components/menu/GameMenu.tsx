@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { IBoard } from '../../utils/BoardLogic'
+import { type IBoard } from '../../utils/BoardLogic'
 
 import PauseView from './PauseView'
 import NewGameView from './NewGameView'
@@ -12,23 +12,23 @@ interface IGameMenuProps {
   onNewGame: (boardParams: IBoard) => void
 }
 
-const GameMenu: React.FC<IGameMenuProps> = 
+const GameMenu: React.FC<IGameMenuProps> =
 ({ boardParams, onNewGame }) => {
   const [currentView, setCurrentView] = useState('pause' as MenuView)
 
   const views: Record<MenuView, JSX.Element> = {
-    pause     : <PauseView
-                  onRestart={() => onNewGame(boardParams)}
-                  onNewGame={() => setCurrentView('newGame')}
-                  onHowToPlay={() => setCurrentView('howToPlay')}
+    pause: <PauseView
+                  onRestart={() => { onNewGame(boardParams) }}
+                  onNewGame={() => { setCurrentView('newGame') }}
+                  onHowToPlay={() => { setCurrentView('howToPlay') }}
                   />,
-    newGame   : <NewGameView 
+    newGame: <NewGameView
                   boardParams={boardParams}
                   onSubmit={onNewGame}
-                  onReturn={() => setCurrentView('pause')}
+                  onReturn={() => { setCurrentView('pause') }}
                   />,
-    howToPlay : <HowToPlayView 
-                  onReturn={() => setCurrentView('pause')} />
+    howToPlay: <HowToPlayView
+                  onReturn={() => { setCurrentView('pause') }} />
   }
 
   const currentViewElement = views[currentView]

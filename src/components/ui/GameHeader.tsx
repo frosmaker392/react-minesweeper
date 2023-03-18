@@ -1,5 +1,5 @@
 import React from 'react'
-import { BoardState } from '../../utils/BoardLogic'
+import { type BoardState } from '../../utils/BoardLogic'
 
 import HeaderButton from './HeaderButton'
 
@@ -10,19 +10,21 @@ import '../../styles/ui/GameHeader.css'
 
 interface IGameHeaderProps {
   gameState: BoardState
-  elapsedSeconds: number,
-  flaggedMines: number,
-  numMines: number,
-  showMenu: boolean,
+  elapsedSeconds: number
+  flaggedMines: number
+  numMines: number
+  showMenu: boolean
   onMenuBtn: (isPaused: boolean) => void
 }
 
-const GameHeader: React.FC<IGameHeaderProps> = 
+const GameHeader: React.FC<IGameHeaderProps> =
 props => {
-  const { gameState, elapsedSeconds, flaggedMines, numMines,
-     showMenu, onMenuBtn } = props
+  const {
+    gameState, elapsedSeconds, flaggedMines, numMines,
+    showMenu, onMenuBtn
+  } = props
 
-  const format = (val: number) => String(val).padStart(2, '0')
+  const format = (val: number): string => String(val).padStart(2, '0')
   const seconds = format(elapsedSeconds % 60)
   const minutes = format(Math.floor(elapsedSeconds / 60))
 
@@ -35,11 +37,11 @@ props => {
         <time className='value'> <span>{minutes}</span>:{seconds} </time>
       </article>
 
-      <HeaderButton 
+      <HeaderButton
         gameState={gameState}
         showMenu={showMenu}
         className='clickable'
-        onClick={() => onMenuBtn(!showMenu)} />
+        onClick={() => { onMenuBtn(!showMenu) }} />
 
       <article className='score'>
         <MineIcon className='icon' />

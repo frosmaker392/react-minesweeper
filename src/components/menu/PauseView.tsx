@@ -7,8 +7,8 @@ interface IPauseProps {
   onHowToPlay: () => void
 }
 
-const PauseView: React.FC<IPauseProps> = 
-({ onRestart, onNewGame, onHowToPlay }) => 
+const PauseView: React.FC<IPauseProps> =
+({ onRestart, onNewGame, onHowToPlay }) =>
   <div className='menu-view pause'>
     <MenuButton onClick={onRestart}>Restart</MenuButton>
     <MenuButton onClick={onNewGame}>New Game</MenuButton>
