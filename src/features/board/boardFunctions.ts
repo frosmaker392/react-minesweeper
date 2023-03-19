@@ -1,5 +1,5 @@
 import produce from 'immer'
-import { type Result, resultError, resultOk } from '../../utils/Result'
+import { type Result, errorResult, okResult } from '../../utils/Result'
 import { type Board, type Cell, type HiddenCell } from './boardSlice'
 
 export interface Coordinate {
@@ -7,7 +7,7 @@ export interface Coordinate {
   y: number
 }
 
-const defaultCell = (): HiddenCell => ({
+export const defaultCell = (): HiddenCell => ({
   state: 'hidden',
   hasMine: false,
   markedAs: 'none'
@@ -29,7 +29,7 @@ export const generateEmptyBoard = (width: number, height: number): Board => {
 
   return {
     cells,
-    minesCount: 0
+    mineCount: 0
   }
 }
 
@@ -39,19 +39,22 @@ export const randomCoord = (width: number, height: number): Coordinate => ({
   y: randomInt(0, height)
 })
 
-export const scatterMines = (board: Board, minesCount: number): Result<Board> => {
+export const scatterMines = (board: Board, mineCount: number): Result<Board> => {
   const width = getWidth(board)
   const height = getHeight(board)
 
-  if (width * height < minesCount) return resultError(`Cannot fit ${minesCount} mines in this board!`)
+  if (width * height < mineCount) return errorResult(`Cannot fit ${mineCount} mines in this board!`)
 
   const coords: Coordinate[] = []
 
-  do {
+  while (coords.length < mineCount) {
     const coordToAdd = randomCoord(width, height)
 
-    if (coords.every(({ x, y }) => coordToAdd.x !== x && coordToAdd.y !== y)) { coords.push(coordToAdd) }
-  } while (coords.length < minesCount)
+    const shouldAdd = !coords.some(({ x, y }) => {
+      return coordToAdd.x === x && coordToAdd.y === y
+    })
+    if (shouldAdd) coords.push(coordToAdd)
+  }
 
   const cells = produce(board.cells, (cells) => {
     for (const { x, y } of coords) {
@@ -59,8 +62,8 @@ export const scatterMines = (board: Board, minesCount: number): Result<Board> =>
     }
   })
 
-  return resultOk({
+  return okResult({
     cells,
-    minesCount
+    mineCount
   })
 }

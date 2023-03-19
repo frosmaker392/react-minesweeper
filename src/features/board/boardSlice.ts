@@ -18,7 +18,7 @@ export interface RevealedCell {
 export type Cell = HiddenCell | RevealedCell
 
 export interface Board {
-  minesCount: number
+  mineCount: number
   cells: Cell[][]
 }
 
