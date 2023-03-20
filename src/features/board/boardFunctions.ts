@@ -1,16 +1,13 @@
 import produce from 'immer'
+import { mapOption, type Option } from '../../utils/Option'
 import { type Result, errorResult, okResult } from '../../utils/Result'
-import { type Board, type Cell, type HiddenCell } from './boardSlice'
+import { cycleCellMarking, defaultCell } from './cellFunctions'
+import type { Vector2, Board, Cell } from './types'
 
-export interface Coordinate {
-  x: number
-  y: number
-}
-
-export const defaultCell = (): HiddenCell => ({
-  state: 'hidden',
-  hasMine: false,
-  markedAs: 'none'
+const randomInt = (min: number, max: number): number => Math.floor(Math.random() * (max - min) + min)
+export const randomPosition = (width: number, height: number): Vector2 => ({
+  x: randomInt(0, width),
+  y: randomInt(0, height)
 })
 
 export const getWidth = (board: Board): number => {
@@ -19,6 +16,20 @@ export const getWidth = (board: Board): number => {
 }
 
 export const getHeight = (board: Board): number => board.cells.length
+
+export const getCellAt = (board: Board, position: Vector2): Option<Cell> => {
+  if (!positionWithinBounds(board, position)) return undefined
+
+  const { x, y } = position
+  return board.cells[y][x]
+}
+
+export const positionWithinBounds = (board: Board, { x, y }: Vector2): boolean => {
+  const width = getWidth(board)
+  const height = getHeight(board)
+
+  return x >= 0 && x < width && y >= 0 && y < height
+}
 
 export const generateEmptyBoard = (width: number, height: number): Board => {
   const cells: Cell[][] = Array(height)
@@ -33,37 +44,44 @@ export const generateEmptyBoard = (width: number, height: number): Board => {
   }
 }
 
-const randomInt = (min: number, max: number): number => Math.floor(Math.random() * (max - min) + min)
-export const randomCoord = (width: number, height: number): Coordinate => ({
-  x: randomInt(0, width),
-  y: randomInt(0, height)
-})
+export const placeMines = (board: Board, positions: Vector2[]): Board => {
+  return produce(board, board => {
+    for (const position of positions) {
+      const { x, y } = position
+      if (positionWithinBounds(board, position)) board.cells[y][x].hasMine = true
+    }
+  })
+}
 
-export const scatterMines = (board: Board, mineCount: number): Result<Board> => {
+export const initializeBoard = (board: Board, mineCount: number, excludePosition: Vector2): Result<Board> => {
   const width = getWidth(board)
   const height = getHeight(board)
 
   if (width * height < mineCount) return errorResult(`Cannot fit ${mineCount} mines in this board!`)
 
-  const coords: Coordinate[] = []
+  const positions: Vector2[] = []
 
-  while (coords.length < mineCount) {
-    const coordToAdd = randomCoord(width, height)
+  while (positions.length < mineCount) {
+    const { x: xN, y: yN } = randomPosition(width, height)
 
-    const shouldAdd = !coords.some(({ x, y }) => {
-      return coordToAdd.x === x && coordToAdd.y === y
-    })
-    if (shouldAdd) coords.push(coordToAdd)
+    const shouldAdd = positions.every(({ x, y }) => !(xN === x && yN === y)) &&
+      !(excludePosition.x === xN && excludePosition.y === yN)
+    if (shouldAdd) positions.push({ x: xN, y: yN })
   }
 
-  const cells = produce(board.cells, (cells) => {
-    for (const { x, y } of coords) {
-      cells[y][x].hasMine = true
-    }
-  })
-
   return okResult({
-    cells,
+    ...placeMines(board, positions),
     mineCount
   })
+}
+
+export const markCellAt = (board: Board, position: Vector2): Board => {
+  return mapOption(getCellAt(board, position), (cell) => {
+    const { x, y } = position
+
+    return produce(board, board => {
+      const newCell = cycleCellMarking(cell)
+      board.cells[y][x] = newCell
+    })
+  }) ?? board
 }
