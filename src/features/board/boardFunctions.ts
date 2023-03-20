@@ -1,8 +1,8 @@
 import produce from 'immer'
 import { mapOption, type Option } from '../../utils/Option'
 import { type Result, errorResult, okResult } from '../../utils/Result'
-import { cycleCellMarking, defaultCell } from './cellFunctions'
-import type { Vector2, Board, Cell, RevealedCell } from './types'
+import { markCell, defaultCell, revealCell } from './cellFunctions'
+import type { Vector2, Board, Cell } from './types'
 
 const randomInt = (min: number, max: number): number => Math.floor(Math.random() * (max - min) + min)
 
@@ -39,7 +39,7 @@ export const positionWithinBounds = (board: Board, { x, y }: Vector2): boolean =
 }
 
 export const generateBoard = (width: number, height: number, mineCount: number): Result<Board> => {
-  if (width * height < mineCount) return errorResult(`Cannot fit ${mineCount} mines in this board!`)
+  if (width * height <= mineCount) return errorResult(`Cannot fit ${mineCount} mines in this board!`)
 
   const cells: Cell[][] = Array(height)
     .fill(null)
@@ -88,13 +88,14 @@ export const markCellAt = (board: Board, position: Vector2): Board => {
     const { x, y } = position
 
     return produce(board, board => {
-      const newCell = cycleCellMarking(cell)
+      const newCell = markCell(cell)
       board.cells[y][x] = newCell
     })
   }) ?? board
 }
 
 export const getNeighborPositions = (board: Board, position: Vector2): Vector2[] => {
+  if (!positionWithinBounds(board, position)) return []
   const { x, y } = position
   return neighboringCellOffsets
     .map(([xOff, yOff]) => ({ x: x + xOff, y: y + yOff }))
@@ -119,7 +120,6 @@ export const getNeighboringFlagCount = (board: Board, position: Vector2): number
 export const revealCellAt = (board: Board, position: Vector2): Board => {
   const cell = getCellAt(board, position)
   if (cell === undefined ||
-    cell.state === 'revealed' ||
     (cell.state === 'hidden' && cell.markedAs !== 'none')) {
     return board
   }
@@ -139,12 +139,7 @@ export const revealCellAt = (board: Board, position: Vector2): Board => {
 
       // Reveal cell at current position
       const { x, y } = currentPosition
-      const { hasMine } = board.cells[y][x]
-      board.cells[y][x] = {
-        state: 'revealed',
-        neighboringMines: neighboringMineCount,
-        hasMine
-      } satisfies RevealedCell
+      board.cells[y][x] = revealCell(board.cells[y][x], neighboringMineCount)
 
       // Then propagate cell reveal outwards if flag and mine counts match
       if (neighboringFlagCount === neighboringMineCount) {

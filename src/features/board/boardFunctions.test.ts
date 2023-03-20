@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest'
 import { getResultValue } from '../../utils/Result'
-import { positionWithinBounds, generateBoard, getHeight, getWidth, markCellAt, randomPosition, initializeBoard, getCellAt, placeMines, getNeighboringMineCount, getNeighborPositions, getNeighboringFlagCount, revealCellAt } from './boardFunctions'
+import { positionWithinBounds, generateBoard, getHeight, getWidth, randomPosition, initializeBoard, getCellAt, placeMines, getNeighboringMineCount, getNeighborPositions, getNeighboringFlagCount, revealCellAt, markCellAt } from './boardFunctions'
 import { defaultCell } from './cellFunctions'
 import type { Board, Cell, RevealedCell, Vector2 } from './types'
 
@@ -15,6 +15,7 @@ const testBoard: Board = {
   initialized: false
 }
 
+// Helper functions
 const countMines = (board: Board): number => board.cells.reduce(
   (mineCount, row) => mineCount + row.reduce(
     (mineCount, cell) => mineCount + (cell.hasMine ? 1 : 0),
@@ -22,6 +23,8 @@ const countMines = (board: Board): number => board.cells.reduce(
   ),
   0
 )
+
+const toVector2s = (pairs: Array<[number, number]>): Vector2[] => pairs.map(([x, y]) => ({ x, y }))
 
 describe('Board functions', () => {
   describe('randomPosition', () => {
@@ -89,6 +92,11 @@ describe('Board functions', () => {
   })
 
   describe('generateBoard', () => {
+    test('returns error if mine count >= number of available cells', () => {
+      expect(generateBoard(5, 5, 25).ok).toBeFalsy()
+      expect(generateBoard(5, 5, 99).ok).toBeFalsy()
+    })
+
     test('returns board with correct dimensions and expected mine count', () => {
       const result = generateBoard(4, 9, 3)
       expect(result.ok).toBeTruthy()
@@ -110,13 +118,13 @@ describe('Board functions', () => {
 
   describe('placeMines', () => {
     test('returns a board with cells with hasMine = true only at valid positions', () => {
-      const positions: Vector2[] = [
+      const positions: Vector2[] = toVector2s([
         [0, 0],
         [1, 1],
         [2, 1],
         [7, 8],
         [6, 1]
-      ].map(([x, y]) => ({ x, y }))
+      ])
 
       const board = placeMines(testBoard, positions)
       const validPositions = positions.filter((position) => positionWithinBounds(board, position))
@@ -125,6 +133,7 @@ describe('Board functions', () => {
         expect(getCellAt(board, position)?.hasMine).toBeTruthy()
       }
       expect(countMines(board)).toBe(validPositions.length)
+      expect(board.initialized).toBe(false) // Initialized should remain unchanged
     })
   })
 
@@ -161,12 +170,16 @@ describe('Board functions', () => {
   })
 
   describe('getNeighborPositions', () => {
+    test('returns empty array for a position out of bounds', () => {
+      expect(getNeighborPositions(testBoard, { x: -1, y: 1 })).toEqual([])
+    })
+
     test('returns correct positions of directly neighboring cells', () => {
       const neighborPositions = getNeighborPositions(testBoard, { x: 5, y: 0 })
-      const expected: Vector2[] = [
+      const expected: Vector2[] = toVector2s([
         [4, 0], [6, 0],
         [4, 1], [5, 1], [6, 1]
-      ].map(([x, y]) => ({ x, y }))
+      ])
 
       expect(neighborPositions.length).toBe(expected.length)
       for (const { x: xN, y: yN } of neighborPositions) {
@@ -177,11 +190,9 @@ describe('Board functions', () => {
 
   describe('getNeighboringMineCount', () => {
     test('returns correct number of neighboring mines', () => {
-      const board = placeMines(testBoard, [
-        { x: 0, y: 0 },
-        { x: 1, y: 0 },
-        { x: 0, y: 1 }
-      ])
+      const board = placeMines(testBoard, toVector2s([
+        [0, 0], [1, 0], [0, 1]
+      ]))
 
       expect(getNeighboringMineCount(board, { x: 1, y: 1 })).toBe(3)
     })
@@ -189,11 +200,9 @@ describe('Board functions', () => {
 
   describe('getNeighboringFlagCount', () => {
     test('returns correct number of neighboring flags', () => {
-      const board = [
-        { x: 0, y: 0 },
-        { x: 1, y: 0 },
-        { x: 0, y: 1 }
-      ].reduce((board, position) => markCellAt(board, position), testBoard)
+      const board = toVector2s([
+        [0, 0], [1, 0], [0, 1]
+      ]).reduce((board, position) => markCellAt(board, position), testBoard)
 
       expect(getNeighboringFlagCount(board, { x: 1, y: 1 })).toBe(3)
     })
@@ -201,23 +210,67 @@ describe('Board functions', () => {
 
   describe('revealCellAt', () => {
     describe('returns unchanged board if cell at position...', () => {
-      test('...is already revealed', () => {
-        const board: Board = {
-          cells: [
-            [
-              {
-                state: 'revealed',
-                hasMine: false,
-                neighboringMines: 0
-              } satisfies RevealedCell,
-              ...defaultCells(6)
-            ],
-            defaultCells(7)
-          ],
-          mineCount: 0,
-          initialized: true
-        }
-        expect(revealCellAt(board, { x: 0, y: 0 })).toEqual(board)
+      test('...does not exist', () => {
+        expect(revealCellAt(testBoard, { x: -1, y: -1 })).toEqual(testBoard)
+      })
+
+      test('...is already flagged', () => {
+        const position = { x: 0, y: 0 }
+        const board: Board = markCellAt(testBoard, position)
+        expect(revealCellAt(board, position)).toEqual(board)
+      })
+
+      test('...is marked as unknown', () => {
+        const position = { x: 0, y: 0 }
+        const board: Board = markCellAt(markCellAt(testBoard, position), position)
+        expect(revealCellAt(board, position)).toEqual(board)
+      })
+    })
+
+    const testBoard: Board = {
+      cells: [
+        defaultCells(3),
+        defaultCells(3),
+        defaultCells(3)
+      ],
+      mineCount: 0,
+      initialized: false
+    }
+
+    test('returns board which is initialized and revealed at position', () => {
+      const board = revealCellAt({ ...testBoard, mineCount: 5 }, { x: 0, y: 0 })
+      expect(board.initialized).toBeTruthy()
+    })
+
+    test('revealed cell contains correct number of neighboring mines', () => {
+      const board = placeMines({ ...testBoard, mineCount: 4, initialized: true }, toVector2s([
+        [1, 0],
+        [0, 1],
+        [2, 1],
+        [2, 2]
+      ]))
+      const revealedBoard = revealCellAt(board, { x: 1, y: 1 })
+      expect(getCellAt(revealedBoard, { x: 1, y: 1 })).toEqual<RevealedCell>({
+        state: 'revealed',
+        neighboringMines: 4,
+        hasMine: false
+      })
+    })
+
+    test('if number of neighboring flags match that of mines, reveal any unmarked neighbor cells', () => {
+      const minePositions = toVector2s([
+        [1, 0],
+        [0, 1]
+      ])
+      const board = placeMines({ ...testBoard, mineCount: 2, initialized: true }, minePositions)
+      const revealedBoard1 = revealCellAt(board, { x: 1, y: 1 })
+      const flaggedBoard = markCellAt(markCellAt(revealedBoard1, minePositions[0]), minePositions[1])
+      const revealedBoard2 = revealCellAt(flaggedBoard, { x: 1, y: 1 })
+
+      expect(getCellAt(revealedBoard2, { x: 1, y: 1 })).toEqual<RevealedCell>({
+        state: 'revealed',
+        neighboringMines: 2,
+        hasMine: false
       })
     })
   })

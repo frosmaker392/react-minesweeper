@@ -12,11 +12,19 @@ export const defaultCell = (): HiddenCell => ({
   markedAs: 'none'
 })
 
-export const cycleCellMarking = (cell: Cell): Cell => {
+export const markCell = (cell: Cell): Cell => {
   if (cell.state === 'revealed') return cell
 
   return {
     ...cell,
     markedAs: nextCellMarking[cell.markedAs]
+  }
+}
+
+export const revealCell = (cell: Cell, neighboringMines: number): Cell => {
+  return {
+    state: 'revealed',
+    hasMine: cell.hasMine,
+    neighboringMines
   }
 }
