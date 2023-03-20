@@ -19,3 +19,5 @@ export const errorResult = (error: string): ErrorResult => ({
   ok: false,
   error
 })
+
+export const getResultValue = <T>(result: Result<T>): T => (result as OkResult<T>).value

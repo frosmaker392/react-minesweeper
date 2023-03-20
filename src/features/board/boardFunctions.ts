@@ -2,9 +2,16 @@ import produce from 'immer'
 import { mapOption, type Option } from '../../utils/Option'
 import { type Result, errorResult, okResult } from '../../utils/Result'
 import { cycleCellMarking, defaultCell } from './cellFunctions'
-import type { Vector2, Board, Cell } from './types'
+import type { Vector2, Board, Cell, RevealedCell } from './types'
 
 const randomInt = (min: number, max: number): number => Math.floor(Math.random() * (max - min) + min)
+
+const neighboringCellOffsets = [
+  [-1, -1], [0, -1], [1, -1],
+  [-1, 0], [1, 0],
+  [-1, 1], [0, 1], [1, 1]
+]
+
 export const randomPosition = (width: number, height: number): Vector2 => ({
   x: randomInt(0, width),
   y: randomInt(0, height)
@@ -31,17 +38,20 @@ export const positionWithinBounds = (board: Board, { x, y }: Vector2): boolean =
   return x >= 0 && x < width && y >= 0 && y < height
 }
 
-export const generateEmptyBoard = (width: number, height: number): Board => {
+export const generateBoard = (width: number, height: number, mineCount: number): Result<Board> => {
+  if (width * height < mineCount) return errorResult(`Cannot fit ${mineCount} mines in this board!`)
+
   const cells: Cell[][] = Array(height)
     .fill(null)
     .map(() => Array(width)
       .fill(null)
       .map(defaultCell))
 
-  return {
+  return okResult({
     cells,
-    mineCount: 0
-  }
+    mineCount,
+    initialized: false
+  })
 }
 
 export const placeMines = (board: Board, positions: Vector2[]): Board => {
@@ -53,15 +63,13 @@ export const placeMines = (board: Board, positions: Vector2[]): Board => {
   })
 }
 
-export const initializeBoard = (board: Board, mineCount: number, excludePosition: Vector2): Result<Board> => {
+export const initializeBoard = (board: Board, excludePosition: Vector2): Board => {
   const width = getWidth(board)
   const height = getHeight(board)
 
-  if (width * height < mineCount) return errorResult(`Cannot fit ${mineCount} mines in this board!`)
-
   const positions: Vector2[] = []
 
-  while (positions.length < mineCount) {
+  while (positions.length < board.mineCount) {
     const { x: xN, y: yN } = randomPosition(width, height)
 
     const shouldAdd = positions.every(({ x, y }) => !(xN === x && yN === y)) &&
@@ -69,10 +77,10 @@ export const initializeBoard = (board: Board, mineCount: number, excludePosition
     if (shouldAdd) positions.push({ x: xN, y: yN })
   }
 
-  return okResult({
+  return {
     ...placeMines(board, positions),
-    mineCount
-  })
+    initialized: true
+  }
 }
 
 export const markCellAt = (board: Board, position: Vector2): Board => {
@@ -84,4 +92,66 @@ export const markCellAt = (board: Board, position: Vector2): Board => {
       board.cells[y][x] = newCell
     })
   }) ?? board
+}
+
+export const getNeighborPositions = (board: Board, position: Vector2): Vector2[] => {
+  const { x, y } = position
+  return neighboringCellOffsets
+    .map(([xOff, yOff]) => ({ x: x + xOff, y: y + yOff }))
+    .filter(neighborPos => positionWithinBounds(board, neighborPos))
+}
+
+export const getNeighboringMineCount = (board: Board, position: Vector2): number => {
+  const neighboringCells = getNeighborPositions(board, position)
+    .map(p => getCellAt(board, p)) as Cell[]
+
+  return neighboringCells.filter(cell => cell.hasMine).length
+}
+
+export const getNeighboringFlagCount = (board: Board, position: Vector2): number => {
+  const neighboringCells = getNeighborPositions(board, position)
+    .map(p => getCellAt(board, p)) as Cell[]
+
+  return neighboringCells
+    .filter(cell => cell.state === 'hidden' && cell.markedAs === 'flagged').length
+}
+
+export const revealCellAt = (board: Board, position: Vector2): Board => {
+  const cell = getCellAt(board, position)
+  if (cell === undefined ||
+    cell.state === 'revealed' ||
+    (cell.state === 'hidden' && cell.markedAs !== 'none')) {
+    return board
+  }
+
+  if (!board.initialized) return revealCellAt(initializeBoard(board, position), position)
+
+  return produce(board, board => {
+    // Breadth-first search from given position
+    const queue = [position]
+
+    while (queue.length > 0) {
+      const currentPosition = queue.pop() ?? { x: -1, y: -1 }
+
+      const neighborPositions = getNeighborPositions(board, currentPosition)
+      const neighboringMineCount = getNeighboringMineCount(board, currentPosition)
+      const neighboringFlagCount = getNeighboringFlagCount(board, currentPosition)
+
+      // Reveal cell at current position
+      const { x, y } = currentPosition
+      const { hasMine } = board.cells[y][x]
+      board.cells[y][x] = {
+        state: 'revealed',
+        neighboringMines: neighboringMineCount,
+        hasMine
+      } satisfies RevealedCell
+
+      // Then propagate cell reveal outwards if flag and mine counts match
+      if (neighboringFlagCount === neighboringMineCount) {
+        neighborPositions
+          .filter(neighborPosition => getCellAt(board, neighborPosition)?.state === 'hidden')
+          .forEach(neighborPosition => queue.push(neighborPosition))
+      }
+    }
+  })
 }
