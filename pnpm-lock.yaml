@@ -17,6 +17,7 @@ specifiers:
   eslint-plugin-n: ^15.0.0
   eslint-plugin-promise: ^6.0.0
   eslint-plugin-react: ^7.32.2
+  fp-ts: ^2.13.1
   immer: ^9.0.19
   react: ^17.0.2
   react-dom: ^17.0.2
@@ -32,6 +33,7 @@ dependencies:
   '@fortawesome/free-solid-svg-icons': 6.3.0
   '@fortawesome/react-fontawesome': 0.1.19_wxf7upq5ukhivvyfqw3zxxlt4u
   '@reduxjs/toolkit': 1.9.3_3m5k4ry2nwm36zz5ojtujpfkvq
+  fp-ts: 2.13.1
   immer: 9.0.19
   react: 17.0.2
   react-dom: 17.0.2_react@17.0.2
@@ -1897,6 +1899,10 @@ packages:
       cross-spawn: 7.0.3
       signal-exit: 3.0.7
     dev: true
+
+  /fp-ts/2.13.1:
+    resolution: {integrity: sha512-0eu5ULPS2c/jsa1lGFneEFFEdTbembJv8e4QKXeVJ3lm/5hyve06dlKZrpxmMwJt6rYen7sxmHHK2CLaXvWuWQ==}
+    dev: false
 
   /fs.realpath/1.0.0:
     resolution: {integrity: sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==}

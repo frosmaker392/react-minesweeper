@@ -20,4 +20,13 @@ export const errorResult = (error: string): ErrorResult => ({
   error
 })
 
+export const mapResult = <A, B>(result: Result<A>, mapper: (value: A) => B): Result<B> => {
+  if (!result.ok) return result
+
+  return {
+    ok: true,
+    value: mapper(result.value)
+  }
+}
+
 export const getResultValue = <T>(result: Result<T>): T => (result as OkResult<T>).value

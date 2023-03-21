@@ -9,7 +9,8 @@ const nextCellMarking: Record<MarkType, MarkType> = {
 export const defaultCell = (): HiddenCell => ({
   state: 'hidden',
   hasMine: false,
-  markedAs: 'none'
+  markedAs: 'none',
+  roundedCorners: []
 })
 
 export const markCell = (cell: Cell): Cell => {

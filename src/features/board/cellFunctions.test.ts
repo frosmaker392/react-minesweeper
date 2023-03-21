@@ -8,7 +8,8 @@ describe('cellFunctions', () => {
       expect(defaultCell()).toEqual<HiddenCell>({
         state: 'hidden',
         hasMine: false,
-        markedAs: 'none'
+        markedAs: 'none',
+        roundedCorners: []
       })
     })
   })
@@ -27,7 +28,8 @@ describe('cellFunctions', () => {
       const startingCell: Cell = {
         state: 'hidden',
         hasMine: false,
-        markedAs: 'none'
+        markedAs: 'none',
+        roundedCorners: []
       }
       let cell: Cell = { ...startingCell }
 
