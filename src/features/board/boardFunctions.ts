@@ -1,4 +1,4 @@
-import { filter } from 'fp-ts/lib/Array'
+import * as A from 'fp-ts/lib/Array'
 import * as E from 'fp-ts/lib/Either'
 import { flow, pipe } from 'fp-ts/lib/function'
 import * as O from 'fp-ts/lib/Option'
@@ -21,53 +21,54 @@ export const randomPosition = (width: number, height: number): Vector2 => ({
   y: randomInt(0, height)
 })
 
-export const getWidth = (board: Board): number => {
-  const row = board.cells.at(0)
-  return row === undefined ? 0 : row.length
-}
+export const getWidth = (board: Board): number =>
+  pipe(
+    A.head(board.cells),
+    O.map(A.size),
+    O.getOrElse(() => 0)
+  )
 
 export const getHeight = (board: Board): number => board.cells.length
 
-export const getCellAt = (board: Board, position: Vector2): O.Option<Cell> => {
-  if (!positionWithinBounds(board, position)) return O.none
+export const getCellAt = ({ x, y }: Vector2) => (board: Board): O.Option<Cell> =>
+  positionWithinBounds({ x, y })(board)
+    ? O.some(board.cells[y][x])
+    : O.none
 
-  const { x, y } = position
-  return O.some(board.cells[y][x])
-}
+export const positionWithinBounds = ({ x, y }: Vector2) => (board: Board): boolean =>
+  pipe(
+    { w: getWidth(board), h: getHeight(board) },
+    ({ w, h }) => x >= 0 && x < w && y >= 0 && y < h
+  )
 
-export const positionWithinBounds = (board: Board, { x, y }: Vector2): boolean => {
-  const width = getWidth(board)
-  const height = getHeight(board)
+export const generateBoard = ({ width, height, mineCount }: BoardParams): BoardResult =>
+  E.fromPredicate(
+    () => (width * height > mineCount),
+    () => `Cannot fit ${mineCount} mines in this board!`
+  )(
+    {
+      cells: pipe(
+        A.replicate(height, null),
+        A.map(() => pipe(
+          A.replicate(width, null),
+          A.map(defaultCell)
+        ))
+      ),
+      mineCount,
+      initialized: false
+    }
+  )
 
-  return x >= 0 && x < width && y >= 0 && y < height
-}
-
-export const generateBoard = ({ width, height, mineCount }: BoardParams): BoardResult => {
-  if (width * height <= mineCount) return E.left(`Cannot fit ${mineCount} mines in this board!`)
-
-  const cells: Cell[][] = Array(height)
-    .fill(null)
-    .map(() => Array(width)
-      .fill(null)
-      .map(defaultCell))
-
-  return E.right({
-    cells,
-    mineCount,
-    initialized: false
-  })
-}
-
-export const placeMines = (board: Board, positions: Vector2[]): Board => {
-  return produce(board, board => {
-    for (const position of positions) {
-      const { x, y } = position
-      if (positionWithinBounds(board, position)) board.cells[y][x].hasMine = true
+export const placeMines = (positions: Vector2[]) => (board: Board): Board =>
+  produce(board, board => {
+    for (const { x, y } of positions) {
+      if (positionWithinBounds({ x, y })(board)) {
+        board.cells[y][x].hasMine = true
+      }
     }
   })
-}
 
-export const initializeBoard = (board: Board, excludePosition: Vector2): Board => {
+export const initializeBoard = (excludePosition: Vector2) => (board: Board): Board => {
   const width = getWidth(board)
   const height = getHeight(board)
 
@@ -82,14 +83,14 @@ export const initializeBoard = (board: Board, excludePosition: Vector2): Board =
   }
 
   return {
-    ...placeMines(board, positions),
+    ...placeMines(positions)(board),
     initialized: true
   }
 }
 
-export const markCellAt = (board: Board, position: Vector2): Board => {
-  return pipe(
-    getCellAt(board, position),
+export const markCellAt = (position: Vector2) => (board: Board): Board =>
+  pipe(
+    getCellAt(position)(board),
     O.map<Cell, Board>((cell) => {
       const { x, y } = position
 
@@ -100,59 +101,56 @@ export const markCellAt = (board: Board, position: Vector2): Board => {
     }),
     O.getOrElse(() => board)
   )
+
+export const getNeighborPositions = ({ x, y }: Vector2) => (board: Board): Vector2[] => {
+  if (!positionWithinBounds({ x, y })(board)) return []
+  return pipe(
+    neighboringCellOffsets,
+    A.map(([xOff, yOff]) => ({ x: x + xOff, y: y + yOff })),
+    A.filter(nPos => positionWithinBounds(nPos)(board))
+  )
 }
 
-export const getNeighborPositions = (board: Board, position: Vector2): Vector2[] => {
-  if (!positionWithinBounds(board, position)) return []
-  const { x, y } = position
-  return neighboringCellOffsets
-    .map(([xOff, yOff]) => ({ x: x + xOff, y: y + yOff }))
-    .filter(neighborPos => positionWithinBounds(board, neighborPos))
-}
+export const getNeighboringCells = (position: Vector2) => (board: Board): Cell[] =>
+  pipe(
+    getNeighborPositions(position)(board),
+    A.filterMap(nPos => getCellAt(nPos)(board))
+  )
 
-export const getNeighboringCells = (board: Board, position: Vector2): Cell[] => {
-  return getNeighborPositions(board, position)
-    .map(nPos => flow(getCellAt, O.toUndefined)(board, nPos))
-    .filter((cell): cell is Cell => cell !== undefined)
-}
-
-export const revealCellAt = (board: Board, position: Vector2): Board => {
-  const countNeighboringMines = flow(
-    getNeighboringCells,
-    filter(cell => cell.hasMine),
+export const revealCellAt = (position: Vector2) => (board: Board): Board => {
+  const countNeighboringMines = (pos: Vector2) => flow(
+    getNeighboringCells(pos),
+    A.filter(cell => cell.hasMine),
     cells => cells.length
   )
 
-  const countNeighboringFlags = flow(
-    getNeighboringCells,
-    filter(cell => cell.state === 'hidden' && cell.markedAs === 'flagged'),
+  const countNeighboringFlags = (pos: Vector2) => flow(
+    getNeighboringCells(pos),
+    A.filter(cell => cell.state === 'hidden' && cell.markedAs === 'flagged'),
     cells => cells.length
   )
 
   return pipe(
-    getCellAt(board, position),
-    O.filterMap(cell => {
-      if (cell.state === 'hidden' && cell.markedAs !== 'none') return O.none
+    getCellAt(position)(board),
 
-      if (!board.initialized) {
-        return flow(
-          initializeBoard,
-          O.some
-        )(board, position)
-      }
+    // Don't do anything if cell satisfies following
+    O.filter(cell => cell.state === 'revealed' || cell.markedAs === 'none'),
 
-      return O.some(board)
-    }),
+    // Initialize board before reveal
+    O.map(() => board.initialized
+      ? board
+      : initializeBoard(position)(board)),
+
+    // Reveal cell at position, propagation using BFS
     O.map(board => produce(board, board => {
-      // Breadth-first search from given position
       const queue = [position]
 
       while (queue.length > 0) {
         const currentPosition = queue.pop() ?? { x: -1, y: -1 }
 
-        const neighborPositions = getNeighborPositions(board, currentPosition)
-        const neighboringMineCount = countNeighboringMines(board, position)
-        const neighboringFlagCount = countNeighboringFlags(board, currentPosition)
+        const neighborPositions = getNeighborPositions(currentPosition)(board)
+        const neighboringMineCount = countNeighboringMines(currentPosition)(board)
+        const neighboringFlagCount = countNeighboringFlags(currentPosition)(board)
 
         // Reveal cell at current position
         const { x, y } = currentPosition
@@ -162,8 +160,8 @@ export const revealCellAt = (board: Board, position: Vector2): Board => {
         if (neighboringFlagCount === neighboringMineCount) {
           const hiddenCellPositions = pipe(
             neighborPositions,
-            filter(nPos => pipe(
-              getCellAt(board, nPos),
+            A.filter(nPos => pipe(
+              getCellAt(nPos)(board),
               O.filterMap(cell => cell.state === 'hidden' ? O.none : O.some(cell)),
               O.isSome
             ))
