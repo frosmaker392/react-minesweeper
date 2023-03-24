@@ -1,13 +1,16 @@
+import { type Option } from 'fp-ts/lib/Option'
+
 export interface Vector2 {
   readonly x: number
   readonly y: number
 }
 
+export type CellState = 'hidden' | 'revealed'
 export type MarkType = 'none' | 'flagged' | 'unknown'
 export type Corner = 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight'
 
 interface BaseCell {
-  readonly state: 'hidden' | 'revealed'
+  readonly state: CellState
   readonly hasMine: boolean
 }
 
@@ -34,4 +37,10 @@ export interface BoardParams {
   readonly width: number
   readonly height: number
   readonly mineCount: number
+}
+
+type Direction = 'top' | 'bottom' | 'left' | 'right'
+
+export type NeighboringStates = {
+  [key in Direction]: Option<CellState>
 }

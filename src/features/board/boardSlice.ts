@@ -1,7 +1,8 @@
 import * as E from 'fp-ts/Either'
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
-import { generateBoard, markCellAt, revealCellAt } from './boardFunctions'
+import { generateBoard, markCellAt, revealCellAt, updateCellRoundedCorners } from './boardFunctions'
 import type { Vector2, Board, BoardParams } from './types'
+import { pipe } from 'fp-ts/lib/function'
 
 const initialParams: BoardParams = {
   width: 10,
@@ -20,10 +21,14 @@ export const boardSlice = createSlice({
   initialState,
   reducers: {
     markCell: (state, action: PayloadAction<Vector2>) => {
-      state = markCellAt(state, action.payload)
+      state = markCellAt(action.payload)(state)
     },
     revealCell: (state, action: PayloadAction<Vector2>) => {
-      state = revealCellAt(state, action.payload)
+      state = pipe(
+        state,
+        revealCellAt(action.payload),
+        updateCellRoundedCorners
+      )
     }
   }
 })

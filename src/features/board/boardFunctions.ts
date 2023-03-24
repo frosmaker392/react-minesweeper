@@ -3,18 +3,12 @@ import * as E from 'fp-ts/lib/Either'
 import { flow, pipe } from 'fp-ts/lib/function'
 import * as O from 'fp-ts/lib/Option'
 import produce from 'immer'
-import { markCell, defaultCell, revealCell } from './cellFunctions'
-import type { Vector2, Board, Cell, BoardParams } from './types'
+import { markCell, defaultCell, revealCell, calculateRoundedCorners, isHidden } from './cellFunctions'
+import type { Vector2, Board, Cell, BoardParams, NeighboringStates, HiddenCell } from './types'
 
 type BoardResult = E.Either<string, Board>
 
 const randomInt = (min: number, max: number): number => Math.floor(Math.random() * (max - min) + min)
-
-const neighboringCellOffsets = [
-  [-1, -1], [0, -1], [1, -1],
-  [-1, 0], [1, 0],
-  [-1, 1], [0, 1], [1, 1]
-]
 
 export const randomPosition = (width: number, height: number): Vector2 => ({
   x: randomInt(0, width),
@@ -102,10 +96,16 @@ export const markCellAt = (position: Vector2) => (board: Board): Board =>
     O.getOrElse(() => board)
   )
 
+const neighborOffsets = [
+  [-1, -1], [0, -1], [1, -1],
+  [-1, 0], [1, 0],
+  [-1, 1], [0, 1], [1, 1]
+]
+
 export const getNeighborPositions = ({ x, y }: Vector2) => (board: Board): Vector2[] => {
   if (!positionWithinBounds({ x, y })(board)) return []
   return pipe(
-    neighboringCellOffsets,
+    neighborOffsets,
     A.map(([xOff, yOff]) => ({ x: x + xOff, y: y + yOff })),
     A.filter(nPos => positionWithinBounds(nPos)(board))
   )
@@ -134,7 +134,7 @@ export const revealCellAt = (position: Vector2) => (board: Board): Board => {
     getCellAt(position)(board),
 
     // Don't do anything if cell satisfies following
-    O.filter(cell => cell.state === 'revealed' || cell.markedAs === 'none'),
+    O.filter(cell => !(cell.state === 'hidden' && cell.markedAs !== 'none')),
 
     // Initialize board before reveal
     O.map(() => board.initialized
@@ -154,7 +154,7 @@ export const revealCellAt = (position: Vector2) => (board: Board): Board => {
 
         // Reveal cell at current position
         const { x, y } = currentPosition
-        board.cells[y][x] = revealCell(board.cells[y][x], neighboringMineCount)
+        board.cells[y][x] = revealCell(neighboringMineCount)(board.cells[y][x])
 
         // Then propagate cell reveal outwards if flag and mine counts match
         if (neighboringFlagCount === neighboringMineCount) {
@@ -162,7 +162,7 @@ export const revealCellAt = (position: Vector2) => (board: Board): Board => {
             neighborPositions,
             A.filter(nPos => pipe(
               getCellAt(nPos)(board),
-              O.filterMap(cell => cell.state === 'hidden' ? O.none : O.some(cell)),
+              O.filter(cell => cell.state === 'hidden' && cell.markedAs === 'none'),
               O.isSome
             ))
           )
@@ -176,3 +176,70 @@ export const revealCellAt = (position: Vector2) => (board: Board): Board => {
     O.getOrElse(() => board)
   )
 }
+
+const directNeighborOffsets = [
+  [0, -1], [0, 1], [-1, 0], [1, 0]
+]
+
+export const getAllPositions = (board: Board): Vector2[][] =>
+  pipe(
+    board.cells,
+    A.mapWithIndex((y, row) =>
+      A.mapWithIndex(x => ({ x, y }))(row))
+  )
+
+export const getDirectNeighborStates =
+  ({ x, y }: Vector2) => (board: Board): NeighboringStates =>
+    pipe(
+      directNeighborOffsets,
+      A.map(([xOff, yOff]) =>
+        pipe({ x: x + xOff, y: y + yOff },
+          pos => getCellAt(pos)(board),
+          O.map(cell => cell.state)
+        )
+      ),
+      (arr) => ({
+        top: arr[0],
+        bottom: arr[1],
+        left: arr[2],
+        right: arr[3]
+      })
+    )
+
+/* const debug = <T>(t: T) => {
+  console.log(t)
+  return t
+} */
+
+export const updateCellRoundedCorners = (board: Board) =>
+  pipe(
+    getAllPositions(board),
+    A.map(
+      A.map(
+        flow(
+          (position: Vector2): [Vector2, O.Option<HiddenCell>] =>
+            [
+              position,
+              pipe(
+                getCellAt(position)(board),
+                O.filter(isHidden)
+              )
+            ],
+          ([position, cellOption]) => pipe(
+            getDirectNeighborStates(position)(board),
+            (nStates) => pipe(cellOption, O.map(calculateRoundedCorners(nStates)))
+          )
+        )
+      )
+    ),
+    (updatedCellOptions) => produce(board, board => {
+      for (let y = 0; y < board.cells.length; y++) {
+        for (let x = 0; x < board.cells[y].length; x++) {
+          const updatedCellOption = updatedCellOptions[y][x]
+          if (O.isSome(updatedCellOption)) {
+            board.cells[y][x] = updatedCellOption.value
+          }
+        }
+      }
+    })
+  )
