@@ -10,6 +10,7 @@ const nextCellMarking: Record<MarkType, MarkType> = {
 }
 
 export const isHidden = (cell: Cell): cell is HiddenCell => cell.state === 'hidden'
+export const isRevealed = (cell: Cell): cell is RevealedCell => cell.state === 'revealed'
 
 export const defaultCell = (): HiddenCell => ({
   state: 'hidden',

@@ -1,0 +1,65 @@
+.cell {
+  position: relative;
+  display: flex;
+  flex: 1;
+  aspect-ratio: 1;
+
+  font-family: 'Barlow', monospace;
+  font-weight: 700;
+}
+
+.cell > * {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.cellUpper, .cellLower {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cellUpper {
+  background-color: var(--primary);
+  transition: background-color .1s ease-out;
+  z-index: 1;
+}
+
+.cellUpper:hover {
+  background-color: var(--on-hover);
+}
+
+.cellUpper:active {
+  background-color: var(--on-active);
+}
+
+.shadow {
+  box-shadow: var(--shadow);
+}
+
+.cellUpper > svg {
+  padding: 0.45em;
+}
+
+.cellUpper > svg.mine {
+  color: var(--accent-2);
+}
+
+.cell > .topLeft {
+  border-top-left-radius: 0.2em;
+}
+
+.cell > .topRight {
+  border-top-right-radius: 0.2em;
+}
+
+.cell > .bottomLeft {
+  border-bottom-left-radius: 0.2em;
+}
+
+.cell > .bottomRight {
+  border-bottom-right-radius: 0.2em;
+}
