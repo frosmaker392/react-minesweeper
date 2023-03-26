@@ -19,7 +19,7 @@ const invalidBoard: Board = {
   mineCount: 0,
   initialized: false,
 }
-const initialState: Board = E.getOrElse(() => invalidBoard)(
+export const initialState: Board = E.getOrElse(() => invalidBoard)(
   generateBoard(initialParams)
 )
 

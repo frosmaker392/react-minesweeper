@@ -1,0 +1,12 @@
+.board {
+  display: flex;
+  flex-direction: column;
+
+  background-color: var(--secondary);
+  box-shadow: var(--shadow-inset);
+}
+
+.boardRow {
+  display: flex;
+  flex-direction: row;
+}

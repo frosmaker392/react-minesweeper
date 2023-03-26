@@ -1,14 +1,35 @@
+import { pipe } from 'fp-ts/lib/function'
 import React from 'react'
 
-import Game from './components/Game'
 import './App.css'
+import Board from './features/board/Board'
+import {
+  revealCellAt,
+  updateCellRoundedCorners,
+} from './features/board/boardFunctions'
+import { initialState } from './features/board/boardSlice'
+import { type Board as TBoard } from './features/board/types'
+
+const board: TBoard = pipe(
+  initialState,
+  revealCellAt({ x: 3, y: 3 }),
+  updateCellRoundedCorners
+)
 
 const App: React.FC = () => (
   <>
     <header>
       <h1>Minesweeper</h1>
     </header>
-    <Game />
+
+    <Board
+      board={board}
+      revealMine={false}
+      onRevealCell={(pos) => {
+        console.log(`reveal at [${pos.x}, ${pos.y}]`)
+      }}
+    />
+
     <footer className="footer">
       <p>
         Messily written by{' '}
