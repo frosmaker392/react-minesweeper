@@ -17,11 +17,14 @@ interface IGameHeaderProps {
   onMenuBtn: (isPaused: boolean) => void
 }
 
-const GameHeader: React.FC<IGameHeaderProps> =
-props => {
+const GameHeader: React.FC<IGameHeaderProps> = (props) => {
   const {
-    gameState, elapsedSeconds, flaggedMines, numMines,
-    showMenu, onMenuBtn
+    gameState,
+    elapsedSeconds,
+    flaggedMines,
+    numMines,
+    showMenu,
+    onMenuBtn,
   } = props
 
   const format = (val: number): string => String(val).padStart(2, '0')
@@ -29,23 +32,33 @@ props => {
   const minutes = format(Math.floor(elapsedSeconds / 60))
 
   return (
-    <header className='game-header'>
-      <article className='score'>
-        <div className='icon'>
+    <header className="game-header">
+      <article className="score">
+        <div className="icon">
           <ClockIcon />
         </div>
-        <time className='value'> <span>{minutes}</span>:{seconds} </time>
+        <time className="value">
+          {' '}
+          <span>{minutes}</span>:{seconds}{' '}
+        </time>
       </article>
 
       <HeaderButton
         gameState={gameState}
         showMenu={showMenu}
-        className='clickable'
-        onClick={() => { onMenuBtn(!showMenu) }} />
+        className="clickable"
+        onClick={() => {
+          onMenuBtn(!showMenu)
+        }}
+      />
 
-      <article className='score'>
-        <MineIcon className='icon' />
-        <p className='value'> {flaggedMines}<span>/{numMines}</span> </p>
+      <article className="score">
+        <MineIcon className="icon" />
+        <p className="value">
+          {' '}
+          {flaggedMines}
+          <span>/{numMines}</span>{' '}
+        </p>
       </article>
     </header>
   )

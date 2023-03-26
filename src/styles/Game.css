@@ -2,7 +2,7 @@
   position: relative;
   transition-property: box-shadow, border;
   transition-duration: 100ms;
-  
+
   background: var(--primary);
   border: none;
   box-shadow: var(--shadow);
@@ -21,8 +21,7 @@
   transition-duration: 100ms;
 
   border-radius: var(--border-radius);
-  box-shadow: inset 2px 2px 2px white,
-              inset -2px -2px 2px black;
+  box-shadow: inset 2px 2px 2px white, inset -2px -2px 2px black;
   background: linear-gradient(170deg, #fff, #000);
   mix-blend-mode: overlay;
   opacity: 0.5;
@@ -44,8 +43,7 @@
 
 .clickable:active::after {
   opacity: 0.5;
-  box-shadow: inset 2px 2px 2px black,
-              inset -2px -2px 2px white;
+  box-shadow: inset 2px 2px 2px black, inset -2px -2px 2px white;
   background: linear-gradient(170deg, #000, #fff);
 }
 

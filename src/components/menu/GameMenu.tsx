@@ -12,32 +12,46 @@ interface IGameMenuProps {
   onNewGame: (boardParams: IBoard) => void
 }
 
-const GameMenu: React.FC<IGameMenuProps> =
-({ boardParams, onNewGame }) => {
+const GameMenu: React.FC<IGameMenuProps> = ({ boardParams, onNewGame }) => {
   const [currentView, setCurrentView] = useState('pause' as MenuView)
 
   const views: Record<MenuView, JSX.Element> = {
-    pause: <PauseView
-                  onRestart={() => { onNewGame(boardParams) }}
-                  onNewGame={() => { setCurrentView('newGame') }}
-                  onHowToPlay={() => { setCurrentView('howToPlay') }}
-                  />,
-    newGame: <NewGameView
-                  boardParams={boardParams}
-                  onSubmit={onNewGame}
-                  onReturn={() => { setCurrentView('pause') }}
-                  />,
-    howToPlay: <HowToPlayView
-                  onReturn={() => { setCurrentView('pause') }} />
+    pause: (
+      <PauseView
+        onRestart={() => {
+          onNewGame(boardParams)
+        }}
+        onNewGame={() => {
+          setCurrentView('newGame')
+        }}
+        onHowToPlay={() => {
+          setCurrentView('howToPlay')
+        }}
+      />
+    ),
+    newGame: (
+      <NewGameView
+        boardParams={boardParams}
+        onSubmit={onNewGame}
+        onReturn={() => {
+          setCurrentView('pause')
+        }}
+      />
+    ),
+    howToPlay: (
+      <HowToPlayView
+        onReturn={() => {
+          setCurrentView('pause')
+        }}
+      />
+    ),
   }
 
   const currentViewElement = views[currentView]
 
   return (
-    <div className='board-overlay menu'>
-      <div className='menu-view-container'>
-        { currentViewElement }
-      </div>
+    <div className="board-overlay menu">
+      <div className="menu-view-container">{currentViewElement}</div>
     </div>
   )
 }

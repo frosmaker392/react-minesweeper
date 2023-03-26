@@ -7,46 +7,66 @@ import * as O from 'fp-ts/Option'
 import produce from 'immer'
 import { describe, test, expect } from 'vitest'
 
-import { positionWithinBounds, generateBoard, getHeight, getWidth, randomPosition, initializeBoard, getCellAt, placeMines, getNeighborPositions, revealCellAt, markCellAt, getAllPositions, getDirectNeighborStates, updateCellRoundedCorners } from './boardFunctions'
+import {
+  positionWithinBounds,
+  generateBoard,
+  getHeight,
+  getWidth,
+  randomPosition,
+  initializeBoard,
+  getCellAt,
+  placeMines,
+  getNeighborPositions,
+  revealCellAt,
+  markCellAt,
+  getAllPositions,
+  getDirectNeighborStates,
+  updateCellRoundedCorners,
+} from './boardFunctions'
 import { defaultCell, revealCell } from './cellFunctions'
-import type { Board, BoardParams, Cell, Corner, HiddenCell, NeighboringStates, RevealedCell, Vector2 } from './types'
+import type {
+  Board,
+  BoardParams,
+  Cell,
+  Corner,
+  HiddenCell,
+  NeighboringStates,
+  RevealedCell,
+  Vector2,
+} from './types'
 
-const defaultCells = (length: number): Cell[] => Array(length).fill(null).map(defaultCell)
+const defaultCells = (length: number): Cell[] =>
+  Array(length).fill(null).map(defaultCell)
 
 const testBoard1: Board = {
-  cells: [
-    defaultCells(7),
-    defaultCells(7)
-  ],
+  cells: [defaultCells(7), defaultCells(7)],
   mineCount: 0,
-  initialized: false
+  initialized: false,
 }
 
 const testBoard2: Board = {
-  cells: [
-    defaultCells(3),
-    defaultCells(3),
-    defaultCells(3)
-  ],
+  cells: [defaultCells(3), defaultCells(3), defaultCells(3)],
   mineCount: 0,
-  initialized: false
+  initialized: false,
 }
 
 // Helper functions
-const countMines = (board: Board): number => board.cells.reduce(
-  (mineCount, row) => mineCount + row.reduce(
-    (mineCount, cell) => mineCount + (cell.hasMine ? 1 : 0),
+const countMines = (board: Board): number =>
+  board.cells.reduce(
+    (mineCount, row) =>
+      mineCount +
+      row.reduce((mineCount, cell) => mineCount + (cell.hasMine ? 1 : 0), 0),
     0
-  ),
-  0
-)
+  )
 
-const hasMineAt = (position: Vector2) => flow(
-  getCellAt(position),
-  O.exists(cell => cell.hasMine)
-)
+const hasMineAt = (position: Vector2) =>
+  flow(
+    getCellAt(position),
+    O.exists((cell) => cell.hasMine)
+  )
 
-const toVector2s = (pairs: Array<[number, number]>): Vector2[] => pairs.map(([x, y]) => ({ x, y }))
+const toVector2s = (pairs: Array<[number, number]>): Vector2[] =>
+  pairs.map(([x, y]) => ({ x, y }))
 
 describe('Board functions', () => {
   describe('randomPosition', () => {
@@ -78,7 +98,7 @@ describe('Board functions', () => {
       const emptyBoard: Board = {
         cells: [],
         mineCount: 0,
-        initialized: false
+        initialized: false,
       }
       expect(getWidth(emptyBoard)).toBe(0)
     })
@@ -96,7 +116,9 @@ describe('Board functions', () => {
     })
 
     test('returns cell at specified position', () => {
-      expect(getCellAt({ x: 0, y: 0 })(testBoard1)).toEqual(O.some(defaultCell()))
+      expect(getCellAt({ x: 0, y: 0 })(testBoard1)).toEqual(
+        O.some(defaultCell())
+      )
     })
   })
 
@@ -107,10 +129,13 @@ describe('Board functions', () => {
       [6, 2, false],
       [7, 1, false],
       [-1, 0, false],
-      [0, -1, false]
-    ])('positionWithinBounds(<7x2 board>, { x: %i, y: %i }) -> %s', (x, y, expected) => {
-      expect(positionWithinBounds({ x, y })(testBoard1)).toBe(expected)
-    })
+      [0, -1, false],
+    ])(
+      'positionWithinBounds(<7x2 board>, { x: %i, y: %i }) -> %s',
+      (x, y, expected) => {
+        expect(positionWithinBounds({ x, y })(testBoard1)).toBe(expected)
+      }
+    )
   })
 
   describe('generateBoard', () => {
@@ -118,7 +143,7 @@ describe('Board functions', () => {
       const params1: BoardParams = {
         width: 5,
         height: 5,
-        mineCount: 25
+        mineCount: 25,
       }
       const params2: BoardParams = { ...params1, mineCount: 99 }
       expect(pipe(params1, generateBoard, E.isLeft)).toBeTruthy()
@@ -129,7 +154,7 @@ describe('Board functions', () => {
       const params = {
         width: 4,
         height: 9,
-        mineCount: 3
+        mineCount: 3,
       }
       const result = generateBoard(params)
       expect(E.isRight(result)).toBeTruthy()
@@ -156,14 +181,13 @@ describe('Board functions', () => {
         [1, 1],
         [2, 1],
         [7, 8],
-        [6, 1]
+        [6, 1],
       ])
 
       const board = placeMines(positions)(testBoard1)
-      const validPositions =
-        A.filter<Vector2>(
-          position => positionWithinBounds(position)(board)
-        )(positions)
+      const validPositions = A.filter<Vector2>((position) =>
+        positionWithinBounds(position)(board)
+      )(positions)
 
       for (const position of validPositions) {
         expect(hasMineAt(position)(board)).toBeTruthy()
@@ -176,7 +200,10 @@ describe('Board functions', () => {
   describe('initializeBoard', () => {
     test('returns resulting board with correct number of mines', () => {
       const mineCount = 12
-      const board = initializeBoard({ x: 0, y: 1 })({ ...testBoard1, mineCount })
+      const board = initializeBoard({ x: 0, y: 1 })({
+        ...testBoard1,
+        mineCount,
+      })
       expect(countMines(board)).toBe(mineCount)
       expect(board.mineCount).toBe(mineCount)
     })
@@ -186,7 +213,10 @@ describe('Board functions', () => {
       const mineCount = getWidth(testBoard1) * getHeight(testBoard1) - 1
 
       for (let i = 0; i < 10; i++) {
-        const board = initializeBoard(excludePosition)({ ...testBoard1, mineCount })
+        const board = initializeBoard(excludePosition)({
+          ...testBoard1,
+          mineCount,
+        })
         expect(hasMineAt(excludePosition)(board)).toBeFalsy()
       }
     })
@@ -201,10 +231,14 @@ describe('Board functions', () => {
       const position = { x: 1, y: 1 }
       const board = markCellAt(position)(testBoard1)
 
-      expect(pipe(
-        getCellAt(position)(board),
-        O.map(cell => cell.state === 'hidden' && cell.markedAs === 'flagged')
-      )).toEqual(O.some(true))
+      expect(
+        pipe(
+          getCellAt(position)(board),
+          O.map(
+            (cell) => cell.state === 'hidden' && cell.markedAs === 'flagged'
+          )
+        )
+      ).toEqual(O.some(true))
     })
   })
 
@@ -216,8 +250,11 @@ describe('Board functions', () => {
     test('returns correct positions of directly neighboring cells', () => {
       const neighborPositions = getNeighborPositions({ x: 5, y: 0 })(testBoard1)
       const expected: Vector2[] = toVector2s([
-        [4, 0], [6, 0],
-        [4, 1], [5, 1], [6, 1]
+        [4, 0],
+        [6, 0],
+        [4, 1],
+        [5, 1],
+        [6, 1],
       ])
 
       const ordX: Ord<Vector2> = pipe(
@@ -257,7 +294,10 @@ describe('Board functions', () => {
     })
 
     test('returns board which is initialized and revealed at position', () => {
-      const board = revealCellAt({ x: 0, y: 0 })({ ...testBoard2, mineCount: 5 })
+      const board = revealCellAt({ x: 0, y: 0 })({
+        ...testBoard2,
+        mineCount: 5,
+      })
       expect(board.initialized).toBeTruthy()
     })
 
@@ -266,7 +306,7 @@ describe('Board functions', () => {
         [1, 0],
         [0, 1],
         [2, 1],
-        [2, 2]
+        [2, 2],
       ])
       const positionToReveal = { x: 1, y: 1 }
       const board = pipe(
@@ -275,17 +315,19 @@ describe('Board functions', () => {
         revealCellAt(positionToReveal)
       )
 
-      expect(getCellAt(positionToReveal)(board)).toEqual(O.some<RevealedCell>({
-        state: 'revealed',
-        neighboringMines: 4,
-        hasMine: false
-      }))
+      expect(getCellAt(positionToReveal)(board)).toEqual(
+        O.some<RevealedCell>({
+          state: 'revealed',
+          neighboringMines: 4,
+          hasMine: false,
+        })
+      )
     })
 
     test('if number of neighboring flags match that of mines, reveal any unmarked neighbor cells', () => {
       const minePositions = toVector2s([
         [1, 0],
-        [0, 1]
+        [0, 1],
       ])
       const positionToReveal: Vector2 = { x: 1, y: 1 }
       const board = pipe(
@@ -297,19 +339,37 @@ describe('Board functions', () => {
         revealCellAt(positionToReveal)
       )
 
-      expect(getCellAt(positionToReveal)(board)).toEqual(O.some<RevealedCell>({
-        state: 'revealed',
-        neighboringMines: 2,
-        hasMine: false
-      }))
+      expect(getCellAt(positionToReveal)(board)).toEqual(
+        O.some<RevealedCell>({
+          state: 'revealed',
+          neighboringMines: 2,
+          hasMine: false,
+        })
+      )
     })
   })
 
   describe('getAllPositions', () => {
     test('returns all possible positions of a board', () => {
       const expected: Vector2[][] = [
-        toVector2s([[0, 0], [1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0]]),
-        toVector2s([[0, 1], [1, 1], [2, 1], [3, 1], [4, 1], [5, 1], [6, 1]])
+        toVector2s([
+          [0, 0],
+          [1, 0],
+          [2, 0],
+          [3, 0],
+          [4, 0],
+          [5, 0],
+          [6, 0],
+        ]),
+        toVector2s([
+          [0, 1],
+          [1, 1],
+          [2, 1],
+          [3, 1],
+          [4, 1],
+          [5, 1],
+          [6, 1],
+        ]),
       ]
 
       expect(getAllPositions(testBoard1)).toEqual(expected)
@@ -318,25 +378,29 @@ describe('Board functions', () => {
 
   describe('getDirectNeighborStates', () => {
     test('returns NeighboringStates object with correct states', () => {
-      const board: Board = produce(testBoard2, board => {
+      const board: Board = produce(testBoard2, (board) => {
         board.cells[1][0] = revealCell(0)(board.cells[1][0])
         board.cells[0][1] = revealCell(0)(board.cells[0][1])
       })
 
-      expect(getDirectNeighborStates({ x: 1, y: 1 })(board)).toEqual<NeighboringStates>({
+      expect(
+        getDirectNeighborStates({ x: 1, y: 1 })(board)
+      ).toEqual<NeighboringStates>({
         top: O.some('revealed'),
         bottom: O.some('hidden'),
         left: O.some('revealed'),
-        right: O.some('hidden')
+        right: O.some('hidden'),
       })
     })
 
     test('returns None for missing cells in specified direction', () => {
-      expect(getDirectNeighborStates({ x: 0, y: 0 })(testBoard1)).toEqual<NeighboringStates>({
+      expect(
+        getDirectNeighborStates({ x: 0, y: 0 })(testBoard1)
+      ).toEqual<NeighboringStates>({
         top: O.none,
         bottom: O.some('hidden'),
         left: O.none,
-        right: O.some('hidden')
+        right: O.some('hidden'),
       })
     })
   })
@@ -346,9 +410,9 @@ describe('Board functions', () => {
       const revealedCell = (): RevealedCell => ({
         state: 'revealed',
         neighboringMines: 0,
-        hasMine: false
+        hasMine: false,
       })
-      const board = produce(testBoard2, board => {
+      const board = produce(testBoard2, (board) => {
         board.cells[0][1] = revealedCell()
         board.cells[0][2] = revealedCell()
         board.cells[1][1] = revealedCell()
@@ -356,9 +420,7 @@ describe('Board functions', () => {
 
       const updatedBoard = updateCellRoundedCorners(board)
       const cell = updatedBoard.cells[1][2] as HiddenCell
-      expect(cell.roundedCorners).toEqual<Corner[]>([
-        'topLeft'
-      ])
+      expect(cell.roundedCorners).toEqual<Corner[]>(['topLeft'])
     })
   })
 })

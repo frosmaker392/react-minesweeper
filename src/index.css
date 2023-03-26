@@ -7,15 +7,22 @@
   box-sizing: border-box;
 }
 /* Remove default margin */
-body, h1, h2, h3, h4,
-p, figure, blockquote,
-dl, dd {
+body,
+h1,
+h2,
+h3,
+h4,
+p,
+figure,
+blockquote,
+dl,
+dd {
   margin: 0;
 }
 
 /* Remove list styles on ul, ol elements with a list role, which suggests default styling will be removed */
-ul[role='list'],
-ol[role='list'] {
+ul[role="list"],
+ol[role="list"] {
   list-style: none;
 }
 
@@ -54,9 +61,9 @@ select {
 /* Remove all animations, transitions and smooth scroll for people that prefer not to see them */
 @media (prefers-reduced-motion: reduce) {
   html:focus-within {
-   scroll-behavior: auto;
+    scroll-behavior: auto;
   }
-  
+
   *,
   *::before,
   *::after {
@@ -75,19 +82,19 @@ select {
   --secondary: #9caea9;
   --accent: #e9772b;
   --accent-glow: drop-shadow(0 0 0.1em #f87f2e9f);
-  --accent-2: #92140C;
+  --accent-2: #92140c;
   --accent-2-glow: drop-shadow(0 0 0.1em #ac1e1481);
 
-  --text: #1C3144;
+  --text: #1c3144;
   --text-invert: #fff;
 
   --on-hover: #e6f0e9;
   --on-active: #9eb1a5;
 
   --shadow: 0.25rem 0.25rem 0.375rem rgba(0, 0, 0, 0.2),
-            -0.25rem -0.25rem 0.375rem rgba(255, 255, 255, 0.4);
+    -0.25rem -0.25rem 0.375rem rgba(255, 255, 255, 0.4);
   --shadow-inset: inset 0.25rem 0.25rem 0.375rem rgba(0, 0, 0, 0.2),
-                  inset -0.25rem -0.25rem 0.375rem rgba(255, 255, 255, 0.4);
+    inset -0.25rem -0.25rem 0.375rem rgba(255, 255, 255, 0.4);
 
   --border-radius: 0.7rem;
 }
@@ -102,13 +109,18 @@ select {
   user-select: none;
 }
 
-body, div, button, label, input, select{
+body,
+div,
+button,
+label,
+input,
+select {
   color: var(--text);
 }
 
 body {
   overflow-x: hidden;
-  font-family: 'Asap', sans-serif;
+  font-family: "Asap", sans-serif;
   font-weight: 500;
   text-align: center;
 
@@ -127,7 +139,8 @@ h1 {
   margin: 0.4rem;
 }
 
-a:link, a:visited {
+a:link,
+a:visited {
   color: var(--accent);
 }
 

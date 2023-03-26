@@ -1,4 +1,9 @@
-import React, { type ChangeEvent, useCallback, useEffect, useState } from 'react'
+import React, {
+  type ChangeEvent,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react'
 import { type IBoard } from '../../utils/BoardLogic'
 import { boardPresets, type DiffLevels } from '../../utils/boardPresets'
 import capitalizeFirstChar from '../../utils/capitalizeFirstChar'
@@ -15,8 +20,11 @@ interface INewGameProps {
   onReturn: () => void
 }
 
-const NewGameView: React.FC<INewGameProps> =
-({ boardParams, onSubmit, onReturn }) => {
+const NewGameView: React.FC<INewGameProps> = ({
+  boardParams,
+  onSubmit,
+  onReturn,
+}) => {
   const [width, setWidth] = useState(boardParams.width)
   const [height, setHeight] = useState(boardParams.height)
   const [numMines, setNumMines] = useState(boardParams.numMines)
@@ -35,52 +43,74 @@ const NewGameView: React.FC<INewGameProps> =
     (e: ChangeEvent<HTMLSelectElement>) => {
       const difficulty = e.target.value as Difficulty
       setCurDifficulty(difficulty)
-    }, [])
+    },
+    []
+  )
 
-  const onInputChange =
-    (setter: (v: number) => void) => {
-      return (val: number) => {
-        setCurDifficulty('custom')
-        setter(val)
-      }
+  const onInputChange = (setter: (v: number) => void) => {
+    return (val: number) => {
+      setCurDifficulty('custom')
+      setter(val)
     }
+  }
 
-  const presetOptions =
-    Object.keys(boardPresets).map((diff, i) =>
-      <option key={i} value={diff}>{capitalizeFirstChar(diff)}</option>)
+  const presetOptions = Object.keys(boardPresets).map((diff, i) => (
+    <option key={i} value={diff}>
+      {capitalizeFirstChar(diff)}
+    </option>
+  ))
 
   return (
-    <form className='menu-view new-game' onSubmit={e => {
-      e.preventDefault()
-      onSubmit({ width, height, numMines })
-    }}>
-      <label htmlFor='diff-select'>Difficulty</label>
-      <StyledSelect className='clickable input' id='diff-select'
+    <form
+      className="menu-view new-game"
+      onSubmit={(e) => {
+        e.preventDefault()
+        onSubmit({ width, height, numMines })
+      }}
+    >
+      <label htmlFor="diff-select">Difficulty</label>
+      <StyledSelect
+        className="clickable input"
+        id="diff-select"
         value={curDifficulty}
-        onChange={onDifficultyChange}>
-
-        <option value='custom'>Custom</option>
-          {presetOptions}
+        onChange={onDifficultyChange}
+      >
+        <option value="custom">Custom</option>
+        {presetOptions}
       </StyledSelect>
 
-      <label htmlFor='width'>Width</label>
-      <IntegerInput className='input clickable' id='width'
-        range={[5, 30]} value={width} setter={onInputChange(setWidth)} />
+      <label htmlFor="width">Width</label>
+      <IntegerInput
+        className="input clickable"
+        id="width"
+        range={[5, 30]}
+        value={width}
+        setter={onInputChange(setWidth)}
+      />
 
-      <label htmlFor='height'>Height</label>
-      <IntegerInput className='input clickable' id='height'
-        range={[5, 30]} value={height} setter={onInputChange(setHeight)} />
+      <label htmlFor="height">Height</label>
+      <IntegerInput
+        className="input clickable"
+        id="height"
+        range={[5, 30]}
+        value={height}
+        setter={onInputChange(setHeight)}
+      />
 
-      <label htmlFor='mines'>Mines</label>
-      <IntegerInput className='input clickable' id='mines'
-        range={[0, Math.floor(width * height / 2)]} value={numMines}
-        setter={onInputChange(setNumMines)} />
+      <label htmlFor="mines">Mines</label>
+      <IntegerInput
+        className="input clickable"
+        id="mines"
+        range={[0, Math.floor((width * height) / 2)]}
+        value={numMines}
+        setter={onInputChange(setNumMines)}
+      />
 
-      <MenuButton className='highlight' type='submit' name='submit'>
+      <MenuButton className="highlight" type="submit" name="submit">
         Generate
       </MenuButton>
 
-      <MenuButton name='cancel' onClick={onReturn}>
+      <MenuButton name="cancel" onClick={onReturn}>
         Back
       </MenuButton>
     </form>

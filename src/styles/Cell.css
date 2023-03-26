@@ -4,7 +4,7 @@
   flex: 1;
   aspect-ratio: 1;
 
-  font-family: 'Barlow', monospace;
+  font-family: "Barlow", monospace;
   font-weight: 700;
 }
 
@@ -18,7 +18,7 @@
 
 .board-cell > .upper {
   background-color: var(--primary);
-  transition: background-color .1s ease-out;
+  transition: background-color 0.1s ease-out;
   z-index: 1;
 }
 
@@ -34,7 +34,8 @@
   box-shadow: var(--shadow);
 }
 
-.board-cell > .lower, .upper {
+.board-cell > .lower,
+.upper {
   display: flex;
   align-items: center;
   justify-content: center;

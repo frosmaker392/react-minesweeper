@@ -11,14 +11,14 @@ enum Corner {
   TopLeft = 1 << 0,
   TopRight = 1 << 1,
   BottomLeft = 1 << 2,
-  BottomRight = 1 << 3
+  BottomRight = 1 << 3,
 }
 
 const cornerClassNames: Record<Corner, string> = {
   [Corner.TopLeft]: 'top-left',
   [Corner.TopRight]: 'top-right',
   [Corner.BottomLeft]: 'bottom-left',
-  [Corner.BottomRight]: 'bottom-right'
+  [Corner.BottomRight]: 'bottom-right',
 }
 
 interface ILowerProps {
@@ -42,43 +42,50 @@ interface ICellProps {
 }
 
 const Lower = ({ cellParams, className }: ILowerProps): JSX.Element => {
-  const { state, hasMine, neighboringMines: nMines } =
-    cellParams
+  const { state, hasMine, neighboringMines: nMines } = cellParams
 
-  return state === 'revealed'
-    ? (hasMine
-        ? <MineIcon className={className + ' with-mine'} />
-        : <div className={className}>{nMines > 0 ? nMines : ''}</div>)
-    : <div className={className} />
+  return state === 'revealed' ? (
+    hasMine ? (
+      <MineIcon className={className + ' with-mine'} />
+    ) : (
+      <div className={className}>{nMines > 0 ? nMines : ''}</div>
+    )
+  ) : (
+    <div className={className} />
+  )
 }
 
-const Upper = ({ cellParams, revealMine, className }: IUpperProps): JSX.Element => {
+const Upper = ({
+  cellParams,
+  revealMine,
+  className,
+}: IUpperProps): JSX.Element => {
   const { state, hasMine } = cellParams
 
   const upperElements: Record<CellState, JSX.Element> = {
-    hidden: (revealMine && hasMine
-      ? <MineIcon className={className + ' with-mine'} />
-      : <div className={className} />),
+    hidden:
+      revealMine && hasMine ? (
+        <MineIcon className={className + ' with-mine'} />
+      ) : (
+        <div className={className} />
+      ),
     revealed: <></>,
     flagged: <FlagIcon className={className} />,
-    unknown: <div className={className} >?</div>
+    unknown: <div className={className}>?</div>,
   }
 
   return upperElements[state]
 }
 
-const Cell: React.FC<ICellProps> =
-props => {
+const Cell: React.FC<ICellProps> = (props) => {
   const { state } = props.cellParams
-  const { revealMine, fontSize, roundCorners, onClick, onRightClick } =
-    props
+  const { revealMine, fontSize, roundCorners, onClick, onRightClick } = props
 
-  const cornerClasses =
-    enumKeys(Corner)
-      .map(k => Corner[k])
-      .filter(dir => (roundCorners & dir) === dir)
-      .map(dir => cornerClassNames[dir])
-      .join(' ')
+  const cornerClasses = enumKeys(Corner)
+    .map((k) => Corner[k])
+    .filter((dir) => (roundCorners & dir) === dir)
+    .map((dir) => cornerClassNames[dir])
+    .join(' ')
 
   return (
     <div
@@ -88,12 +95,15 @@ props => {
         onRightClick()
       }}
       style={{ fontSize }}
-      className={'board-cell unselectable ' + state}>
-        <Lower cellParams={props.cellParams} className='lower' />
-        {state !== 'revealed' &&
-          <div className={'shadow ' + cornerClasses} />}
-        <Upper cellParams={props.cellParams} revealMine={revealMine}
-          className={'upper ' + cornerClasses} />
+      className={'board-cell unselectable ' + state}
+    >
+      <Lower cellParams={props.cellParams} className="lower" />
+      {state !== 'revealed' && <div className={'shadow ' + cornerClasses} />}
+      <Upper
+        cellParams={props.cellParams}
+        revealMine={revealMine}
+        className={'upper ' + cornerClasses}
+      />
     </div>
   )
 }

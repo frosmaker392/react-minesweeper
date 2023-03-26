@@ -13,7 +13,7 @@ import '../styles/GameMenu.css'
 const initParams: IBoard = {
   width: 10,
   height: 10,
-  numMines: 10
+  numMines: 10,
 }
 
 const Game: React.FC = () => {
@@ -29,9 +29,9 @@ const Game: React.FC = () => {
 
   const [stopwatch] = useState(new Stopwatch())
 
-  const isGameOver = (useCallback(() => {
+  const isGameOver = useCallback(() => {
     return gameState === 'won' || gameState === 'lost'
-  }, [gameState]))
+  }, [gameState])
 
   useEffect(() => {
     // Routine to update the seconds variable
@@ -40,7 +40,9 @@ const Game: React.FC = () => {
     }, 150)
 
     // Pause when window goes out of focus
-    const onBlur = (): void => { if (!isGameOver()) setShowMenu(true) }
+    const onBlur = (): void => {
+      if (!isGameOver()) setShowMenu(true)
+    }
     window.addEventListener('blur', onBlur)
 
     return () => {
@@ -62,11 +64,10 @@ const Game: React.FC = () => {
   }, [isPaused, stopwatch])
 
   // Updates gameState and flagCnt
-  const updateGameState = useCallback(
-    (state: BoardState, flagCnt: number) => {
-      setGameState(state)
-      setFlagCount(flagCnt)
-    }, [])
+  const updateGameState = useCallback((state: BoardState, flagCnt: number) => {
+    setGameState(state)
+    setFlagCount(flagCnt)
+  }, [])
 
   // Resets board according to boardParams
   const resetBoard = useCallback(
@@ -76,10 +77,12 @@ const Game: React.FC = () => {
       setShowMenu(false)
       setGameState('uninitialized')
       stopwatch.reset()
-    }, [resetCounter, stopwatch])
+    },
+    [resetCounter, stopwatch]
+  )
 
   return (
-    <div className='game'>
+    <div className="game">
       <GameHeader
         gameState={gameState}
         elapsedSeconds={seconds}
@@ -89,19 +92,17 @@ const Game: React.FC = () => {
         onMenuBtn={setShowMenu}
       />
 
-      <section className='board-container'>
+      <section className="board-container">
         <Board
           resetCounter={resetCounter}
           onUpdate={updateGameState}
-          {...boardParams}/>
-        {
-          showMenu
-            ? <GameMenu
-            boardParams={boardParams}
-            onNewGame={resetBoard}
-          />
-            : (isGameOver() && <div className='board-overlay' />)
-        }
+          {...boardParams}
+        />
+        {showMenu ? (
+          <GameMenu boardParams={boardParams} onNewGame={resetBoard} />
+        ) : (
+          isGameOver() && <div className="board-overlay" />
+        )}
       </section>
 
       <GameFooter boardParams={boardParams} />

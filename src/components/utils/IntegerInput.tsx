@@ -13,18 +13,22 @@ interface IIntegerInputProps {
   setter: (val: number) => void
 }
 
-const IntegerInput: React.FC<IIntegerInputProps> =
-({ id, className, range, value, setter }) => {
+const IntegerInput: React.FC<IIntegerInputProps> = ({
+  id,
+  className,
+  range,
+  value,
+  setter,
+}) => {
   const [min, max] = [range[0], Math.max(range[0], range[1])]
 
-  const inputChange =
-    (e: ChangeEvent<HTMLInputElement>): void => {
-      const v = e.target.valueAsNumber
-      if (!isNaN(v)) setter(v)
-    }
+  const inputChange = (e: ChangeEvent<HTMLInputElement>): void => {
+    const v = e.target.valueAsNumber
+    if (!isNaN(v)) setter(v)
+  }
 
-  const btnAction = (action: () => void) =>
-    (e: React.MouseEvent<HTMLButtonElement>) => {
+  const btnAction =
+    (action: () => void) => (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault()
       action()
     }
@@ -32,22 +36,34 @@ const IntegerInput: React.FC<IIntegerInputProps> =
   return (
     <div className={`num-input ${className ?? ''}`}>
       <input
-        type='number' id={id}
-        value={value} step='1' min={min} max={max}
+        type="number"
+        id={id}
+        value={value}
+        step="1"
+        min={min}
+        max={max}
         onChange={inputChange}
       />
 
-      <button className='sub'
+      <button
+        className="sub"
         tabIndex={-1}
-        onClick={btnAction(() => { setter(Math.max(min, value - 1)) })}>
+        onClick={btnAction(() => {
+          setter(Math.max(min, value - 1))
+        })}
+      >
         <FontAwesomeIcon icon={faMinus} />
       </button>
 
-      <button className='add'
+      <button
+        className="add"
         tabIndex={-1}
-        onClick={btnAction(() => { setter(Math.min(max, value + 1)) })}>
-          <FontAwesomeIcon icon={faPlus} />
-        </button>
+        onClick={btnAction(() => {
+          setter(Math.min(max, value + 1))
+        })}
+      >
+        <FontAwesomeIcon icon={faPlus} />
+      </button>
     </div>
   )
 }
