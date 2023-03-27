@@ -19,8 +19,9 @@ const invalidBoard: Board = {
   mineCount: 0,
   initialized: false,
 }
-export const initialState: Board = E.getOrElse(() => invalidBoard)(
-  generateBoard(initialParams)
+export const initialState: Board = pipe(
+  generateBoard(initialParams),
+  E.getOrElse(() => invalidBoard)
 )
 
 export const boardSlice = createSlice({

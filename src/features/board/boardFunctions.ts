@@ -261,11 +261,6 @@ export const getDirectNeighborStates =
       })
     )
 
-/* const debug = <T>(t: T) => {
-  console.log(t)
-  return t
-} */
-
 export const updateCellRoundedCorners = (board: Board) =>
   pipe(
     getAllPositions(board),

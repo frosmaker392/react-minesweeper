@@ -6,6 +6,7 @@ import {
   revealCell,
   calculateRoundedCorners,
   isHidden,
+  isRevealed,
 } from './cellFunctions'
 import type {
   Cell,
@@ -15,17 +16,24 @@ import type {
   RevealedCell,
 } from './types'
 
+const revealedCell: RevealedCell = {
+  state: 'revealed',
+  neighboringMines: 0,
+  hasMine: false,
+}
+
 describe('cellFunctions', () => {
   describe('isHidden', () => {
     test('returns true if cell is a HiddenCell', () => {
       expect(isHidden(defaultCell())).toBe(true)
-      expect(
-        isHidden({
-          state: 'revealed',
-          neighboringMines: 0,
-          hasMine: false,
-        })
-      ).toBe(false)
+      expect(isHidden(revealedCell)).toBe(false)
+    })
+  })
+
+  describe('isRevealed', () => {
+    test('returns true if cell is a RevealedCell', () => {
+      expect(isRevealed(defaultCell())).toBe(false)
+      expect(isRevealed(revealedCell)).toBe(true)
     })
   })
 
