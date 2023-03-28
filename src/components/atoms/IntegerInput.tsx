@@ -3,34 +3,34 @@ import React, { type ChangeEvent } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons'
 
-import '../../styles/utils/IntegerInput.css'
+import './IntegerInput.css'
 
-interface IIntegerInputProps {
+interface Props {
   id?: string
   className?: string
   range: [min: number, max: number]
   value: number
-  setter: (val: number) => void
+  onChange: (value: number) => void
 }
 
-const IntegerInput: React.FC<IIntegerInputProps> = ({
+const IntegerInput: React.FC<Props> = ({
   id,
   className,
   range,
   value,
-  setter,
+  onChange,
 }) => {
   const [min, max] = [range[0], Math.max(range[0], range[1])]
 
   const inputChange = (e: ChangeEvent<HTMLInputElement>): void => {
     const v = e.target.valueAsNumber
-    if (!isNaN(v)) setter(v)
+    if (!isNaN(v)) onChange(v)
   }
 
-  const btnAction =
-    (action: () => void) => (e: React.MouseEvent<HTMLButtonElement>) => {
+  const createOnClick =
+    (value: number) => (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault()
-      action()
+      onChange(value)
     }
 
   return (
@@ -48,9 +48,7 @@ const IntegerInput: React.FC<IIntegerInputProps> = ({
       <button
         className="sub"
         tabIndex={-1}
-        onClick={btnAction(() => {
-          setter(Math.max(min, value - 1))
-        })}
+        onClick={createOnClick(Math.max(min, value - 1))}
       >
         <FontAwesomeIcon icon={faMinus} />
       </button>
@@ -58,9 +56,7 @@ const IntegerInput: React.FC<IIntegerInputProps> = ({
       <button
         className="add"
         tabIndex={-1}
-        onClick={btnAction(() => {
-          setter(Math.min(max, value + 1))
-        })}
+        onClick={createOnClick(Math.min(max, value + 1))}
       >
         <FontAwesomeIcon icon={faPlus} />
       </button>

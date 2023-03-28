@@ -1,0 +1,67 @@
+.menu-view {
+  width: 100%;
+  gap: 0.8rem;
+}
+
+.menu-view .highlight {
+  background-color: var(--accent);
+  color: var(--text-invert);
+}
+
+.menu-view > button,
+.input {
+  height: 2em;
+}
+
+.menu-view.pause,
+.menu-view.how-to-play {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.menu-view.new-game {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  align-items: center;
+}
+
+.menu-view.new-game > button {
+  grid-column: span 2;
+}
+
+.menu-view .input {
+  background-color: var(--primary);
+  border-radius: var(--border-radius);
+  border: none;
+
+  text-align: center;
+}
+
+.menu-view.how-to-play > ul {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+
+  list-style-type: none;
+  padding: 0;
+}
+
+.menu-view.how-to-play > ul > li {
+  padding: 0.3rem;
+  line-height: 1.1em;
+  border-radius: var(--border-radius);
+
+  font-size: 1rem;
+  font-weight: 400;
+  text-align: left;
+}
+
+.menu-view.how-to-play b {
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.menu-view.how-to-play b.accent-2 {
+  color: var(--accent-2);
+}

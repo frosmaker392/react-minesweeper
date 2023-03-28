@@ -1,11 +1,11 @@
-import React from 'react'
-import MenuButton from './MenuButton'
+import React, { type FC } from 'react'
+import MenuButton from '../../../components/atoms/MenuButton'
 
-interface IHowToPlayViewProps {
+interface Props {
   onReturn: () => void
 }
 
-const HowToPlayView: React.FC<IHowToPlayViewProps> = ({ onReturn }) => (
+const HowToPlayView: FC<Props> = ({ onReturn }) => (
   <div className="menu-view how-to-play">
     <ul>
       <li>

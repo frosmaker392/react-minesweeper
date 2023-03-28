@@ -1,17 +1,13 @@
-import React from 'react'
-import MenuButton from './MenuButton'
+import React, { type FC } from 'react'
+import MenuButton from '../../../components/atoms/MenuButton'
 
-interface IPauseProps {
+interface Props {
   onRestart: () => void
   onNewGame: () => void
   onHowToPlay: () => void
 }
 
-const PauseView: React.FC<IPauseProps> = ({
-  onRestart,
-  onNewGame,
-  onHowToPlay,
-}) => (
+const PauseView: FC<Props> = ({ onRestart, onNewGame, onHowToPlay }) => (
   <div className="menu-view pause">
     <MenuButton onClick={onRestart}>Restart</MenuButton>
     <MenuButton onClick={onNewGame}>New Game</MenuButton>

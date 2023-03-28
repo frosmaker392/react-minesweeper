@@ -28,6 +28,9 @@ export const boardSlice = createSlice({
   name: 'board',
   initialState,
   reducers: {
+    load: (state, action: PayloadAction<Board>) => {
+      state = action.payload
+    },
     markCell: (state, action: PayloadAction<Vector2>) => {
       state = markCellAt(action.payload)(state)
     },
@@ -40,5 +43,7 @@ export const boardSlice = createSlice({
     },
   },
 })
+
+export const { load, markCell, revealCell } = boardSlice.actions
 
 export default boardSlice.reducer
