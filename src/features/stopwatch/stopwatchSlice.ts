@@ -19,3 +19,5 @@ export const stopwatchSlice = createSlice({
     },
   },
 })
+
+export default stopwatchSlice.reducer
