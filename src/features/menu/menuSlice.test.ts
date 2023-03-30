@@ -1,21 +1,40 @@
 import { describe, expect, test } from 'vitest'
-import menuReducer, { changeView, toggleShowMenu } from './menuSlice'
+import type { BoardParams } from '../board/types'
+import { determineDifficulty } from './menuFunctions'
+import menuReducer, {
+  boardPresets,
+  cacheCustomPreset,
+  changeView,
+  setDifficulty,
+  toggleShowMenu,
+  updateBoardParams,
+  updateDifficulty,
+} from './menuSlice'
 import type { MenuState } from './types'
 
 const menuState: MenuState = {
   showMenu: false,
   currentView: 'howToPlay',
+  boardSetup: {
+    difficulty: 'advanced',
+    boardParams: boardPresets.advanced,
+    lastCustomPreset: {
+      width: 10,
+      height: 10,
+      mineCount: 12,
+    },
+  },
 }
 
 const shownMenuState: MenuState = {
+  ...menuState,
   showMenu: true,
-  currentView: 'howToPlay',
 }
 
 describe('menuSlice', () => {
   describe('toggleShowMenu', () => {
     test('hides menu if showMenu is true', () => {
-      expect(menuReducer(shownMenuState, toggleShowMenu())).toEqual({
+      expect(menuReducer(shownMenuState, toggleShowMenu())).toEqual<MenuState>({
         ...shownMenuState,
         showMenu: false,
       })
@@ -23,6 +42,7 @@ describe('menuSlice', () => {
 
     test('shows menu with "pause" as current view if showMenu is false', () => {
       expect(menuReducer(menuState, toggleShowMenu())).toEqual<MenuState>({
+        ...menuState,
         showMenu: true,
         currentView: 'pause',
       })
@@ -38,8 +58,95 @@ describe('menuSlice', () => {
       expect(
         menuReducer(shownMenuState, changeView('pause'))
       ).toEqual<MenuState>({
-        showMenu: true,
+        ...shownMenuState,
         currentView: 'pause',
+      })
+    })
+  })
+
+  describe('setDifficulty', () => {
+    test('sets boardParams to the correct board preset given by difficulty', () => {
+      const resultBeginner = menuReducer(menuState, setDifficulty('beginner'))
+      const resultIntermediate = menuReducer(
+        menuState,
+        setDifficulty('intermediate')
+      )
+      const resultAdvanced = menuReducer(menuState, setDifficulty('advanced'))
+
+      expect(resultBeginner.boardSetup).toEqual<MenuState['boardSetup']>({
+        ...menuState.boardSetup,
+        difficulty: 'beginner',
+        boardParams: boardPresets.beginner,
+      })
+      expect(resultIntermediate.boardSetup).toEqual<MenuState['boardSetup']>({
+        ...menuState.boardSetup,
+        difficulty: 'intermediate',
+        boardParams: boardPresets.intermediate,
+      })
+      expect(resultAdvanced.boardSetup).toEqual<MenuState['boardSetup']>({
+        ...menuState.boardSetup,
+        difficulty: 'advanced',
+        boardParams: boardPresets.advanced,
+      })
+    })
+
+    test('sets currentParams as lastCustomPreset with "custom" difficulty', () => {
+      expect(
+        menuReducer(menuState, setDifficulty('custom')).boardSetup
+      ).toEqual<MenuState['boardSetup']>({
+        ...menuState.boardSetup,
+        difficulty: 'custom',
+        boardParams: menuState.boardSetup.lastCustomPreset,
+      })
+    })
+  })
+
+  describe('updateDifficulty', () => {
+    test('updates current difficulty based on current boardParams', () => {
+      const modifiedMenuState: MenuState = {
+        ...menuState,
+        boardSetup: {
+          ...menuState.boardSetup,
+          difficulty: 'custom',
+        },
+      }
+      expect(
+        menuReducer(modifiedMenuState, updateDifficulty()).boardSetup.difficulty
+      ).toEqual(
+        determineDifficulty(menuState.boardSetup.boardParams, boardPresets)
+      )
+    })
+  })
+
+  describe('updateBoardParams', () => {
+    test('sets currentDifficulty to "custom" and updates other params', () => {
+      const boardParams: BoardParams = {
+        width: 80,
+        height: 80,
+        mineCount: 12,
+      }
+
+      expect(
+        menuReducer(menuState, updateBoardParams(boardParams)).boardSetup
+      ).toEqual<MenuState['boardSetup']>({
+        difficulty: 'custom',
+        boardParams,
+        lastCustomPreset: boardParams,
+      })
+    })
+  })
+
+  describe('cacheCustomPreset', () => {
+    test('caches given board preset in lastCustomPreset', () => {
+      const toCache: BoardParams = {
+        width: 12,
+        height: 12,
+        mineCount: 15,
+      }
+      const result = menuReducer(menuState, cacheCustomPreset(toCache))
+      expect(result.boardSetup).toEqual<MenuState['boardSetup']>({
+        ...menuState.boardSetup,
+        lastCustomPreset: toCache,
       })
     })
   })

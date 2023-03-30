@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest'
 import type { BoardParams } from '../board/types'
-import { determineDifficulty, getBoardParams } from './boardSetupFunctions'
+import { determineDifficulty, getBoardParams } from './menuFunctions'
 import type { BoardPresets } from './types'
 
 const presetFactory = (value: number): BoardParams => ({
@@ -14,7 +14,7 @@ const boardPresets: BoardPresets = {
   advanced: presetFactory(2),
 }
 
-describe('Board setup functions', () => {
+describe('Menu functions', () => {
   describe('getBoardParams', () => {
     test('returns corresponding board params from board presets object', () => {
       expect(getBoardParams('beginner', boardPresets)).toEqual(
