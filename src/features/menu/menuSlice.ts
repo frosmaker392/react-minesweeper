@@ -62,7 +62,7 @@ export const menuSlice = createSlice({
         boardPresets
       )
     },
-    updateBoardParams: ({ boardSetup }, action: PayloadAction<BoardParams>) => {
+    setBoardParams: ({ boardSetup }, action: PayloadAction<BoardParams>) => {
       boardSetup.difficulty = 'custom'
       boardSetup.boardParams = action.payload
       boardSetup.lastCustomPreset = action.payload
@@ -78,7 +78,7 @@ export const {
   changeView,
   setDifficulty,
   updateDifficulty,
-  updateBoardParams,
+  setBoardParams,
   cacheCustomPreset,
 } = menuSlice.actions
 

@@ -7,7 +7,7 @@ import menuReducer, {
   changeView,
   setDifficulty,
   toggleShowMenu,
-  updateBoardParams,
+  setBoardParams,
   updateDifficulty,
 } from './menuSlice'
 import type { MenuState } from './types'
@@ -127,7 +127,7 @@ describe('menuSlice', () => {
       }
 
       expect(
-        menuReducer(menuState, updateBoardParams(boardParams)).boardSetup
+        menuReducer(menuState, setBoardParams(boardParams)).boardSetup
       ).toEqual<MenuState['boardSetup']>({
         difficulty: 'custom',
         boardParams,

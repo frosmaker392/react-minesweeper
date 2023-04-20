@@ -2,17 +2,17 @@ import React from 'react'
 import { pipe } from 'fp-ts/lib/function'
 import * as S from 'fp-ts/lib/string'
 import type { BoardParams } from '../../board/types'
-import { type Difficulty, difficultyList } from '../../boardSetup/types'
 
 import MenuButton from '../../../components/atoms/MenuButton'
 import IntegerField from '../../../components/molecules/IntegerField'
 import SelectField from '../../../components/molecules/SelectField'
+import { type Difficulty, difficultyList } from '../types'
 
 interface Props {
-  currentDifficulty: Difficulty
-  currentParams: BoardParams
+  setupDifficulty: Difficulty
+  setupParams: BoardParams
   onChangeDifficulty: (difficulty: Difficulty) => void
-  onBoardParamsChange: (boardParams: BoardParams) => void
+  onChangeBoardParams: (boardParams: BoardParams) => void
   onSubmit: (boardParams: BoardParams) => void
   onReturn: () => void
 }
@@ -26,17 +26,17 @@ const capitalize = (string: string) =>
   )
 
 const NewGameView: React.FC<Props> = ({
-  currentDifficulty: difficulty,
-  currentParams: boardParams,
+  setupDifficulty,
+  setupParams,
   onChangeDifficulty,
-  onBoardParamsChange,
+  onChangeBoardParams,
   onSubmit,
   onReturn,
 }) => {
-  const { width, height, mineCount } = boardParams
+  const { width, height, mineCount } = setupParams
 
   const onInputChange = (key: keyof BoardParams) => (value: number) => {
-    onBoardParamsChange({ ...boardParams, [key]: value })
+    onChangeBoardParams({ ...setupParams, [key]: value })
   }
 
   const renderOption = (difficulty: Difficulty) => (
@@ -55,7 +55,7 @@ const NewGameView: React.FC<Props> = ({
     >
       <SelectField<Difficulty>
         id="difficulty-select"
-        value={difficulty}
+        value={setupDifficulty}
         options={[...difficultyList]}
         onOptionChange={onChangeDifficulty}
         renderOption={renderOption}
