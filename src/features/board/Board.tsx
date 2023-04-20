@@ -1,6 +1,6 @@
-import React, { useRef } from 'react'
+import React, { useCallback, useRef } from 'react'
 import * as A from 'fp-ts/lib/Array'
-import { pipe } from 'fp-ts/lib/function'
+import { flow, pipe } from 'fp-ts/lib/function'
 import { type FC } from 'react'
 import Cell from './Cell'
 import type { Board as TBoard, Cell as TCell, Vector2 } from './types'
@@ -9,14 +9,23 @@ import classes from './Board.module.css'
 import useElementWidth from '../../hooks/useElementWidth'
 import useDebounce from '../../hooks/useDebounce'
 import { getWidth } from './boardFunctions'
+import { useAppDispatch, useAppSelector } from '../../app/hooks'
+import { markCell, revealCell } from './boardSlice'
+import { determineGameState } from '../game/gameFunctions'
 
 interface Props {
   board: TBoard
   revealMine: boolean
   onRevealCell: (position: Vector2) => void
+  onMarkCell: (position: Vector2) => void
 }
 
-const Board: FC<Props> = ({ board, revealMine, onRevealCell }) => {
+export const Board: FC<Props> = ({
+  board,
+  revealMine,
+  onRevealCell,
+  onMarkCell,
+}) => {
   const ref = useRef<HTMLDivElement>(null)
 
   const fontSize = pipe(
@@ -29,6 +38,9 @@ const Board: FC<Props> = ({ board, revealMine, onRevealCell }) => {
   const createLeftClickCallback = (position: Vector2) => () => {
     onRevealCell(position)
   }
+  const createRightClickCallback = (position: Vector2) => () => {
+    onMarkCell(position)
+  }
 
   const createRow = (y: number, cells: TCell[]) =>
     pipe(
@@ -40,9 +52,7 @@ const Board: FC<Props> = ({ board, revealMine, onRevealCell }) => {
           revealMine={revealMine}
           fontSize={fontSize}
           onLeftClick={createLeftClickCallback({ x, y })}
-          onRightClick={() => {
-            console.log('unimplemented right click')
-          }}
+          onRightClick={createRightClickCallback({ x, y })}
         />
       )),
       (elems) => (
@@ -59,4 +69,27 @@ const Board: FC<Props> = ({ board, revealMine, onRevealCell }) => {
   )
 }
 
-export default Board
+export const withBoardState = (Component: FC<Props>) => {
+  const NewComponent: FC = () => {
+    const board = useAppSelector((state) => state.board)
+
+    const dispatch = useAppDispatch()
+
+    const revealMine = determineGameState(board) === 'lost'
+    const onRevealCell = useCallback(flow(revealCell, dispatch), [])
+    const onMarkCell = useCallback(flow(markCell, dispatch), [])
+
+    return (
+      <Component
+        board={board}
+        revealMine={revealMine}
+        onRevealCell={onRevealCell}
+        onMarkCell={onMarkCell}
+      />
+    )
+  }
+
+  return NewComponent
+}
+
+export default withBoardState(Board)

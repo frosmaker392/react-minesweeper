@@ -28,18 +28,14 @@ export const boardSlice = createSlice({
   name: 'board',
   initialState,
   reducers: {
-    load: (state, action: PayloadAction<Board>) => {
-      state = action.payload
+    load: (_, action: PayloadAction<Board>) => {
+      return action.payload
     },
     markCell: (state, action: PayloadAction<Vector2>) => {
-      state = markCellAt(action.payload)(state)
+      return markCellAt(action.payload)(state)
     },
     revealCell: (state, action: PayloadAction<Vector2>) => {
-      state = pipe(
-        state,
-        revealCellAt(action.payload),
-        updateCellRoundedCorners
-      )
+      return pipe(state, revealCellAt(action.payload), updateCellRoundedCorners)
     },
   },
 })
