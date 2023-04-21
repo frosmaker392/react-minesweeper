@@ -13,11 +13,12 @@ import classes from './Cell.module.css'
 
 interface LowerProps {
   neighboringMineCount: O.Option<number>
+  showMine: boolean
 }
 
 interface UpperProps {
   markedAs: MarkType
-  revealMine: boolean
+  showMine: boolean
   roundedCorners: Corner[]
 }
 
@@ -35,23 +36,25 @@ const upperIcons: Record<UpperIconsKey, JSX.Element> = {
   none: <></>,
   flagged: <FlagIcon />,
   unknown: <>?</>,
-  mine: <MineIcon className="mine" />,
+  mine: <MineIcon className={classes.mine} />,
 }
 
-const Lower: FC<LowerProps> = ({ neighboringMineCount }) => {
-  const display = pipe(
-    neighboringMineCount,
-    O.map(Math.floor),
-    O.filter((num) => num !== 0),
-    O.map((num) => num.toString()),
-    O.getOrElse(() => '')
-  )
+const Lower: FC<LowerProps> = ({ neighboringMineCount, showMine }) => {
+  const display = showMine
+    ? upperIcons.mine
+    : pipe(
+        neighboringMineCount,
+        O.map(Math.floor),
+        O.filter((num) => num !== 0),
+        O.map((num) => num.toString()),
+        O.getOrElse(() => '')
+      )
 
-  return <div>{display}</div>
+  return <div className={classes.cellLower}>{display}</div>
 }
 
-const Upper: FC<UpperProps> = ({ markedAs, revealMine, roundedCorners }) => {
-  const key = revealMine ? 'mine' : markedAs
+const Upper: FC<UpperProps> = ({ markedAs, showMine, roundedCorners }) => {
+  const key = showMine ? 'mine' : markedAs
   const cornerClasses = pipe(
     roundedCorners,
     A.map((corner) => classes[corner]),
@@ -79,7 +82,12 @@ const Cell: FC<CellProps> = ({
     O.some(cell),
     O.filter(isRevealed),
     O.map((cell) => cell.neighboringMines),
-    (nMines) => <Lower neighboringMineCount={nMines} />
+    (nMines) => (
+      <Lower
+        neighboringMineCount={nMines}
+        showMine={cell.hasMine && revealMine}
+      />
+    )
   )
 
   const upper = pipe(
@@ -91,7 +99,7 @@ const Cell: FC<CellProps> = ({
           ({
             markedAs,
             roundedCorners,
-            revealMine: hasMine && revealMine,
+            showMine: hasMine && revealMine,
           } satisfies UpperProps),
         Upper
       )
