@@ -6,8 +6,8 @@ import { Monoid as StrMonoid } from 'fp-ts/lib/string'
 import type { Cell as TCell, Corner, MarkType } from './types'
 import { isHidden, isRevealed } from './cellFunctions'
 
-import { ReactComponent as FlagIcon } from '../../icons/Flag.svg'
-import { ReactComponent as MineIcon } from '../../icons/Mine.svg'
+import { ReactComponent as FlagIcon } from '../../../icons/Flag.svg'
+import { ReactComponent as MineIcon } from '../../../icons/Mine.svg'
 
 import classes from './Cell.module.css'
 

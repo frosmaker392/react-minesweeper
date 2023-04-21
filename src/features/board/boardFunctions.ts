@@ -9,15 +9,9 @@ import {
   revealCell,
   calculateRoundedCorners,
   isHidden,
-} from './cellFunctions'
-import type {
-  Vector2,
-  Board,
-  Cell,
-  BoardParams,
-  NeighboringStates,
-  HiddenCell,
-} from './types'
+} from './cell/cellFunctions'
+import type { Cell, HiddenCell, NeighboringStates } from './cell/types'
+import type { Vector2, Board, BoardParams } from './types'
 
 type BoardResult = E.Either<string, Board>
 

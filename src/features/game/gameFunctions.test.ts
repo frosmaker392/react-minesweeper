@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'vitest'
-import { defaultCell } from '../board/cellFunctions'
-import type { Board, RevealedCell, HiddenCell } from '../board/types'
+import { defaultCell } from '../board/cell/cellFunctions'
+import type { HiddenCell, RevealedCell } from '../board/cell/types'
+import type { Board } from '../board/types'
 import { determineGameState } from './gameFunctions'
 import type { GameState } from './types'
 

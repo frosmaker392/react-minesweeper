@@ -1,9 +1,10 @@
 import * as A from 'fp-ts/lib/Array'
 import * as P from 'fp-ts/lib/Predicate'
 import { pipe } from 'fp-ts/lib/function'
-import type { Board, Cell } from '../board/types'
+import type { Board } from '../board/types'
 import type { GameState } from './types'
-import { isHidden, isRevealed } from '../board/cellFunctions'
+import { isHidden, isRevealed } from '../board/cell/cellFunctions'
+import type { Cell } from '../board/cell/types'
 
 const correctlyFlagged = (cell: Cell): boolean =>
   isHidden(cell) && cell.markedAs === 'flagged' && cell.hasMine

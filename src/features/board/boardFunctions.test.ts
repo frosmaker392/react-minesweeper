@@ -23,17 +23,15 @@ import {
   getDirectNeighborStates,
   updateCellRoundedCorners,
 } from './boardFunctions'
-import { defaultCell, revealCell } from './cellFunctions'
+import { defaultCell, revealCell } from './cell/cellFunctions'
 import type {
-  Board,
-  BoardParams,
   Cell,
   Corner,
   HiddenCell,
   NeighboringStates,
   RevealedCell,
-  Vector2,
-} from './types'
+} from './cell/types'
+import type { Board, BoardParams, Vector2 } from './types'
 
 const defaultCells = (length: number): Cell[] =>
   Array(length).fill(null).map(defaultCell)
