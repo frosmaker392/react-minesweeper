@@ -137,11 +137,11 @@ describe('Board functions', () => {
   })
 
   describe('generateBoard', () => {
-    test('returns error if mine count >= number of available cells', () => {
+    test('returns error if mine count > (number of cells - 9)', () => {
       const params1: BoardParams = {
         width: 5,
         height: 5,
-        mineCount: 25,
+        mineCount: 17,
       }
       const params2: BoardParams = { ...params1, mineCount: 99 }
       expect(pipe(params1, generateBoard, E.isLeft)).toBeTruthy()
@@ -198,7 +198,7 @@ describe('Board functions', () => {
   describe('initializeBoard', () => {
     test('returns resulting board with correct number of mines', () => {
       const mineCount = 12
-      const board = initializeBoard({ x: 0, y: 1 })({
+      const board = initializeBoard([{ x: 0, y: 1 }])({
         ...testBoard1,
         mineCount,
       })
@@ -206,16 +206,21 @@ describe('Board functions', () => {
       expect(board.mineCount).toBe(mineCount)
     })
 
-    test('returned board never has a mine at excludePosition', () => {
-      const excludePosition: Vector2 = { x: 0, y: 1 }
-      const mineCount = getWidth(testBoard1) * getHeight(testBoard1) - 1
+    test('returned board never has mines at excludePositions', () => {
+      const excludePositions: Vector2[] = [
+        { x: 0, y: 1 },
+        { x: 1, y: 1 },
+      ]
+      const mineCount = getWidth(testBoard1) * getHeight(testBoard1) - 2
 
       for (let i = 0; i < 10; i++) {
-        const board = initializeBoard(excludePosition)({
+        const board = initializeBoard(excludePositions)({
           ...testBoard1,
           mineCount,
         })
-        expect(hasMineAt(excludePosition)(board)).toBeFalsy()
+        for (const excludePos of excludePositions) {
+          expect(hasMineAt(excludePos)(board)).toBeFalsy()
+        }
       }
     })
   })

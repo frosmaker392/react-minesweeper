@@ -13,12 +13,12 @@ import {
 } from './menuSlice'
 import type { Difficulty, ViewType } from './types'
 
-import './GameMenu.css'
-import './views/MenuView.css'
 import PauseView from './views/PauseView'
 import { generateBoard } from '../board/boardFunctions'
 import NewGameView from './views/NewGameView'
 import HowToPlayView from './views/HowToPlayView'
+
+import classes from './GameMenu.module.css'
 
 interface Props {
   showMenu: boolean
@@ -75,21 +75,24 @@ export const GameMenu: FC<Props> = (props) => {
 
   if (!showMenu) return null
 
-  // Pause view
-  if (currentView === 'pause') return <PauseView {...pauseCallbacks} />
-
-  // New game view
-  if (currentView === 'newGame')
-    return (
+  const view =
+    currentView === 'pause' ? (
+      <PauseView {...pauseCallbacks} />
+    ) : currentView === 'newGame' ? (
       <NewGameView
         setupDifficulty={setupDifficulty}
         setupParams={setupParams}
         {...newGameCallbacks}
       />
+    ) : (
+      <HowToPlayView onReturn={returnToPause} />
     )
 
-  // How to play view
-  return <HowToPlayView onReturn={returnToPause} />
+  return (
+    <div className={`${classes.boardOverlay} ${classes.menu}`}>
+      <div className={classes.menuViewContainer}>{view}</div>
+    </div>
+  )
 }
 
 export const withMenuState = (Component: FC<Props>) => {

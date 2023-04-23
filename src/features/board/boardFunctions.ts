@@ -51,7 +51,7 @@ export const generateBoard = ({
   mineCount,
 }: BoardParams): BoardResult =>
   E.fromPredicate(
-    () => width * height > mineCount,
+    () => mineCount < width * height - 9,
     () => `Cannot fit ${mineCount} mines in this board!`
   )({
     cells: pipe(
@@ -74,7 +74,7 @@ export const placeMines =
     })
 
 export const initializeBoard =
-  (excludePosition: Vector2) =>
+  (excludePositions: Vector2[]) =>
   (board: Board): Board => {
     const width = getWidth(board)
     const height = getHeight(board)
@@ -82,12 +82,13 @@ export const initializeBoard =
     const positions: Vector2[] = []
 
     while (positions.length < board.mineCount) {
-      const { x: xN, y: yN } = randomPosition(width, height)
+      const { x, y } = randomPosition(width, height)
 
-      const shouldAdd =
-        positions.every(({ x, y }) => !(xN === x && yN === y)) &&
-        !(excludePosition.x === xN && excludePosition.y === yN)
-      if (shouldAdd) positions.push({ x: xN, y: yN })
+      const shouldAdd = pipe(
+        [...excludePositions, ...positions],
+        A.every((v) => !(v.x === x && v.y === y))
+      )
+      if (shouldAdd) positions.push({ x, y })
     }
 
     return {
@@ -171,7 +172,12 @@ export const revealCellAt =
 
       // Initialize board before reveal
       O.map(() =>
-        board.initialized ? board : initializeBoard(position)(board)
+        board.initialized
+          ? board
+          : initializeBoard([
+              position,
+              ...getNeighborPositions(position)(board),
+            ])(board)
       ),
 
       // Reveal cell at position, propagation using BFS

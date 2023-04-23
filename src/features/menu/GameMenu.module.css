@@ -1,4 +1,4 @@
-.board-overlay {
+.boardOverlay {
   display: flex;
   align-items: flex-start;
   justify-content: center;
@@ -15,7 +15,7 @@
   background-color: var(--primary);
 }
 
-.menu-view-container {
+.menuViewContainer {
   display: flex;
   flex-direction: column;
   justify-content: center;

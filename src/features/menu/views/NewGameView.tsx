@@ -8,6 +8,8 @@ import IntegerField from '../../../components/molecules/IntegerField'
 import SelectField from '../../../components/molecules/SelectField'
 import { type Difficulty, difficultyList } from '../types'
 
+import classes from './MenuView.module.css'
+
 interface Props {
   setupDifficulty: Difficulty
   setupParams: BoardParams
@@ -47,7 +49,7 @@ const NewGameView: React.FC<Props> = ({
 
   return (
     <form
-      className="menu-view new-game"
+      className={`${classes.menuView} ${classes.newGame}`}
       onSubmit={(e) => {
         e.preventDefault()
         onSubmit({ width, height, mineCount })
@@ -90,7 +92,7 @@ const NewGameView: React.FC<Props> = ({
         Mines
       </IntegerField>
 
-      <MenuButton className="highlight" type="submit" name="submit">
+      <MenuButton className={classes.highlight} type="submit" name="submit">
         Generate
       </MenuButton>
 

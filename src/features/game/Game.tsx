@@ -4,16 +4,19 @@ import Board from '../board/Board'
 import GameMenu from '../menu/GameMenu'
 import { determineGameState } from './gameFunctions'
 
+import classes from './Game.module.css'
+import DisableBoardInput from '../menu/DisableBoardInput'
+
 const Game: FC = () => {
   const board = useAppSelector((state) => state.board)
   const isLost = determineGameState(board) === 'lost'
 
   return (
-    <div className="game">
-      <section className="board-container">
+    <div className={classes.game}>
+      <section className={classes.boardContainer}>
         <Board />
         <GameMenu />
-        {isLost && <div className="board-overlay" />}
+        {isLost && <DisableBoardInput />}
       </section>
     </div>
   )

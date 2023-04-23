@@ -1,6 +1,8 @@
 import React, { type FC } from 'react'
 import MenuButton from '../../../components/atoms/MenuButton'
 
+import classes from './MenuView.module.css'
+
 interface Props {
   onRestart: () => void
   onNewGame: () => void
@@ -8,7 +10,7 @@ interface Props {
 }
 
 const PauseView: FC<Props> = ({ onRestart, onNewGame, onHowToPlay }) => (
-  <div className="menu-view pause">
+  <div className={`${classes.menuView} ${classes.pause}`}>
     <MenuButton onClick={onRestart}>Restart</MenuButton>
     <MenuButton onClick={onNewGame}>New Game</MenuButton>
     <MenuButton onClick={onHowToPlay}>How to Play</MenuButton>
