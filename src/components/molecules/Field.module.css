@@ -1,0 +1,8 @@
+.field {
+  background-color: var(--primary);
+  border-radius: var(--border-radius);
+  border: none;
+
+  text-align: center;
+  height: 2em;
+}

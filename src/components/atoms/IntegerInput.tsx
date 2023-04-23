@@ -3,7 +3,7 @@ import React, { type ChangeEvent } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons'
 
-import './IntegerInput.css'
+import classes from './IntegerInput.module.css'
 
 interface Props {
   id?: string
@@ -34,7 +34,7 @@ const IntegerInput: React.FC<Props> = ({
     }
 
   return (
-    <div className={`num-input ${className ?? ''}`}>
+    <div className={`${classes.numInput} ${className ?? ''}`}>
       <input
         type="number"
         id={id}
@@ -46,7 +46,7 @@ const IntegerInput: React.FC<Props> = ({
       />
 
       <button
-        className="sub"
+        className={classes.subtractButton}
         tabIndex={-1}
         onClick={createOnClick(Math.max(min, value - 1))}
       >
@@ -54,7 +54,7 @@ const IntegerInput: React.FC<Props> = ({
       </button>
 
       <button
-        className="add"
+        className={classes.addButton}
         tabIndex={-1}
         onClick={createOnClick(Math.min(max, value + 1))}
       >

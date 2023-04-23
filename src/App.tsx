@@ -1,6 +1,5 @@
 import React from 'react'
 
-import './App.css'
 import Game from './features/game/Game'
 
 const App: React.FC = () => (

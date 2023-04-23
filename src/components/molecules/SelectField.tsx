@@ -1,6 +1,9 @@
 import React, { type ChangeEventHandler, type PropsWithChildren } from 'react'
 import Select from '../atoms/Select'
 
+import clickableClasses from '../atoms/Clickable.module.css'
+import fieldClasses from './Field.module.css'
+
 interface Props<T extends string> {
   id: string
   value: T
@@ -20,7 +23,7 @@ const SelectField = <T extends string>(props: PropsWithChildren<Props<T>>) => {
     <>
       <label htmlFor={id}>{children}</label>
       <Select
-        className="clickable input"
+        className={`${clickableClasses.clickable} ${fieldClasses.field}`}
         id={id}
         value={value}
         onChange={onChange}
