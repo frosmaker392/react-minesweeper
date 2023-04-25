@@ -3,7 +3,7 @@ import { pipe } from 'fp-ts/lib/function'
 import * as S from 'fp-ts/lib/string'
 import type { BoardParams } from '../../board/types'
 
-import MenuButton from '../../../components/atoms/MenuButton'
+import Button from '../../../components/atoms/Button'
 import IntegerField from '../../../components/molecules/IntegerField'
 import SelectField from '../../../components/molecules/SelectField'
 import { type Difficulty, difficultyList } from '../types'
@@ -92,13 +92,13 @@ const NewGameView: React.FC<Props> = ({
         Mines
       </IntegerField>
 
-      <MenuButton className={classes.highlight} type="submit" name="submit">
+      <Button className={classes.highlight} type="submit" name="submit">
         Generate
-      </MenuButton>
+      </Button>
 
-      <MenuButton name="cancel" onClick={onReturn}>
+      <Button name="cancel" onClick={onReturn}>
         Back
-      </MenuButton>
+      </Button>
     </form>
   )
 }

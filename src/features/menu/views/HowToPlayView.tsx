@@ -1,5 +1,5 @@
 import React, { type FC } from 'react'
-import MenuButton from '../../../components/atoms/MenuButton'
+import Button from '../../../components/atoms/Button'
 
 import classes from './MenuView.module.css'
 
@@ -25,7 +25,7 @@ const HowToPlayView: FC<Props> = ({ onReturn }) => (
       </li>
     </ul>
 
-    <MenuButton onClick={onReturn}>Back</MenuButton>
+    <Button onClick={onReturn}>Back</Button>
   </div>
 )
 

@@ -1,6 +1,6 @@
-import React, { useCallback, useRef } from 'react'
+import React, { useRef } from 'react'
 import * as A from 'fp-ts/lib/Array'
-import { flow, pipe } from 'fp-ts/lib/function'
+import { pipe } from 'fp-ts/lib/function'
 import { type FC } from 'react'
 import Cell from './cell/Cell'
 import type { Board as TBoard, Vector2 } from './types'
@@ -10,9 +10,6 @@ import classes from './Board.module.css'
 import useElementWidth from '../../hooks/useElementWidth'
 import useDebounce from '../../hooks/useDebounce'
 import { getWidth } from './boardFunctions'
-import { useAppDispatch, useAppSelector } from '../../app/hooks'
-import { markCell, revealCell } from './boardSlice'
-import { determineGameState } from '../game/gameFunctions'
 
 interface Props {
   board: TBoard
@@ -21,12 +18,7 @@ interface Props {
   onMarkCell: (position: Vector2) => void
 }
 
-export const Board: FC<Props> = ({
-  board,
-  revealMine,
-  onRevealCell,
-  onMarkCell,
-}) => {
+const Board: FC<Props> = ({ board, revealMine, onRevealCell, onMarkCell }) => {
   const ref = useRef<HTMLDivElement>(null)
 
   const fontSize = pipe(
@@ -70,27 +62,4 @@ export const Board: FC<Props> = ({
   )
 }
 
-export const withBoardState = (Component: FC<Props>) => {
-  const NewComponent: FC = () => {
-    const board = useAppSelector((state) => state.board)
-
-    const dispatch = useAppDispatch()
-
-    const revealMine = determineGameState(board) === 'lost'
-    const onRevealCell = useCallback(flow(revealCell, dispatch), [])
-    const onMarkCell = useCallback(flow(markCell, dispatch), [])
-
-    return (
-      <Component
-        board={board}
-        revealMine={revealMine}
-        onRevealCell={onRevealCell}
-        onMarkCell={onMarkCell}
-      />
-    )
-  }
-
-  return NewComponent
-}
-
-export default withBoardState(Board)
+export default Board

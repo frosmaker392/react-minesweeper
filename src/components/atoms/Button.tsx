@@ -2,7 +2,7 @@ import React, { type ButtonHTMLAttributes } from 'react'
 
 import classes from './Clickable.module.css'
 
-const MenuButton: React.FC<ButtonHTMLAttributes<HTMLButtonElement>> = ({
+const Button: React.FC<ButtonHTMLAttributes<HTMLButtonElement>> = ({
   className,
   children,
   ...restOfProps
@@ -15,4 +15,4 @@ const MenuButton: React.FC<ButtonHTMLAttributes<HTMLButtonElement>> = ({
   </button>
 )
 
-export default MenuButton
+export default Button

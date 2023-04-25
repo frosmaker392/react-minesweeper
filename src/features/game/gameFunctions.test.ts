@@ -2,8 +2,8 @@ import { describe, expect, test } from 'vitest'
 import { defaultCell } from '../board/cell/cellFunctions'
 import type { HiddenCell, RevealedCell } from '../board/cell/types'
 import type { Board } from '../board/types'
-import { determineGameState } from './gameFunctions'
-import type { GameState } from './types'
+import { determineBoardState } from './gameFunctions'
+import type { BoardState } from './types'
 
 const correctlyFlaggedCell: HiddenCell = {
   state: 'hidden',
@@ -57,23 +57,25 @@ const inProgressBoard: Board = {
 }
 
 describe('Game functions', () => {
-  describe('determineGameState', () => {
+  describe('determineBoardState', () => {
     test('returns "uninitialized" if board is not yet initialized', () => {
-      expect(determineGameState(uninitializedBoard)).toBe<GameState>(
+      expect(determineBoardState(uninitializedBoard)).toBe<BoardState>(
         'uninitialized'
       )
     })
 
     test('returns "won" if all cells are either correctly flagged or revealed', () => {
-      expect(determineGameState(wonBoard)).toBe<GameState>('won')
+      expect(determineBoardState(wonBoard)).toBe<BoardState>('won')
     })
 
     test('returns "lost" if at least one cell is revealed incorrectly', () => {
-      expect(determineGameState(lostBoard)).toBe<GameState>('lost')
+      expect(determineBoardState(lostBoard)).toBe<BoardState>('lost')
     })
 
     test('returns "in-progress" otherwise', () => {
-      expect(determineGameState(inProgressBoard)).toBe<GameState>('in-progress')
+      expect(determineBoardState(inProgressBoard)).toBe<BoardState>(
+        'in-progress'
+      )
     })
   })
 })

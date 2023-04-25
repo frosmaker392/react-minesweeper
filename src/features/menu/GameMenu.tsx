@@ -3,7 +3,6 @@ import { flow, pipe } from 'fp-ts/lib/function'
 import * as E from 'fp-ts/lib/Either'
 import { useCallback, type FC } from 'react'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
-import { load } from '../board/boardSlice'
 import type { Board as TBoard, BoardParams } from '../board/types'
 import {
   changeView,
@@ -19,6 +18,7 @@ import NewGameView from './views/NewGameView'
 import HowToPlayView from './views/HowToPlayView'
 
 import classes from './GameMenu.module.css'
+import { setBoard } from '../game/gameSlice'
 
 interface Props {
   showMenu: boolean
@@ -112,7 +112,7 @@ export const withMenuState = (Component: FC<Props>) => {
 
     const onToggleShowMenu = useCallback(flow(toggleShowMenu, dispatch), [])
     const onChangeView = useCallback(flow(changeView, dispatch), [])
-    const onCreateBoard = useCallback(flow(load, dispatch), [])
+    const onCreateBoard = useCallback(flow(setBoard, dispatch), [])
 
     const props: Props = {
       showMenu,
