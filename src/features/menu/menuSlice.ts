@@ -1,25 +1,8 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import type { BoardParams } from '../board/types'
-import { determineDifficulty, getBoardParams } from './menuFunctions'
-import type { ViewType, MenuState, Difficulty, BoardPresets } from './types'
-
-export const boardPresets: BoardPresets = {
-  beginner: {
-    width: 8,
-    height: 8,
-    mineCount: 10,
-  },
-  intermediate: {
-    width: 16,
-    height: 16,
-    mineCount: 40,
-  },
-  advanced: {
-    width: 30,
-    height: 16,
-    mineCount: 99,
-  },
-}
+import type { ViewType, MenuState } from './types'
+import { boardPresets } from '../board/presets/boardPresets'
+import type { Difficulty } from '../board/presets/types'
 
 const initialState: MenuState = {
   showMenu: false,
@@ -54,13 +37,7 @@ export const menuSlice = createSlice({
 
       if (action.payload === 'custom')
         boardSetup.boardParams = boardSetup.lastCustomPreset
-      else boardSetup.boardParams = getBoardParams(action.payload, boardPresets)
-    },
-    updateDifficulty: ({ boardSetup }) => {
-      boardSetup.difficulty = determineDifficulty(
-        boardSetup.boardParams,
-        boardPresets
-      )
+      else boardSetup.boardParams = boardPresets[action.payload]
     },
     setBoardParams: ({ boardSetup }, action: PayloadAction<BoardParams>) => {
       boardSetup.difficulty = 'custom'
@@ -77,7 +54,6 @@ export const {
   toggleShowMenu,
   changeView,
   setDifficulty,
-  updateDifficulty,
   setBoardParams,
   cacheCustomPreset,
 } = menuSlice.actions

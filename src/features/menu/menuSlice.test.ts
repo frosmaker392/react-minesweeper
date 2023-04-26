@@ -1,16 +1,14 @@
 import { describe, expect, test } from 'vitest'
 import type { BoardParams } from '../board/types'
-import { determineDifficulty } from './menuFunctions'
 import menuReducer, {
-  boardPresets,
   cacheCustomPreset,
   changeView,
   setDifficulty,
   toggleShowMenu,
   setBoardParams,
-  updateDifficulty,
 } from './menuSlice'
 import type { MenuState } from './types'
+import { boardPresets } from '../board/presets/boardPresets'
 
 const menuState: MenuState = {
   showMenu: false,
@@ -98,23 +96,6 @@ describe('menuSlice', () => {
         difficulty: 'custom',
         boardParams: menuState.boardSetup.lastCustomPreset,
       })
-    })
-  })
-
-  describe('updateDifficulty', () => {
-    test('updates current difficulty based on current boardParams', () => {
-      const modifiedMenuState: MenuState = {
-        ...menuState,
-        boardSetup: {
-          ...menuState.boardSetup,
-          difficulty: 'custom',
-        },
-      }
-      expect(
-        menuReducer(modifiedMenuState, updateDifficulty()).boardSetup.difficulty
-      ).toEqual(
-        determineDifficulty(menuState.boardSetup.boardParams, boardPresets)
-      )
     })
   })
 

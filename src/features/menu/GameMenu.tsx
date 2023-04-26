@@ -10,7 +10,7 @@ import {
   setDifficulty,
   toggleShowMenu,
 } from './menuSlice'
-import type { Difficulty, ViewType } from './types'
+import type { ViewType } from './types'
 
 import PauseView from './views/PauseView'
 import { generateBoard } from '../board/boardFunctions'
@@ -19,6 +19,7 @@ import HowToPlayView from './views/HowToPlayView'
 
 import classes from './GameMenu.module.css'
 import { setBoard } from '../game/gameSlice'
+import type { Difficulty } from '../board/presets/types'
 
 interface Props {
   showMenu: boolean

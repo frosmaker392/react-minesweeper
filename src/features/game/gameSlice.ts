@@ -12,12 +12,11 @@ import { type GameState } from './types'
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit'
 import { determineBoardState } from './gameFunctions'
 import { isHidden } from '../board/cell/cellFunctions'
+import { boardPresets } from '../board/presets/boardPresets'
+import type { Difficulty } from '../board/presets/types'
 
-const initialParams: BoardParams = {
-  width: 10,
-  height: 10,
-  mineCount: 10,
-}
+const initialDifficulty: Difficulty = 'beginner'
+const initialParams: BoardParams = boardPresets[initialDifficulty]
 const invalidBoard: Board = {
   cells: [],
   mineCount: 0,
@@ -31,6 +30,8 @@ const initialBoard: Board = pipe(
 export const initialState: GameState = {
   board: initialBoard,
   boardState: 'uninitialized',
+  boardParams: initialParams,
+  difficulty: initialDifficulty,
   isPaused: false,
   flaggedCellsCount: 0,
 }
@@ -41,6 +42,9 @@ export const gameSlice = createSlice({
   reducers: {
     setBoard: (state, action: PayloadAction<Board>) => {
       state.board = action.payload
+    },
+    setBoardParams: (state, action: PayloadAction<BoardParams>) => {
+      state.boardParams = action.payload
     },
     markCell: (state, action: PayloadAction<Vector2>) => {
       state.board = markCellAt(action.payload)(state.board)

@@ -6,9 +6,9 @@ import type { BoardParams } from '../../board/types'
 import Button from '../../../components/atoms/Button'
 import IntegerField from '../../../components/molecules/IntegerField'
 import SelectField from '../../../components/molecules/SelectField'
-import { type Difficulty, difficultyList } from '../types'
 
 import classes from './MenuView.module.css'
+import { type Difficulty, difficultyList } from '../../board/presets/types'
 
 interface Props {
   setupDifficulty: Difficulty

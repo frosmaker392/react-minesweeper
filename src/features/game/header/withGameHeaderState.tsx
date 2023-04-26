@@ -1,8 +1,8 @@
 import React, { type ComponentProps, type FC } from 'react'
 import type GameHeader from './GameHeader'
-import { useAppDispatch, useAppSelector } from '../../app/hooks'
-import { togglePause } from './gameSlice'
-import { toggleShowMenu } from '../menu/menuSlice'
+import { useAppDispatch, useAppSelector } from '../../../app/hooks'
+import { togglePause } from '../gameSlice'
+import { toggleShowMenu } from '../../menu/menuSlice'
 
 type Props = ComponentProps<typeof GameHeader>
 

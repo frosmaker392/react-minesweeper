@@ -1,13 +1,14 @@
 import { describe, expect, test } from 'vitest'
-import type { BoardParams } from '../board/types'
-import { determineDifficulty, getBoardParams } from './menuFunctions'
+import { determineDifficulty } from './boardPresets'
 import type { BoardPresets } from './types'
+import type { BoardParams } from '../types'
 
 const presetFactory = (value: number): BoardParams => ({
   width: value,
   height: value,
   mineCount: value,
 })
+
 const boardPresets: BoardPresets = {
   beginner: presetFactory(0),
   intermediate: presetFactory(1),
@@ -15,20 +16,6 @@ const boardPresets: BoardPresets = {
 }
 
 describe('Menu functions', () => {
-  describe('getBoardParams', () => {
-    test('returns corresponding board params from board presets object', () => {
-      expect(getBoardParams('beginner', boardPresets)).toEqual(
-        boardPresets.beginner
-      )
-      expect(getBoardParams('intermediate', boardPresets)).toEqual(
-        boardPresets.intermediate
-      )
-      expect(getBoardParams('advanced', boardPresets)).toEqual(
-        boardPresets.advanced
-      )
-    })
-  })
-
   describe('determineDifficulty', () => {
     test('returns matching difficulty for a board preset', () => {
       expect(determineDifficulty(boardPresets.beginner, boardPresets)).toEqual(

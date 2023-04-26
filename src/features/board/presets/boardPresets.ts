@@ -1,12 +1,25 @@
-import type { BoardParams } from '../board/types'
+import type { BoardParams } from '../types'
 import type { BoardPresets, Difficulty } from './types'
 
 type DifficultyLevels = Exclude<Difficulty, 'custom'>
 
-export const getBoardParams = (
-  difficulty: DifficultyLevels,
-  boardPresets: BoardPresets
-): BoardParams => boardPresets[difficulty]
+export const boardPresets: BoardPresets = {
+  beginner: {
+    width: 8,
+    height: 8,
+    mineCount: 10,
+  },
+  intermediate: {
+    width: 16,
+    height: 16,
+    mineCount: 40,
+  },
+  advanced: {
+    width: 30,
+    height: 16,
+    mineCount: 99,
+  },
+}
 
 export const determineDifficulty = (
   boardParams: BoardParams,

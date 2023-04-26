@@ -1,9 +1,9 @@
 import React, { type FC } from 'react'
-import Button from '../../components/atoms/Button'
+import Button from '../../../components/atoms/Button'
 
-import { ReactComponent as ClockIcon } from '../../icons/Clock.svg'
-import { ReactComponent as MineIcon } from '../../icons/Mine.svg'
-import type { BoardState } from './types'
+import { ReactComponent as ClockIcon } from '../../../icons/Clock.svg'
+import { ReactComponent as MineIcon } from '../../../icons/Mine.svg'
+import type { BoardState } from '../types'
 
 import classes from './GameHeader.module.css'
 
