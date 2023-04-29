@@ -10,15 +10,23 @@ import classes from './Board.module.css'
 import useElementWidth from '../../hooks/useElementWidth'
 import useDebounce from '../../hooks/useDebounce'
 import { getWidth } from './boardFunctions'
+import DisableBoardInput from './DisableBoardInput'
 
 interface Props {
   board: TBoard
   revealMine: boolean
+  disableInput: boolean
   onRevealCell: (position: Vector2) => void
   onMarkCell: (position: Vector2) => void
 }
 
-const Board: FC<Props> = ({ board, revealMine, onRevealCell, onMarkCell }) => {
+const Board: FC<Props> = ({
+  board,
+  revealMine,
+  disableInput,
+  onRevealCell,
+  onMarkCell,
+}) => {
   const ref = useRef<HTMLDivElement>(null)
 
   const fontSize = pipe(
@@ -58,6 +66,7 @@ const Board: FC<Props> = ({ board, revealMine, onRevealCell, onMarkCell }) => {
   return (
     <div ref={ref} className={classes.board}>
       {pipe(board.cells, A.mapWithIndex(createRow))}
+      {disableInput && <DisableBoardInput />}
     </div>
   )
 }

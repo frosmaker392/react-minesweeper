@@ -1,5 +1,5 @@
+import type { Difficulty } from '../board/presets/types'
 import type { Board, BoardParams } from '../board/types'
-import type { Difficulty } from '../menu/types'
 
 export type BoardState = 'uninitialized' | 'in-progress' | 'won' | 'lost'
 
@@ -8,6 +8,5 @@ export interface GameState {
   boardState: BoardState
   boardParams: BoardParams
   difficulty: Difficulty
-  isPaused: boolean
   flaggedCellsCount: number
 }

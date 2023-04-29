@@ -22,12 +22,11 @@ export const menuSlice = createSlice({
   name: 'menu',
   initialState,
   reducers: {
-    toggleShowMenu: (state) => {
-      if (state.showMenu) state.showMenu = false
-      else {
+    setShowMenu: (state, { payload: showMenu }: PayloadAction<boolean>) => {
+      if (showMenu) {
         state.showMenu = true
         state.currentView = 'pause'
-      }
+      } else state.showMenu = false
     },
     changeView: (state, action: PayloadAction<ViewType>) => {
       if (state.showMenu) state.currentView = action.payload
@@ -51,7 +50,7 @@ export const menuSlice = createSlice({
 })
 
 export const {
-  toggleShowMenu,
+  setShowMenu,
   changeView,
   setDifficulty,
   setBoardParams,

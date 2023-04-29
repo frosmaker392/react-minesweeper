@@ -32,7 +32,6 @@ export const initialState: GameState = {
   boardState: 'uninitialized',
   boardParams: initialParams,
   difficulty: initialDifficulty,
-  isPaused: false,
   flaggedCellsCount: 0,
 }
 
@@ -56,11 +55,10 @@ export const gameSlice = createSlice({
         updateCellRoundedCorners
       )
     },
-    togglePause: (state) => {
-      state.isPaused = !state.isPaused
-    },
     updateGameState: (state) => {
-      state.boardState = determineBoardState(state.board)
+      const boardState = determineBoardState(state.board)
+
+      state.boardState = boardState
       state.flaggedCellsCount = pipe(
         state.board.cells,
         A.flatten,
@@ -71,7 +69,7 @@ export const gameSlice = createSlice({
   },
 })
 
-export const { setBoard, markCell, revealCell, togglePause, updateGameState } =
+export const { setBoard, markCell, revealCell, updateGameState } =
   gameSlice.actions
 
 export default gameSlice.reducer

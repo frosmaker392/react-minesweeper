@@ -4,12 +4,7 @@ import * as E from 'fp-ts/lib/Either'
 import { useCallback, type FC } from 'react'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import type { Board as TBoard, BoardParams } from '../board/types'
-import {
-  changeView,
-  setBoardParams,
-  setDifficulty,
-  toggleShowMenu,
-} from './menuSlice'
+import { changeView, setBoardParams, setDifficulty } from './menuSlice'
 import type { ViewType } from './types'
 
 import PauseView from './views/PauseView'
@@ -18,7 +13,6 @@ import NewGameView from './views/NewGameView'
 import HowToPlayView from './views/HowToPlayView'
 
 import classes from './GameMenu.module.css'
-import { setBoard } from '../game/gameSlice'
 import type { Difficulty } from '../board/presets/types'
 
 interface Props {
@@ -28,15 +22,18 @@ interface Props {
   setupParams: BoardParams
   onChangeSetupDifficulty: (difficulty: Difficulty) => void
   onChangeSetupParams: (params: BoardParams) => void
-  onToggleShowMenu: () => void
   onChangeView: (view: ViewType) => void
-  onCreateBoard: (board: TBoard) => void
+  onReset: (newBoard: TBoard) => void
+}
+
+interface WithGameMenuStateProps {
+  onReset: (newBoard: TBoard) => void
 }
 
 export const GameMenu: FC<Props> = (props) => {
   const { showMenu, currentView, setupDifficulty, setupParams } = props
   const { onChangeSetupDifficulty, onChangeSetupParams } = props
-  const { onToggleShowMenu, onChangeView, onCreateBoard } = props
+  const { onChangeView, onReset } = props
 
   const returnToPause = () => {
     onChangeView('pause')
@@ -44,14 +41,7 @@ export const GameMenu: FC<Props> = (props) => {
 
   const pauseCallbacks = {
     onRestart: () => {
-      pipe(
-        setupParams,
-        generateBoard,
-        E.match(console.error, (board) => {
-          onCreateBoard(board)
-          onToggleShowMenu()
-        })
-      )
+      pipe(setupParams, generateBoard, E.match(console.error, onReset))
     },
     onNewGame: () => {
       onChangeView('newGame')
@@ -64,13 +54,7 @@ export const GameMenu: FC<Props> = (props) => {
   const newGameCallbacks = {
     onChangeDifficulty: onChangeSetupDifficulty,
     onChangeBoardParams: onChangeSetupParams,
-    onSubmit: flow(
-      generateBoard,
-      E.match(console.error, (board) => {
-        onCreateBoard(board)
-        onToggleShowMenu()
-      })
-    ),
+    onSubmit: flow(generateBoard, E.match(console.error, onReset)),
     onReturn: returnToPause,
   }
 
@@ -97,7 +81,7 @@ export const GameMenu: FC<Props> = (props) => {
 }
 
 export const withMenuState = (Component: FC<Props>) => {
-  const NewComponent: FC = () => {
+  const NewComponent: FC<WithGameMenuStateProps> = ({ onReset }) => {
     const { showMenu, currentView } = useAppSelector((state) => state.menu)
     const { difficulty, boardParams } = useAppSelector(
       (state) => state.menu.boardSetup
@@ -110,10 +94,7 @@ export const withMenuState = (Component: FC<Props>) => {
       []
     )
     const onChangeSetupParams = useCallback(flow(setBoardParams, dispatch), [])
-
-    const onToggleShowMenu = useCallback(flow(toggleShowMenu, dispatch), [])
     const onChangeView = useCallback(flow(changeView, dispatch), [])
-    const onCreateBoard = useCallback(flow(setBoard, dispatch), [])
 
     const props: Props = {
       showMenu,
@@ -122,9 +103,8 @@ export const withMenuState = (Component: FC<Props>) => {
       setupParams: boardParams,
       onChangeSetupDifficulty,
       onChangeSetupParams,
-      onToggleShowMenu,
+      onReset,
       onChangeView,
-      onCreateBoard,
     }
 
     return <Component {...props} />

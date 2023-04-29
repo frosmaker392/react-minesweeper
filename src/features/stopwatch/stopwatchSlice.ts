@@ -1,23 +1,30 @@
-import { createSlice } from '@reduxjs/toolkit'
-import { createStopwatch, togglePause, update } from './stopwatchFunctions'
+import { type PayloadAction, createSlice } from '@reduxjs/toolkit'
+import { create, setIsPaused, update } from './stopwatchFunctions'
 import type { Stopwatch } from './types'
 
-const initialState: Stopwatch = createStopwatch(Date.now())
+const initialState: Stopwatch = create(Date.now)
 
 export const stopwatchSlice = createSlice({
   name: 'stopwatch',
   initialState,
   reducers: {
     update: (state) => {
-      state = update(Date.now())(state)
+      return update(Date.now)(state)
     },
-    togglePause: (state) => {
-      state = togglePause(Date.now())(state)
+    setIsPaused: (state, action: PayloadAction<boolean>) => {
+      console.log(state.isPaused)
+      return setIsPaused(Date.now)(action.payload)(state)
     },
-    reset: (state) => {
-      state = createStopwatch(Date.now())
+    reset: () => {
+      return create(Date.now)
     },
   },
 })
+
+export const {
+  update: updateStopwatch,
+  setIsPaused: setStopwatchIsPaused,
+  reset: resetStopwatch,
+} = stopwatchSlice.actions
 
 export default stopwatchSlice.reducer

@@ -4,7 +4,7 @@ import menuReducer, {
   cacheCustomPreset,
   changeView,
   setDifficulty,
-  toggleShowMenu,
+  setShowMenu,
   setBoardParams,
 } from './menuSlice'
 import type { MenuState } from './types'
@@ -31,15 +31,17 @@ const shownMenuState: MenuState = {
 
 describe('menuSlice', () => {
   describe('toggleShowMenu', () => {
-    test('hides menu if showMenu is true', () => {
-      expect(menuReducer(shownMenuState, toggleShowMenu())).toEqual<MenuState>({
+    test('hides menu if false', () => {
+      expect(
+        menuReducer(shownMenuState, setShowMenu(false))
+      ).toEqual<MenuState>({
         ...shownMenuState,
         showMenu: false,
       })
     })
 
-    test('shows menu with "pause" as current view if showMenu is false', () => {
-      expect(menuReducer(menuState, toggleShowMenu())).toEqual<MenuState>({
+    test('shows menu with "pause" as current view if true', () => {
+      expect(menuReducer(menuState, setShowMenu(true))).toEqual<MenuState>({
         ...menuState,
         showMenu: true,
         currentView: 'pause',

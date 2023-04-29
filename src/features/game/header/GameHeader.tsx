@@ -9,7 +9,7 @@ import classes from './GameHeader.module.css'
 
 interface Props {
   boardState: BoardState
-  isPaused: boolean
+  isMenuShown: boolean
   elapsedSeconds: number
   flaggedCellsCount: number
   mineCount: number
@@ -17,8 +17,8 @@ interface Props {
 }
 
 export const toMinutesAndSeconds = (seconds: number): [number, number] => [
-  seconds % 60,
   Math.floor(seconds / 60),
+  Math.floor(seconds % 60),
 ]
 
 export const formatDuration = (val: number): string =>
@@ -34,7 +34,7 @@ export const headerButtonLabels: Record<BoardState, [string, string]> = {
 const GameHeader: FC<Props> = (props) => {
   const {
     boardState,
-    isPaused,
+    isMenuShown,
     elapsedSeconds,
     flaggedCellsCount,
     mineCount,
@@ -60,7 +60,7 @@ const GameHeader: FC<Props> = (props) => {
           onClickMenuButton()
         }}
       >
-        {headerButtonLabels[boardState][isPaused ? 1 : 0]}
+        {headerButtonLabels[boardState][isMenuShown ? 1 : 0]}
       </Button>
 
       <article className={classes.score}>

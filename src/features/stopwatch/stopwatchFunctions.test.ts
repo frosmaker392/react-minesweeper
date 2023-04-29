@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { createStopwatch, togglePause, update } from './stopwatchFunctions'
+import { create, setIsPaused, update } from './stopwatchFunctions'
 import type { Stopwatch } from './types'
 
 const stopwatch: Stopwatch = {
@@ -9,54 +9,71 @@ const stopwatch: Stopwatch = {
 }
 
 describe('Stopwatch functions', () => {
-  describe('createStopwatch', () => {
+  describe('create', () => {
     test('returns initial state of a stopwatch', () => {
-      expect(createStopwatch(stopwatch.referenceTimestamp)).toEqual(stopwatch)
+      expect(create(() => stopwatch.referenceTimestamp)).toEqual(stopwatch)
     })
   })
 
   describe('update', () => {
     test('returns same stopwatch state if paused', () => {
-      expect(update(stopwatch.referenceTimestamp + 1000)(stopwatch)).toEqual(
-        stopwatch
-      )
+      expect(
+        update(() => stopwatch.referenceTimestamp + 1000)(stopwatch)
+      ).toEqual(stopwatch)
     })
 
     test('returns updated stopwatch state if not paused', () => {
       const duration = 1000
-      const getTimestamp = stopwatch.referenceTimestamp + duration
+      const updateTimestamp = stopwatch.referenceTimestamp + duration
       const runningStopwatch: Stopwatch = {
         ...stopwatch,
         isPaused: false,
         elapsedMs: 2000,
       }
 
-      expect(update(getTimestamp)(runningStopwatch)).toEqual<Stopwatch>({
-        referenceTimestamp: getTimestamp,
+      expect(
+        update(() => updateTimestamp)(runningStopwatch)
+      ).toEqual<Stopwatch>({
+        referenceTimestamp: updateTimestamp,
         elapsedMs: runningStopwatch.elapsedMs + duration,
         isPaused: false,
       })
     })
   })
 
-  describe('togglePause', () => {
-    const toggleTimestamp = stopwatch.referenceTimestamp + 1000
-    const toggle = togglePause(toggleTimestamp)
+  describe('setPause', () => {
+    const when = () => stopwatch.referenceTimestamp + 1000
+    const pause = setIsPaused(when)
 
-    test('returns paused stopwatch with updated timestamp and elapsedMs if unpaused', () => {
-      const runningStopwatch: Stopwatch = { ...stopwatch, isPaused: false }
-      expect(toggle(runningStopwatch)).toEqual<Stopwatch>({
-        referenceTimestamp: toggleTimestamp,
-        elapsedMs: 1000,
-        isPaused: true,
+    describe('if current stopwatch is paused', () => {
+      test('returns same paused stopwatch if isPaused is true', () => {
+        expect(pause(true)(stopwatch)).toEqual<Stopwatch>(stopwatch)
+      })
+
+      test('returns unpaused stopwatch with updated referenceTimestamp otherwise', () => {
+        expect(pause(false)(stopwatch)).toEqual<Stopwatch>({
+          referenceTimestamp: when(),
+          elapsedMs: stopwatch.elapsedMs,
+          isPaused: false,
+        })
       })
     })
 
-    test('returns unpaused stopwatch if paused', () => {
-      expect(toggle(stopwatch)).toEqual<Stopwatch>({
-        referenceTimestamp: toggleTimestamp,
-        elapsedMs: 0,
-        isPaused: false,
+    describe('if current stopwatch is unpaused', () => {
+      const runningStopwatch: Stopwatch = { ...stopwatch, isPaused: false }
+
+      test('returns paused stopwatch with updated timestamp and elapsedMs if isPaused is true', () => {
+        expect(pause(true)(runningStopwatch)).toEqual<Stopwatch>({
+          referenceTimestamp: when(),
+          elapsedMs: when() - runningStopwatch.referenceTimestamp,
+          isPaused: true,
+        })
+      })
+
+      test('returns same unpaused stopwatch otherwise', () => {
+        expect(pause(false)(runningStopwatch)).toEqual<Stopwatch>(
+          runningStopwatch
+        )
       })
     })
   })

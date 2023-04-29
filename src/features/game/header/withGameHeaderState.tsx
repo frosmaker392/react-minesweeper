@@ -1,30 +1,42 @@
-import React, { type ComponentProps, type FC } from 'react'
+import React, { useEffect, type ComponentProps, type FC } from 'react'
 import type GameHeader from './GameHeader'
 import { useAppDispatch, useAppSelector } from '../../../app/hooks'
-import { togglePause } from '../gameSlice'
-import { toggleShowMenu } from '../../menu/menuSlice'
+import { updateStopwatch } from '../../stopwatch/stopwatchSlice'
 
 type Props = ComponentProps<typeof GameHeader>
 
+interface WithGameHeaderStateProps {
+  onClickMenuButton: () => void
+}
+
 export const withGameHeaderState = (Component: FC<Props>) => {
-  const NewComponent: FC = () => {
-    const { board, isPaused, boardState, flaggedCellsCount } = useAppSelector(
+  const NewComponent: FC<WithGameHeaderStateProps> = ({
+    onClickMenuButton,
+  }) => {
+    const { board, boardState, flaggedCellsCount } = useAppSelector(
       (state) => state.game
     )
+    const isMenuShown = useAppSelector((state) => state.menu.showMenu)
     const elapsedMs = useAppSelector((state) => state.stopwatch.elapsedMs)
 
     const mineCount = board.mineCount
 
     const dispatch = useAppDispatch()
-    const onClickMenuButton = () => {
-      dispatch(togglePause())
-      dispatch(toggleShowMenu())
-    }
+
+    useEffect(() => {
+      const intervalTimer = setInterval(() => {
+        dispatch(updateStopwatch())
+      }, 100)
+
+      return () => {
+        clearInterval(intervalTimer)
+      }
+    }, [])
 
     return (
       <Component
         boardState={boardState}
-        isPaused={isPaused}
+        isMenuShown={isMenuShown}
         elapsedSeconds={elapsedMs / 1000}
         flaggedCellsCount={flaggedCellsCount}
         mineCount={mineCount}
