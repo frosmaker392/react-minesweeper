@@ -10,6 +10,7 @@ const Button: React.FC<ButtonHTMLAttributes<HTMLButtonElement>> = ({
   <button
     className={`${classes.clickable} ${className ?? ''}`}
     {...restOfProps}
+    data-testid="button"
   >
     {children}
   </button>
