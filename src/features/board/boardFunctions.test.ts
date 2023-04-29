@@ -22,6 +22,7 @@ import {
   getAllPositions,
   getDirectNeighborStates,
   updateCellRoundedCorners,
+  getBoardParams,
 } from './boardFunctions'
 import { defaultCell, revealCell } from './cell/cellFunctions'
 import type {
@@ -105,6 +106,16 @@ describe('Board functions', () => {
   describe('getHeight', () => {
     test('returns correct height', () => {
       expect(getHeight(testBoard1)).toBe(testBoard1.cells.length)
+    })
+  })
+
+  describe('getBoardParams', () => {
+    test('returns correct board params', () => {
+      expect(getBoardParams(testBoard1)).toEqual<BoardParams>({
+        width: getWidth(testBoard1),
+        height: getHeight(testBoard1),
+        mineCount: testBoard1.mineCount,
+      })
     })
   })
 

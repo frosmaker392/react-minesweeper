@@ -74,7 +74,7 @@ export const GameMenu: FC<Props> = (props) => {
     )
 
   return (
-    <div className={`${classes.boardOverlay} ${classes.menu}`}>
+    <div className={classes.menu}>
       <div className={classes.menuViewContainer}>{view}</div>
     </div>
   )

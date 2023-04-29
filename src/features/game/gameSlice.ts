@@ -4,6 +4,7 @@ import { pipe } from 'fp-ts/lib/function'
 import type { Board, BoardParams, Vector2 } from '../board/types'
 import {
   generateBoard,
+  getBoardParams,
   markCellAt,
   revealCellAt,
   updateCellRoundedCorners,
@@ -12,7 +13,10 @@ import { type GameState } from './types'
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit'
 import { determineBoardState } from './gameFunctions'
 import { isHidden } from '../board/cell/cellFunctions'
-import { boardPresets } from '../board/presets/boardPresets'
+import {
+  boardPresets,
+  determineDifficulty,
+} from '../board/presets/boardPresets'
 import type { Difficulty } from '../board/presets/types'
 
 const initialDifficulty: Difficulty = 'beginner'
@@ -41,9 +45,10 @@ export const gameSlice = createSlice({
   reducers: {
     setBoard: (state, action: PayloadAction<Board>) => {
       state.board = action.payload
-    },
-    setBoardParams: (state, action: PayloadAction<BoardParams>) => {
-      state.boardParams = action.payload
+
+      const boardParams = getBoardParams(action.payload)
+      state.difficulty = determineDifficulty(boardParams, boardPresets)
+      state.boardParams = boardParams
     },
     markCell: (state, action: PayloadAction<Vector2>) => {
       state.board = markCellAt(action.payload)(state.board)

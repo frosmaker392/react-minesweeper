@@ -32,6 +32,12 @@ export const getWidth = (board: Board): number =>
 
 export const getHeight = (board: Board): number => board.cells.length
 
+export const getBoardParams = (board: Board): BoardParams => ({
+  width: getWidth(board),
+  height: getHeight(board),
+  mineCount: board.mineCount,
+})
+
 export const getCellAt =
   ({ x, y }: Vector2) =>
   (board: Board): O.Option<Cell> =>
