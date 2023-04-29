@@ -9,8 +9,8 @@ import GameHeader from './header/GameHeader'
 import withGameFooterState from './footer/withGameFooterState'
 import GameFooter from './footer/GameFooter'
 import useGameReset from '../../hooks/useGameReset'
-import useGameToggleMenu from '../../hooks/useGameToggleMenu'
 import useGameUpdate from '../../hooks/useGameUpdate'
+import useGameToggleMenu from '../../hooks/useGameToggleMenu'
 
 const BoardWithState = withBoardState(Board)
 const GameHeaderWithState = withGameHeaderState(GameHeader)
