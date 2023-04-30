@@ -26,20 +26,16 @@ describe('IntegerInput component', () => {
     expect(input.valueAsNumber).toBe(props.value)
 
     // Change event triggered with correct values
-    const decrementButton = queryByTestId(
-      'decrement-button'
-    ) as HTMLButtonElement
-    const incrementButton = queryByTestId(
-      'increment-button'
-    ) as HTMLButtonElement
+    const decrementButton = queryByTestId('decrement-button')
+    const incrementButton = queryByTestId('increment-button')
 
     expect(decrementButton).toBeInTheDocument()
     expect(incrementButton).toBeInTheDocument()
 
-    fireEvent.click(decrementButton)
+    fireEvent.click(decrementButton as HTMLButtonElement)
     expect(onChange).toHaveBeenLastCalledWith(props.value - 1)
 
-    fireEvent.click(incrementButton)
+    fireEvent.click(incrementButton as HTMLButtonElement)
     expect(onChange).toHaveBeenLastCalledWith(props.value + 1)
 
     fireEvent.change(input, { target: { value: 3 } })
@@ -52,17 +48,13 @@ describe('IntegerInput component', () => {
       <IntegerInput {...props} value={NaN} onChange={onChange} />
     )
 
-    const incrementButton = queryByTestId(
-      'increment-button'
-    ) as HTMLButtonElement
-    const decrementButton = queryByTestId(
-      'decrement-button'
-    ) as HTMLButtonElement
+    const incrementButton = queryByTestId('increment-button')
+    const decrementButton = queryByTestId('decrement-button')
 
-    fireEvent.click(incrementButton)
+    fireEvent.click(incrementButton as HTMLButtonElement)
     expect(onChange).not.toHaveBeenCalled()
 
-    fireEvent.click(decrementButton)
+    fireEvent.click(decrementButton as HTMLButtonElement)
     expect(onChange).not.toHaveBeenCalled()
   })
 

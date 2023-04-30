@@ -1,13 +1,13 @@
 import React from 'react'
 import { pipe } from 'fp-ts/lib/function'
 import * as S from 'fp-ts/lib/string'
-import { IntegerField, SelectField } from '../../../components/molecules'
 import { Button } from '../../../components/atoms'
 
 import type { BoardParams } from '../../board/types'
 import { type Difficulty, difficultyList } from '../../board/presets/types'
 
 import classes from './MenuView.module.css'
+import { IntegerField, SelectField } from '../../../components/molecules'
 
 interface Props {
   setupDifficulty: Difficulty
@@ -57,8 +57,8 @@ const NewGameView: React.FC<Props> = ({
       <SelectField<Difficulty>
         id="difficulty-select"
         value={setupDifficulty}
-        options={[...difficultyList]}
-        onOptionChange={onChangeDifficulty}
+        options={difficultyList}
+        onChange={onChangeDifficulty}
         renderOption={renderOption}
       >
         Difficulty

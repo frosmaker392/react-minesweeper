@@ -1,2 +1,2 @@
-export { default as IntegerField } from './IntegerField'
-export { default as SelectField } from './SelectField'
+export { default as IntegerField } from './IntegerField/IntegerField'
+export { default as SelectField } from './SelectField/SelectField'
