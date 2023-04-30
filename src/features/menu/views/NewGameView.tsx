@@ -1,14 +1,13 @@
 import React from 'react'
 import { pipe } from 'fp-ts/lib/function'
 import * as S from 'fp-ts/lib/string'
-import type { BoardParams } from '../../board/types'
+import { IntegerField, SelectField } from '../../../components/molecules'
+import { Button } from '../../../components/atoms'
 
-import Button from '../../../components/atoms/Button'
-import IntegerField from '../../../components/molecules/IntegerField'
-import SelectField from '../../../components/molecules/SelectField'
+import type { BoardParams } from '../../board/types'
+import { type Difficulty, difficultyList } from '../../board/presets/types'
 
 import classes from './MenuView.module.css'
-import { type Difficulty, difficultyList } from '../../board/presets/types'
 
 interface Props {
   setupDifficulty: Difficulty
@@ -67,7 +66,8 @@ const NewGameView: React.FC<Props> = ({
 
       <IntegerField
         id="width"
-        range={[5, 30]}
+        min={5}
+        max={30}
         value={width}
         onChange={onInputChange('width')}
       >
@@ -76,7 +76,8 @@ const NewGameView: React.FC<Props> = ({
 
       <IntegerField
         id="height"
-        range={[5, 30]}
+        min={5}
+        max={30}
         value={height}
         onChange={onInputChange('height')}
       >
@@ -85,7 +86,8 @@ const NewGameView: React.FC<Props> = ({
 
       <IntegerField
         id="mineCount"
-        range={[0, Math.floor((width * height) / 2)]}
+        min={5}
+        max={Math.floor((width * height) / 2)}
         value={mineCount}
         onChange={onInputChange('mineCount')}
       >

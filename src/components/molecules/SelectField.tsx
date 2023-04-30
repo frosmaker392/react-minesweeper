@@ -1,5 +1,5 @@
 import React, { type ChangeEventHandler, type PropsWithChildren } from 'react'
-import Select from '../atoms/Select'
+import { Select } from '../atoms'
 
 import clickableClasses from '../atoms/Clickable.module.css'
 import fieldClasses from './Field.module.css'

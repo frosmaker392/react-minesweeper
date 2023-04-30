@@ -1,5 +1,5 @@
 import React, { type FC } from 'react'
-import Button from '../../../components/atoms/Button'
+import { Button } from '../../../components/atoms'
 
 import classes from './MenuView.module.css'
 

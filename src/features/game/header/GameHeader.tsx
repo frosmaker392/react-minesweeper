@@ -1,6 +1,6 @@
 import React, { type FC } from 'react'
-import Button from '../../../components/atoms/Button'
 
+import { Button } from '../../../components/atoms'
 import { ReactComponent as ClockIcon } from '../../../icons/Clock.svg'
 import { ReactComponent as MineIcon } from '../../../icons/Mine.svg'
 import type { BoardState } from '../types'
