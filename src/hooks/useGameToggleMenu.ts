@@ -11,7 +11,6 @@ const useGameToggleMenu = () => {
   useEffect(() => {
     const onBlur = () => {
       boardState === 'in-progress' && dispatch(setShowMenu(true))
-      console.log('blur')
     }
 
     window.addEventListener('blur', onBlur)

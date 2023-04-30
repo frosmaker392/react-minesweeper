@@ -12,7 +12,6 @@ export const stopwatchSlice = createSlice({
       return update(Date.now)(state)
     },
     setIsPaused: (state, action: PayloadAction<boolean>) => {
-      console.log(state.isPaused)
       return setIsPaused(Date.now)(action.payload)(state)
     },
     reset: () => {
